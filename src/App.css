@@ -1,38 +1,275 @@
+/* Import Pretendard from CDN */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+/* Apply the font to everything */
+* {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .App {
-  text-align: center;
+  background-color: black;
+  height: 100vh;
+  padding-left: var(--page-margin);
+  padding-right: var(--page-margin);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root {
+  --spacing-unit: clamp(0.3rem, 0.5vw, 2rem);
+  --spacing-unit-half: clamp(0.15rem, 0.25vw, 1rem); /* Half of the spacing unit */
+  --page-margin: 8vw; /* Changed from clamp value to fixed 60px */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.grid-container {
+  display: flex;
+  width: 100%;
+  gap: var(--spacing-unit);
+}
+
+.grid-section {
+  padding: var(--spacing-unit);
+  text-align: left;
+  word-break: break-word;
+  font-size: clamp(0.96rem, 1.152vw, 1.44rem);
+  line-height: 1.4;
+}
+
+.grid-section > div {
+  min-height: 1.4em; /* Ensure consistent line height */
+  margin-bottom: var(--spacing-unit-half);
+}
+
+.grid-section > div:last-child {
+  margin-bottom: 0;
+}
+
+.blank {
+  width: 20%;
+}
+
+.main-content {
+  width: 60%; /* Changed from 60% to 50% */
+}
+
+.company {
+  width: 20%;
+}
+
+/* Color classes */
+.text-white {
+  color: white;
+  font-size: clamp(1.152rem, 1.44vw, 1.92rem);
+  font-weight: 500; /* Added medium-bold font weight */
+  letter-spacing: -0.01em;
+}
+
+.text-gray {
+  color: #787878;
+  font-weight: 300; /* Keeping the light weight for other text */
+  letter-spacing: -0.01em;
+}
+
+/* If you want even bolder, you could use: */
+/* font-weight: 600; */
+/* or */
+/* font-weight: 700; */
+
+.text-light-gray {
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  transition: color 1s ease;
+  position: relative;
+  font-weight: 400; 
+  letter-spacing: -0.01em; /* Added medium-bold font weight */
+}
+
+/* Red hover (original) */
+.hover-red::after {
+  content: "accelerate medical software devices to market";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #FF4747FF;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 1s ease;
+}
+
+/* Blue hover */
+.hover-blue::after {
+  content: "future of data collection";
+  color: #3cd7d9; /* Changed from #4747FF to #3cd7d9 */
+}
+
+/* Green hover (now blue) */
+.hover-green::after {
+  content: "digital businesses";
+  color: #007aff; /* Changed from #47FF47 to #007aff */
+}
+
+/* Yellow hover (now blue) */
+.hover-yellow::after {
+  content: "complex data systems";
+  color: #007aff; /* Changed from #FFD700 to #007aff */
+}
+
+/* Common hover effect for all colors */
+.hover-red::after,
+.hover-blue::after,
+.hover-green::after,
+.hover-yellow::after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 1s ease;
+}
+
+/* Common hover state */
+.hover-red:hover::after,
+.hover-blue:hover::after,
+.hover-green:hover::after,
+.hover-yellow:hover::after {
+  width: 100%;
+}
+
+.gradient-text {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(to right, #FF4747FF 0%, #FF4747FF 0%, #959595 0%, #959595 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.5s ease;
+}
+
+.gradient-text:hover {
+  background: linear-gradient(to right, #FF4747FF 0%, #FF4747FF 100%, #959595 100%, #959595 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ensure the text remains sharp */
+.gradient-text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.interactive-text {
+  display: inline-flex;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0em; /* Added default letter spacing */
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .grid-container {
+    flex-direction: column;
+  }
+  
+  .greeting,
+  .main-content,
+  .company {
+    width: 100%;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.some-element {
+  font-weight: 100; /* Thin */
+  /* or */
+  font-weight: 400; /* Regular */
+  /* or */
+  font-weight: 700; /* Bold */
+  /* etc. */
+}
+
+/* Add this new style for the name span */
+.first {
+  grid-column: 2 / 3;
+}
+.second {
+  grid-column: 4 / 9; /* Start at column 4, end before column 9 (spans columns 4-8) */
+}
+
+/* Add this to your existing CSS */
+.third {
+  grid-column: 10 / 12; /* Spans columns 10-11 */
+}
+
+/* Add this new class */
+.empty-line {
+  height: 1.4em;
+  visibility: hidden;
+}
+
+/* Maintain both animations */
+.line-group {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.line-group.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.content-wrapper {
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);
+}
+
+.letter {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+  position: relative;
+}
+
+.interactive-text:hover .letter {
+  transform: translateX(var(--x, 0));
+}
+
+.fall-text {
+  display: inline-block;
+  cursor: pointer;
+  letter-spacing: -0.02em;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.fall-text .word {
+  display: inline-block;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.fall-text .letter {
+  display: inline-block;
+  transform: translateY(var(--fall-y, 0px));
+  transition: transform 0.5s ease-in, color 0.5s ease-in;
+  color: inherit;
 }
+
+.fall-text .letter:empty::before {
+  content: "\00a0";
+}
+
