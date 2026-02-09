@@ -1,275 +1,323 @@
-/* Import Pretendard from CDN */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+/* Import Manrope from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
 /* Apply the font to everything */
 * {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.App {
-  background-color: black;
-  height: 100vh;
-  padding-left: var(--page-margin);
-  padding-right: var(--page-margin);
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-}
-
-:root {
-  --spacing-unit: clamp(0.3rem, 0.5vw, 2rem);
-  --spacing-unit-half: clamp(0.15rem, 0.25vw, 1rem); /* Half of the spacing unit */
-  --page-margin: 8vw; /* Changed from clamp value to fixed 60px */
-}
-
-.grid-container {
-  display: flex;
-  width: 100%;
-  gap: var(--spacing-unit);
-}
-
-.grid-section {
-  padding: var(--spacing-unit);
-  text-align: left;
-  word-break: break-word;
-  font-size: clamp(0.96rem, 1.152vw, 1.44rem);
-  line-height: 1.4;
-}
-
-.grid-section > div {
-  min-height: 1.4em; /* Ensure consistent line height */
-  margin-bottom: var(--spacing-unit-half);
-}
-
-.grid-section > div:last-child {
-  margin-bottom: 0;
-}
-
-.blank {
-  width: 20%;
-}
-
-.main-content {
-  width: 60%; /* Changed from 60% to 50% */
-}
-
-.company {
-  width: 20%;
-}
-
-/* Color classes */
-.text-white {
-  color: white;
-  font-size: clamp(1.152rem, 1.44vw, 1.92rem);
-  font-weight: 500; /* Added medium-bold font weight */
-  letter-spacing: -0.01em;
-}
-
-.text-gray {
-  color: #787878;
-  font-weight: 300; /* Keeping the light weight for other text */
-  letter-spacing: -0.01em;
-}
-
-/* If you want even bolder, you could use: */
-/* font-weight: 600; */
-/* or */
-/* font-weight: 700; */
-
-.text-light-gray {
-  color: white;
-  cursor: pointer;
-  display: inline-block;
-  transition: color 1s ease;
-  position: relative;
-  font-weight: 400; 
-  letter-spacing: -0.01em; /* Added medium-bold font weight */
-}
-
-/* Red hover (original) */
-.hover-red::after {
-  content: "accelerate medical software devices to market";
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #FF4747FF;
-  width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: width 1s ease;
-}
-
-/* Blue hover */
-.hover-blue::after {
-  content: "future of data collection";
-  color: #3cd7d9; /* Changed from #4747FF to #3cd7d9 */
-}
-
-/* Green hover (now blue) */
-.hover-green::after {
-  content: "digital businesses";
-  color: #007aff; /* Changed from #47FF47 to #007aff */
-}
-
-/* Yellow hover (now blue) */
-.hover-yellow::after {
-  content: "complex data systems";
-  color: #007aff; /* Changed from #FFD700 to #007aff */
-}
-
-/* Common hover effect for all colors */
-.hover-red::after,
-.hover-blue::after,
-.hover-green::after,
-.hover-yellow::after {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: width 1s ease;
-}
-
-/* Common hover state */
-.hover-red:hover::after,
-.hover-blue:hover::after,
-.hover-green:hover::after,
-.hover-yellow:hover::after {
-  width: 100%;
-}
-
-.gradient-text {
-  position: relative;
-  display: inline-block;
-  background: linear-gradient(to right, #FF4747FF 0%, #FF4747FF 0%, #959595 0%, #959595 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  transition: all 0.5s ease;
-}
-
-.gradient-text:hover {
-  background: linear-gradient(to right, #FF4747FF 0%, #FF4747FF 100%, #959595 100%, #959595 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Ensure the text remains sharp */
-.gradient-text {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Link styles */
-a {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-
-.interactive-text {
-  display: inline-flex;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: 0em; /* Added default letter spacing */
-}
-
-/* Responsive layout */
-@media (max-width: 768px) {
-  .grid-container {
-    flex-direction: column;
-  }
+/* Grid background - fixed position, sits behind all content */
+.grid-background {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
   
-  .greeting,
-  .main-content,
-  .company {
-    width: 100%;
+  /* Card dimensions (scaled) */
+  --card-width: 600px;
+  /* Card scale based on scroll progress */
+  /* First view: 600px (scale 1.0), Second view: 300px (scale 0.5) */
+  /* First scroll: scale 1.0 to 0.5 (600px to 300px) */
+  --card-scale: calc(1 - var(--scroll-progress, 0) * 0.5);
+  --card-scaled-width: calc(var(--card-width) * var(--card-scale));
+  --card-scaled-height: calc(var(--card-width) * var(--card-scale));
+  
+  /* Grid size scales with scroll progress */
+  /* First view: 300px, Second view: 300px */
+  /* Grid size stays at 300px */
+  --grid-size: 300px;
+  
+  /* Opacity for transitioning between first and second view */
+  --first-opacity: calc(1 - var(--scroll-progress, 0));
+  --second-opacity: var(--scroll-progress, 0);
+  
+  /* Solid line color - hex #ffffff with opacity for solid lines */
+  /* First view lines */
+  --line-color-first: rgba(255, 255, 255, calc(0.15 * var(--first-opacity)));
+  /* Second view lines */
+  --line-color-second: rgba(255, 255, 255, calc(0.15 * var(--second-opacity)));
+  
+  background-image:
+    /* FIRST VIEW - Vertical lines (solid) */
+    /* Far left vertical line */
+    linear-gradient(to right, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* One more to the left of left line */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Left side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Right side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    
+    /* FIRST VIEW - Horizontal lines (solid) */
+    /* Top of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Bottom of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+
+    /* SECOND VIEW - Vertical lines (solid) */
+    /* Second from left */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Left side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Right side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* One more to the right of right line */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    
+    /* SECOND VIEW - Horizontal lines (solid) */
+    /* Top of screen */
+    linear-gradient(to bottom, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Top of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Additional top line aligned with CenterCard top */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Bottom of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Additional bottom line aligned with CenterCard bottom */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Bottom of screen */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px);
+  
+  background-size:
+    /* FIRST VIEW - Vertical */
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    /* FIRST VIEW - Horizontal */
+    100% 1px,
+    100% 1px,
+    /* SECOND VIEW - Vertical */
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    /* SECOND VIEW - Horizontal */
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px;
+  
+  background-position:
+    /* FIRST VIEW - Vertical (progress 0) */
+    0% 0,
+    calc(50% - var(--card-scaled-width) / 2 - var(--grid-size)) 0,
+    calc(50% - var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2) 0,
+    /* FIRST VIEW - Horizontal */
+    0 calc(50% - var(--card-scaled-height) / 2),
+    0 calc(50% + var(--card-scaled-height) / 2),
+    /* SECOND VIEW - Vertical (progress 1) */
+    calc(50% - var(--card-scaled-width) * 1 - var(--card-scaled-width) / 2) 0,
+    calc(50% - var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2 + var(--card-scaled-width)) 0,
+    /* SECOND VIEW - Horizontal */
+    0 0,
+    0 calc(50% - var(--card-scaled-height) / 2),
+    0 calc(50% - var(--card-scaled-height) / 2 -  var(--card-scaled-height) ), /* Additional top line at CenterCard top */
+    0 calc(50% + var(--card-scaled-height) / 2 + var(--card-scaled-height) ),
+    0 calc(50% + var(--card-scaled-height) / 2), /* Additional bottom line at CenterCard bottom */
+    0 100%;
+  
+  background-repeat: no-repeat;
+}
+
+/* Hide CSS grid background - SVG handles all lines now */
+.grid-background {
+  opacity: 0;
+  display: none;
+}
+
+/* SVG Grid Lines - Loading Animation */
+.grid-lines-svg-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.grid-lines-svg-loading.fade-out {
+  animation: fadeOutSvg 0.5s ease-out forwards;
+}
+
+/* SVG Grid Lines - Static Grid (after loading) */
+.grid-lines-svg-static {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.grid-lines-svg-static.visible {
+  opacity: 1;
+}
+
+/* SVG Grid Lines Animation */
+.grid-lines-svg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* Fade out SVG overlay after loading completes */
+.grid-lines-svg.fade-out {
+  animation: fadeOutSvg 0.5s ease-out forwards;
+}
+
+@keyframes fadeOutSvg {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
-.some-element {
-  font-weight: 100; /* Thin */
-  /* or */
-  font-weight: 400; /* Regular */
-  /* or */
-  font-weight: 700; /* Bold */
-  /* etc. */
+/* Line drawing animation */
+.grid-line-horizontal {
+  animation: drawLineHorizontal 1.2s cubic-bezier(0.42, 0, 0.58, 1) forwards;
 }
 
-/* Add this new style for the name span */
-.first {
-  grid-column: 2 / 3;
-}
-.second {
-  grid-column: 4 / 9; /* Start at column 4, end before column 9 (spans columns 4-8) */
+.grid-line-vertical {
+  animation: drawLineVertical 0.3s cubic-bezier(0.42, 0, 0.58, 1) forwards;
 }
 
-/* Add this to your existing CSS */
-.third {
-  grid-column: 10 / 12; /* Spans columns 10-11 */
+@keyframes drawLineHorizontal {
+  from {
+    stroke-dashoffset: var(--line-length, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
-/* Add this new class */
-.empty-line {
-  height: 1.4em;
+@keyframes drawLineVertical {
+  from {
+    stroke-dashoffset: var(--line-length, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Center card wrapper - ensures card stays centered in viewport during scale */
+.center-card-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* Combine translate for centering with scale from scroll progress */
+  /* First view: 600px (scale 1.0), Second view: 300px (scale 0.5) */
+  /* First scroll: scale 1.0 to 0.5 (600px to 300px) */
+  --scale: calc(1 - var(--scroll-progress, 0) * 0.5);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+  z-index: 2;
+}
+
+/* Hide CenterCard during loading animation */
+.center-card-wrapper.loading {
+  opacity: 0;
   visibility: hidden;
 }
 
-/* Maintain both animations */
-.line-group {
+/* Show CenterCard with fade-in after loading completes */
+.center-card-wrapper.loaded {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  visibility: visible;
+  animation: fadeInCenterCard 0.6s ease-out forwards;
 }
 
-.line-group.visible {
-  opacity: 1;
-  transform: translateY(0);
+/* Fade-in animation for CenterCard */
+@keyframes fadeInCenterCard {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.content-wrapper {
-  position: sticky;
-  top: 50vh;
-  transform: translateY(-50%);
-}
-
-.letter {
-  display: inline-block;
-  transition: transform 0.3s ease, color 0.3s ease;
+/* App root container - ensures content sits above grid */
+.app-root {
   position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
-.interactive-text:hover .letter {
-  transform: translateX(var(--x, 0));
+/* Pinned section - stays fixed in viewport during scroll */
+.pinned-section {
+  position: relative;
+  height: 140vh; /* 100vh viewport + 40vh scroll range */
+  /* This creates the scroll space for the pinned animation */
 }
 
-.fall-text {
-  display: inline-block;
-  cursor: pointer;
-  letter-spacing: -0.02em;
-  color: white;
+/* Pinned content - stays in view while scrolling */
+.pinned-content {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
-.fall-text .word {
-  display: inline-block;
+/* Grid content overlay - aligns with exact grid boxes in second view */
+.grid-content-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4; /* Below grid lines (z-index: 5), below center card (z-index: 2, but center-card-wrapper is fixed) */
+  display: grid;
+  pointer-events: none;
+  
+  /* Variables set from JavaScript to match SVG line calculations */
+  --card-scaled-width: 300px;
+  --card-scaled-height: 300px;
+  --grid-size: 300px;
+  --second-opacity: var(--scroll-progress, 0);
+  
+  /* Grid structure for second view: uniform grid using --card-scaled-width */
+  /* 5 columns × 3 rows = 15 boxes (excluding center) */
+  grid-template-columns: var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width);
+  grid-template-rows: var(--card-scaled-height) var(--card-scaled-height) var(--card-scaled-height);
+  gap: 0;
+  
+  /* Show only in second scroll */
+  opacity: var(--second-opacity);
+  transition: opacity 0.1s ease-out;
 }
 
-.fall-text .letter {
-  display: inline-block;
-  transform: translateY(var(--fall-y, 0px));
-  transition: transform 0.5s ease-in, color 0.5s ease-in;
-  color: inherit;
+.grid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto; /* Allow interaction with content */
 }
 
-.fall-text .letter:empty::before {
-  content: "\00a0";
+/* Grid cell content - centered within each cell */
+.grid-cell-content {
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add your content styles here */
 }
-

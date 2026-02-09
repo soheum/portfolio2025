@@ -1,0 +1,332 @@
+.box9-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-left: 20px;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.budget-percentage-counter {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: 300;
+  color: #fff;
+  line-height: 1;
+  transform-origin: center;
+}
+
+/* On second view when not hovered: subtle 5% scale pulse to emphasize link */
+@keyframes box9-emphasis-pulse {
+  0%, 100% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+}
+
+.box9-container.idle-pulse .budget-percentage-counter {
+  animation: box9-emphasis-pulse 2s ease-in-out infinite;
+}
+
+/* Scoped so Box2's global pink doesn't override: only this box's arrow is yellow */
+.box9-container .arrow-icon-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #FAD206 !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.arrow-icon {
+  width: 24px;
+  height: 24px;
+  filter: invert(1) brightness(0);
+}
+
+.box9-container:hover .arrow-icon-wrapper {
+  opacity: 1;
+}
+
+.budget-chart {
+  position: absolute;
+  bottom: 0;
+  right: 15px;
+  width: clamp(160px, 45%, 200px);
+  height: 80%;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+}
+
+.budget-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0 12px;
+  position: relative;
+  gap: 8px;
+  flex-shrink: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height 0.8s ease-out, opacity 0.6s ease-out, padding 0.8s ease-out, border-width 0.8s ease-out;
+}
+
+.budget-section.debt-payment {
+  border: 0px solid #F4D03F;
+  background-color: rgba(244, 208, 63, 0.15);
+  order: 1;
+}
+
+.budget-section.emergency-savings {
+  border: 0px solid #F9E79F;
+  background-color: rgba(249, 231, 159, 0.15);
+  order: 2;
+}
+
+.budget-section.fixed-expense {
+  border: 0px solid #FCF3CF;
+  background-color: rgba(252, 243, 207, 0.15);
+  order: 3;
+}
+
+/* Stagger animations with delays - animate height to create stacking effect */
+/* Heights reflect percentages: 30%, 30%, 40% of 200px total = 60px, 60px, 80px */
+/* 0.5s pause after each section completes */
+.box9-container.hovered .budget-section.fixed-expense {
+  height: 60px;
+  padding: 12px 12px;
+  border-width: 1px;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.box9-container.hovered .budget-section.emergency-savings {
+  height: 60px;
+  padding: 12px 12px;
+  border-width: 1px;
+  opacity: 1;
+  transition-delay: 1.3s; /* 0.8s animation + 0.5s pause */
+}
+
+.box9-container.hovered .budget-section.debt-payment {
+  height: 80px;
+  padding: 12px 12px;
+  border-width: 1px;
+  opacity: 1;
+  transition-delay: 2.6s; /* 1.3s + 0.8s animation + 0.5s pause */
+}
+
+.budget-label {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+  color: white;
+  line-height: 0.9;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+.budget-percentage {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 0.9;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+/* Text fade-in with staggered delays */
+.box9-container.hovered .budget-section.fixed-expense .budget-label,
+.box9-container.hovered .budget-section.fixed-expense .budget-percentage {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
+
+.box9-container.hovered .budget-section.emergency-savings .budget-label,
+.box9-container.hovered .budget-section.emergency-savings .budget-percentage {
+  opacity: 1;
+  transition-delay: 1.6s; /* 1.3s section delay + 0.3s text delay */
+}
+
+.box9-container.hovered .budget-section.debt-payment .budget-label,
+.box9-container.hovered .budget-section.debt-payment .budget-percentage {
+  opacity: 1;
+  transition-delay: 2.9s; /* 2.6s section delay + 0.3s text delay */
+}
+
+/* PDF Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #000;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1001;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #333;
+}
+
+.pdf-container {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.pdf-loading,
+.pdf-error {
+  padding: 40px;
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  color: #666;
+}
+
+.pdf-error {
+  color: #d32f2f;
+}
+
+.pdf-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pdf-nav-button {
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.pdf-nav-button:hover:not(:disabled) {
+  background: #333;
+}
+
+.pdf-nav-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pdf-page-info {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    height: 95%;
+  }
+
+  .pdf-container {
+    padding: 10px;
+  }
+
+  .pdf-controls {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pdf-nav-button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+}

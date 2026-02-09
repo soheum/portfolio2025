@@ -1,0 +1,693 @@
+.project-details-container {
+  min-height: 100vh;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 20px 32px;
+  letter-spacing: -0.02em;
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  height: 100vh;
+  cursor: default;
+}
+
+/* Custom text cursor (vertical line #ff3737) only on this page when hovering over text */
+.project-details-container p,
+.project-details-container li,
+.project-details-container h1,
+.project-details-container h2,
+.project-details-container h3,
+.project-details-container h4,
+.project-details-container h5,
+.project-details-container h6,
+.project-details-container td,
+.project-details-container th,
+.project-details-container label,
+.project-details-container blockquote,
+.project-details-container figcaption {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="24" viewBox="0 0 2 24"><rect width="2" height="24" fill="%23ff3737"/></svg>') 1 0, text;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Column 1: Side Navigation */
+.side-navigation {
+  grid-column: 1 / 2;
+  position: sticky;
+  top: 20px; /* Match container padding so sticky nav doesn’t overlap top padding */
+  height: fit-content;
+  padding-top: 20px; /* Same as text-content and image-content so all columns align */
+}
+
+.back-button {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #949494;
+  font-size: 16px;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  cursor: pointer;
+  padding-bottom: 6px;
+  transition: all 0.2s ease;
+  text-align: left;
+  letter-spacing: -0.02em;
+}
+
+.back-button:hover {
+  color: #ff3737;
+}
+
+.nav-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  cursor: pointer;
+  color: #ACACAC;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  letter-spacing: -0.02em;
+  padding: 0.5px 0;
+}
+
+.nav-item:hover {
+  color: #ffffff;
+}
+
+.nav-item.active {
+  color: #ff3737;
+  font-weight: 500;
+}
+
+/* Sub-navigation styles */
+.sub-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding-left: 12px;
+  border-left: 1px solid #333333;
+}
+
+.sub-nav-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  cursor: pointer;
+  color: #767676;
+  transition: all 0.2s ease;
+  letter-spacing: -0.02em;
+  padding: 4px 0;
+}
+
+.sub-nav-item:hover {
+  color: #ffffff;
+}
+
+.sub-nav-item.active {
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Columns 2-8: Text Content */
+.text-content {
+  grid-column: 2 / 8;
+  padding-top: 40px; /* Match side-navigation so both columns align at the same vertical position */
+}
+
+/* About Hero Section - Full viewport */
+.about-hero {
+  min-height: 90vh;
+  display: flex;
+  /* padding-bottom: 100px; */
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0;
+  scroll-margin-top: 50px; /* Match text-content padding so scroll doesn't hide the top padding */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.hero-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-header h1 {
+  margin-bottom: 0;
+}
+
+.hero-header .subtitle {
+  margin-bottom: 0;
+}
+
+.text-content h1 {
+  font-size: 2em;
+  font-weight: 400;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  /* margin-bottom: 12px; */
+  color: #ffffff;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.text-content .subtitle {
+  font-size: 1em;
+  font-weight: 300;
+  width: 50%;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #cacaca;
+  letter-spacing: -0.01em;
+  line-height: 1.5em;
+}
+
+.text-content .subtitle strong {
+  font-weight: 500;
+  color: #ffffff;
+}
+.text-content .subtitle_dates {
+  font-size: 1em;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #cacaca;
+  letter-spacing: -0.01em;
+  line-height: 1.5em;
+}
+.content-section {
+  margin-bottom: 120px;
+  scroll-margin-top: 110px;
+  width: 50%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.content-section:last-child {
+  margin-bottom: 48px;
+}
+
+.content-section h2 {
+  font-size: 1.25em;
+  font-weight: 500;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #ffffff;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+
+.text-content p {
+  font-size: 1em;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  line-height: 1.5em;
+  color: #cacaca;
+  margin-bottom: 0.75em;
+  letter-spacing: -0.01em;
+  max-width: 80%;
+}
+
+.text-content p strong {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.text-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.text-content li {
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  line-height: 1.7;
+  color: #ffffff;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.text-content li strong {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Interactive outcome list */
+.outcome-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.outcome-list li {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="24" viewBox="0 0 2 24"><rect width="2" height="24" fill="%23ff3737"/></svg>') 1 0, text;
+  padding-top: 8px;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5em;
+  letter-spacing: -0.01em;
+  color: #cacaca;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  border-left: 1px solid transparent;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+}
+
+/* Only the first strong (outcome title) is block; later strongs stay inline to avoid line breaks */
+.outcome-list li strong {
+  color: #ffffff;
+  font-size: 1em;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  font-weight: 600;
+}
+
+.outcome-list li strong:first-of-type {
+  display: block;
+}
+
+/* Pain points horizontal grid */
+.pain-points-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+  /* Break out of content-section 50% width to use full text-content width */
+  width: calc(100% / 0.5);
+  max-width: none;
+}
+
+/* Key Design Decisions: dedicated 2-column grid with larger horizontal gap */
+.key-design-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 12px; /* horizontal space between columns */
+  row-gap: 20px;    /* vertical space between rows */
+  margin-top: 24px;
+  width: calc(100% / 0.5);
+  max-width: none;
+}
+
+/* Key Design section: more height and less aggressive snap so it feels less clingy when scrolling */
+#key-design.content-section {
+  padding-top: 40px;
+  padding-bottom: 200px;
+  scroll-snap-stop: normal; /* allow scrolling past without forcing a stop */
+}
+
+/* Extra padding after Outcome (Admin workspace) so scroll feels less bouncy */
+#outcome.content-section {
+  padding-bottom: 100px;
+}
+
+/* Extra padding after Process so scroll feels less bouncy */
+#design-process.content-section {
+  padding-bottom: 160px;
+}
+
+/* Design process: 3-column grid */
+.design-process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+  width: calc(100% / 0.5);
+  max-width: none;
+}
+
+.pain-point-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Videos/images inside pain-point-card grids: natural fit, no breakout */
+.pain-point-card .grid-image,
+.pain-point-card .grid-image video,
+.pain-point-card .grid-image .about-hero-image {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+.pain-point-card .grid-image video {
+  height: auto;
+  object-fit: cover;
+}
+
+.pain-point-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  margin-bottom: 8px;
+}
+
+.pain-point-image .image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #2a2a2a;
+  border: 2px dashed #4a4a4a;
+  /* border-radius: 8px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pain-point-title {
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #ffffff;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-top: 12px;
+  /* margin: 0; */
+  width: 100%;
+  min-width: 0;
+}
+
+/* Same text style as .outcome-list li; .text-content .pain-point-description wins over .text-content p */
+.text-content .pain-point-description,
+.pain-point-description {
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5em;
+  letter-spacing: -0.01em;
+  color: #cacaca;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  width: 100%;
+  min-width: 0; /* Allow flex item to shrink so 100% = card width and text wraps */
+  margin: 0;
+}
+
+/* Columns 4-5: Image */
+.image-content {
+  grid-column: 4 / 6;
+  position: sticky;
+  top: 20px; /* Match container padding so sticky image doesn’t overlap top padding */
+  height: fit-content;
+  padding-top: 20px; /* Same as side-navigation and text-content so all columns align */
+  transition: opacity 0.3s ease;
+}
+
+.about-hero-image {
+  width: 100%;
+  display: block;
+  /* border-radius: 8px; */
+  object-fit: cover;
+}
+
+.image-content.desktop-sticky {
+  display: none;
+}
+
+.image-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background-color: #2a2a2a;
+  border: 2px dashed #4a4a4a;
+  /* border-radius: 8px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.image-placeholder p {
+  font-size: 18px;
+  font-weight: 500;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #ACACAC;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.image-placeholder span {
+  font-size: 14px;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  color: #767676;
+  letter-spacing: -0.02em;
+}
+
+
+/* Hide mobile-only images on desktop */
+.section-image.mobile-only {
+  display: none;
+}
+
+/* Image width variants within content area */
+.section-image {
+  width: 100%;
+  margin-top: 24px;
+  margin-bottom: 48px;
+  display: block;
+}
+
+.grid-image{
+  width: 100%;
+  display: block;
+}
+
+/* Video inside outcome-list: break out to full content width (same as .section-image) */
+.outcome-list .grid-image {
+  margin-left: 0;
+  margin-right: 0;
+  width: calc(100% / 0.6);
+  max-width: none;
+}
+
+.outcome-list .grid-image video,
+.outcome-list .grid-image .about-hero-image {
+  width: 100%;
+  max-width: none;
+  display: block;
+  object-fit: cover;
+  object-position: left center;
+  height: auto;
+}
+
+/* Images inside outcome-list need to break out to full content width */
+.outcome-list .section-image {
+  margin-left: 0;
+  margin-right: 0;
+  /* Break out of content-section 50% width constraint */
+  width: calc(100% / 0.5); /* Double the width to escape 50% parent */
+  max-width: none;
+}
+
+.outcome-list .section-image.image-full {
+  max-width: none; /* Override to be truly full width of text-content */
+}
+
+.outcome-list .section-image.image-large {
+  max-width: 165%;
+}
+
+.outcome-list .section-image.image-small {
+  max-width: 50%;
+}
+
+/* 3 columns out of 6 = 50% width */
+.section-image.image-small {
+  max-width: 50%;
+}
+
+/* 5 columns out of 6 = ~83% width */
+.section-image.image-large {
+  max-width: 83.33%;
+}
+
+/* 6 columns = full width */
+.section-image.image-full {
+  max-width: 100%;
+}
+
+.section-with-image {
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .project-grid {
+    grid-template-columns: 200px repeat(6, 1fr);
+    gap: 12px;
+  }
+
+  .side-navigation {
+    grid-column: 1 / 2;
+  }
+
+  .text-content {
+    grid-column: 2 / 8;
+  }
+}
+
+/* Mobile Layout */
+@media (max-width: 900px) {
+  .project-details-container {
+    padding: 0;
+    padding-top: 80px;
+  }
+
+  /* Hide sub-navigation on mobile */
+  .sub-nav {
+    display: none;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Fixed horizontal navigation bar */
+  .side-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    background-color: #000000;
+    border-bottom: 1px solid #333333;
+    z-index: 100;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    grid-column: 1 / 2;
+  }
+
+  /* Hide scrollbar completely */
+  .side-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .side-navigation {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .back-button {
+    width: auto;
+    white-space: nowrap;
+    padding: 8px 16px 8px 0;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .nav-sections {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .nav-item {
+    width: auto;
+    white-space: nowrap;
+    padding: 0px 4px;
+    flex-shrink: 0;
+  }
+
+  /* Content takes full width */
+  .text-content {
+    grid-column: 1 / 2;
+    /* padding: 40px 20px; */
+  }
+
+  /* All images full width on mobile */
+  .section-image {
+    max-width: 100%;
+    margin-top: 32px;
+    margin-bottom: 40px;
+  }
+
+  .text-content h1 {
+    font-size: 36px;
+  }
+
+  .text-content .subtitle {
+    font-size: 20px;
+  }
+
+  .about-hero {
+    min-height: auto;
+    padding-bottom: 40px;
+  }
+
+  /* Each section followed by its image */
+  .content-section {
+    margin-bottom: 0;
+    min-height: auto;
+  }
+
+  .section-with-image {
+    margin-bottom: 60px;
+  }
+
+  .about-hero .hero-header h1 {
+    font-size: 32px;
+  }
+
+  .about-hero .subtitle {
+    font-size: 18px;
+  }
+
+  .about-mobile-image {
+    margin-top: 40px;
+  }
+
+  .pain-points-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .key-design-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .design-process-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    width: 100%;
+  }
+  
+  .pain-point-image {
+    margin-bottom: 12px;
+  }
+}

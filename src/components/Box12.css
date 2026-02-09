@@ -1,0 +1,153 @@
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 300px;
+  min-height: 300px;
+  background: transparent;
+  overflow: visible;
+  display: block;
+}
+
+.card .hover-text {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #8d8d8d;
+  font-size: 14px;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.card:hover .hover-text {
+  opacity: 1;
+  visibility: visible;
+}
+
+.value {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.18s ease-out;
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 300;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+}
+
+.value.bump {
+  transform: translateX(-50%) scale(1.08);
+}
+
+#graph {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 300px;
+  min-height: 300px;
+  bottom: auto;
+}
+
+/* area fill - single solid/gradient */
+#area {
+  fill: url(#area-gradient);
+  stroke: none;
+}
+
+/* background vertical lines - full height, behind graph lines */
+#vertical-lines-background line {
+  stroke: url(#vertical-lines-gradient);
+  stroke-width: 0.05;
+}
+
+/* vertical lines that match graph height */
+#vertical-lines line {
+  stroke: url(#vertical-lines-gradient);
+  stroke-width: 0.15;
+}
+
+/* left line - gray by default, orange when hovering and dragging */
+#line-left {
+  fill: none;
+  stroke: #838080;
+  stroke-width: 0.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s ease;
+}
+
+.card.dragging #line-left {
+  stroke: #FF820C;
+}
+
+/* right line - dark blue */
+#line-right {
+  fill: none;
+  stroke: #34200D;
+  stroke-width: 0.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* white divider line */
+#divider {
+  position: absolute;
+  top: 20%;
+  bottom: 0;
+  width: 0.3px;
+  background: #fff;
+  left: 50%;
+  pointer-events: none;
+}
+
+/* draggable circle */
+#intersection-circle {
+  pointer-events: all;
+  r: 0.5px;
+}
+
+#intersection-circle:hover {
+  cursor: pointer;
+  r: 0.7px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .card {
+    min-width: 100%;
+    min-height: 180px;
+  }
+
+  .hover-text {
+    font-size: 12px;
+  }
+
+  .value {
+    font-size: 14px;
+  }
+
+  #graph {
+    /* Simplify graph rendering on mobile */
+    transform: scale(0.9);
+  }
+}

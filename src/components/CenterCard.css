@@ -1,0 +1,181 @@
+.center-card {
+  width: 600px;
+  height: 600px;
+  background: #000000;
+  opacity: 1;
+  padding: 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  /* Scale is now handled by the wrapper, so no transform needed here */
+  /* Sync name/text/typed reveal to line start */
+  --reveal-duration: var(--center-reveal-duration, 1.8s);
+  --reveal-delay: var(--center-reveal-delay, 0s);
+}
+
+.center-card__name {
+  /* Scroll-linked font size: 32px to 24px */
+  font-size: calc(32px - var(--scroll-progress, 0) * 8px);
+  /* Scroll-linked letter spacing: -0.02em to -0.01em */
+  letter-spacing: calc(-0.02em + var(--scroll-progress, 0) * 0.01em);
+  margin-bottom: 16px;
+  color: #fff;
+  font-weight: 400;
+  transition: font-size 0.1s ease-out, letter-spacing 0.1s ease-out, opacity 0.1s ease-out, max-height 0.1s ease-out;
+  /* Hide in second scroll (fade out from progress 0 to 0.5, then stay hidden) */
+  opacity: calc(1 - clamp(0, var(--scroll-progress, 0) * 2, 1));
+  /* Collapse height when hidden */
+  max-height: calc(100px * (1 - clamp(0, var(--scroll-progress, 0) * 2, 1)));
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: baseline;
+}
+
+.center-card__name-text {
+  display: inline;
+}
+
+.center-card__reveal {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  will-change: opacity, transform, filter;
+}
+
+.center-card--hidden .center-card__reveal {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+.center-card--reveal .center-card__reveal--name {
+  animation: premiumReveal var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay);
+}
+
+.center-card--reveal .center-card__reveal--text {
+  animation: premiumReveal var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay);
+}
+
+@keyframes premiumReveal {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.center-card__text {
+  /* Scroll-linked font size: 18px to 32px */
+  font-size: calc(18px + var(--scroll-progress, 0) * 14px);
+  /* Scroll-linked line height: 1.5 to 1.4 */
+  line-height: calc(1.5 - var(--scroll-progress, 0) * 0.1);
+  /* Scroll-linked letter spacing: -0.01em to 0 */
+  letter-spacing: calc(-0.01em + var(--scroll-progress, 0) * 0.01em);
+  /* Scroll-linked color: #ccc (rgb 204,204,204) to #aaa (rgb 170,170,170) */
+  --text-color-r: calc(204 - var(--scroll-progress, 0) * 34);
+  --text-color-g: calc(204 - var(--scroll-progress, 0) * 34);
+  --text-color-b: calc(204 - var(--scroll-progress, 0) * 34);
+  color: var(--center-text-color, rgb(var(--text-color-r), var(--text-color-g), var(--text-color-b)));
+  margin: 0;
+  transition: font-size 0.1s ease-out, line-height 0.1s ease-out, letter-spacing 0.1s ease-out, color 0.1s ease-out;
+  display: block;
+}
+
+.center-card__text-line {
+  display: block;
+}
+
+.center-card__text-line + .center-card__text-line {
+  margin-top: 8px;
+}
+
+.center-card__typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  vertical-align: baseline;
+}
+
+.center-card--reveal .center-card__typed {
+  animation: typeIn var(--reveal-duration) steps(var(--type-characters, 20), end)
+    var(--reveal-delay) forwards;
+}
+
+@keyframes typeIn {
+  from {
+    width: 0;
+  }
+  to {
+    width: calc(var(--type-characters, 20) * 1ch);
+  }
+}
+
+.center-card__footer {
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.center-card__links {
+  margin: 0;
+  font-size: 28px;
+  transition: opacity 0.1s ease-out, max-height 0.1s ease-out;
+  /* Show only in second scroll (fade in from progress 0.5 to 1) */
+  opacity: calc(clamp(0, (var(--scroll-progress, 0) - 0.5) * 2, 1));
+  /* Expand height when visible */
+  max-height: calc(100px * clamp(0, (var(--scroll-progress, 0) - 0.5) * 2, 1));
+  overflow: hidden;
+}
+
+.center-card__scroll-hint {
+  margin: 12px 0 0;
+  font-size: 16px;
+  color: #969696;
+  opacity: 0.8;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  --scroll-hint-chars: 11;
+}
+
+.center-card--reveal .center-card__scroll-hint {
+  opacity: 0;
+  animation:
+    scrollHintReveal 0.6s ease-out forwards,
+    scrollHintType 2.8s steps(var(--scroll-hint-chars), end) infinite;
+  animation-delay:
+    calc(var(--center-reveal-delay, 0s) + var(--reveal-duration, 0.5s) + 0.2s),
+    calc(var(--center-reveal-delay, 0s) + var(--reveal-duration, 0.5s) + 0.3s);
+}
+
+@keyframes scrollHintReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes scrollHintType {
+  from {
+    width: 0;
+  }
+  28.6% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+  100% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+}
+
+.center-card__link {
+  color: #fff;
+  text-decoration: none;
+}
