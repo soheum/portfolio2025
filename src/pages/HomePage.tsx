@@ -304,6 +304,10 @@ function HomePage() {
                 style={{
                   '--scroll-progress': scrollProgress,
                   '--center-reveal-delay': '0.7s',
+                  '--center-name-opacity': 1 - Math.min(1, Math.max(0, scrollProgress * 2)),
+                  '--center-name-max-height': `${100 * (1 - Math.min(1, Math.max(0, scrollProgress * 2)))}px`,
+                  '--center-links-opacity': Math.min(1, Math.max(0, (scrollProgress - 0.5) * 2)),
+                  '--center-links-max-height': `${100 * Math.min(1, Math.max(0, (scrollProgress - 0.5) * 2))}px`,
                 } as React.CSSProperties}
               >
                 <CenterCard
@@ -321,6 +325,10 @@ function HomePage() {
                   '--scroll-progress': scrollProgress,
                   '--center-reveal-delay': '0s',
                   '--center-text-color': '#ffffff',
+                  '--center-name-opacity': 1 - Math.min(1, Math.max(0, scrollProgress * 2)),
+                  '--center-name-max-height': `${100 * (1 - Math.min(1, Math.max(0, scrollProgress * 2)))}px`,
+                  '--center-links-opacity': Math.min(1, Math.max(0, (scrollProgress - 0.5) * 2)),
+                  '--center-links-max-height': `${100 * Math.min(1, Math.max(0, (scrollProgress - 0.5) * 2))}px`,
                 } as React.CSSProperties}
               >
                 <CenterCard

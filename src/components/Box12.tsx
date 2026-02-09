@@ -242,13 +242,14 @@ const Box12: React.FC<Box12Props> = ({ progress }) => {
     updateDragLinePosition(t);
   }
 
-  // Initialize
+  // Initialize (intentionally run once on mount)
   useEffect(() => {
     recomputeRange();
     updatePaths();
     const initialIndex = Math.floor((n() - 1) / 2);
     setCurrentIndex(initialIndex);
     updateUI(initialIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update when data changes
@@ -256,6 +257,7 @@ const Box12: React.FC<Box12Props> = ({ progress }) => {
     recomputeRange();
     updatePaths();
     updateUI(currentIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, currentIndex]);
 
   // Mouse event handlers
@@ -334,6 +336,7 @@ const Box12: React.FC<Box12Props> = ({ progress }) => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging, currentIndex, data]);
 
   // Calculate fade-in opacity based on scroll progress

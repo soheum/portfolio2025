@@ -85,6 +85,7 @@ const Box9: React.FC<Box9Props> = ({ progress }) => {
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered]);
 
   // On second view, when not hovered: pulse the percentage to emphasize link

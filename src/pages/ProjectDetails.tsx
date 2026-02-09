@@ -88,6 +88,7 @@ const ProjectDetails: React.FC = () => {
         observerRef.current.disconnect();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Preload rotating images so they're in cache when we switch (reduces flash)

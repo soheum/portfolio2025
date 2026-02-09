@@ -22,10 +22,9 @@
   color: #fff;
   font-weight: 400;
   transition: font-size 0.1s ease-out, letter-spacing 0.1s ease-out, opacity 0.1s ease-out, max-height 0.1s ease-out;
-  /* Hide in second scroll (fade out from progress 0 to 0.5, then stay hidden) */
-  opacity: calc(1 - clamp(0, var(--scroll-progress, 0) * 2, 1));
-  /* Collapse height when hidden */
-  max-height: calc(100px * (1 - clamp(0, var(--scroll-progress, 0) * 2, 1)));
+  /* Set from JS (--center-name-opacity, --center-name-max-height) to avoid postcss-calc parse errors */
+  opacity: var(--center-name-opacity, 1);
+  max-height: var(--center-name-max-height, 100px);
   overflow: hidden;
   pointer-events: none;
   display: flex;
@@ -125,10 +124,9 @@
   margin: 0;
   font-size: 28px;
   transition: opacity 0.1s ease-out, max-height 0.1s ease-out;
-  /* Show only in second scroll (fade in from progress 0.5 to 1) */
-  opacity: calc(clamp(0, (var(--scroll-progress, 0) - 0.5) * 2, 1));
-  /* Expand height when visible */
-  max-height: calc(100px * clamp(0, (var(--scroll-progress, 0) - 0.5) * 2, 1));
+  /* Set from JS (--center-links-opacity, --center-links-max-height) to avoid postcss-calc parse errors */
+  opacity: var(--center-links-opacity, 0);
+  max-height: var(--center-links-max-height, 0);
   overflow: hidden;
 }
 
