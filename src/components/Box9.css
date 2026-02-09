@@ -7,9 +7,25 @@
   position: relative;
   padding-left: 20px;
   padding-right: 20px;
-  padding-left: 20px;
   gap: 20px;
   cursor: pointer;
+}
+
+/* Rectangular outward feather: semi-transparent white on each side fading outward */
+.box9-container::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  background-size: 100% 24px, 100% 24px, 24px 100%, 24px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
 }
 
 .budget-percentage-counter {
@@ -26,15 +42,15 @@
 
 /* On second view when not hovered: subtle 5% scale pulse to emphasize link */
 @keyframes box9-emphasis-pulse {
-  0%, 100% { transform: scale(0.95); }
-  50% { transform: scale(1.05); }
+  0%, 100% { transform: scale(0.98); }
+  50% { transform: scale(1.008); }
 }
 
 .box9-container.idle-pulse .budget-percentage-counter {
   animation: box9-emphasis-pulse 2s ease-in-out infinite;
 }
 
-/* Scoped so Box2's global pink doesn't override: only this box's arrow is yellow */
+/* Scoped so Box2's global pink doesn't override: only this box's arrow is yellow. Arrow always visible. */
 .box9-container .arrow-icon-wrapper {
   position: absolute;
   top: 20px;
@@ -46,7 +62,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.3s ease;
 }
 
@@ -56,9 +72,7 @@
   filter: invert(1) brightness(0);
 }
 
-.box9-container:hover .arrow-icon-wrapper {
-  opacity: 1;
-}
+/* Arrow is always visible; no hover needed */
 
 .budget-chart {
   position: absolute;

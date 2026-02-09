@@ -11,7 +11,25 @@
   cursor: pointer;
 }
 
+/* Rectangular outward feather: semi-transparent white on each side fading outward */
+.box2-container::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  background-size: 100% 24px, 100% 24px, 24px 100%, 24px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+
 /* Scoped to Box2 only so Box9 can use yellow; this one stays pink */
+/* Arrow always visible (was opacity: 0, shown only on hover) */
 .box2-container .arrow-icon-wrapper {
   position: absolute;
   top: 20px;
@@ -23,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.3s ease;
 }
 
@@ -38,9 +56,7 @@
   filter: none;
 }
 
-.box2-container:hover .arrow-icon-wrapper {
-  opacity: 1;
-}
+/* Arrow is always visible; no hover needed */
 
 .file-stack {
   position: relative;
@@ -122,8 +138,8 @@
 
 /* On second view, when not hovered: subtle 5% scale pulse on the entire file stack */
 @keyframes box2-emphasis-pulse {
-  0%, 100% { transform: scale(0.95); }
-  50% { transform: scale(1.005); }
+  0%, 100% { transform: scale(0.99); }
+  50% { transform: scale(1.002); }
 }
 
 .box2-container.second-view:not(:hover) .file-stack {

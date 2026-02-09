@@ -54,7 +54,7 @@ const CenterCard: React.FC<CenterCardProps> = ({ text, startReveal, typedSegment
       <div className="center-card__footer">
         <p className="center-card__links">
           <a href="https://www.linkedin.com/in/so-heum-hwang/" className="center-card__link" target="_blank" rel="noopener noreferrer">LinkedIn</a> /{' '}
-          {/* <a href="#" className="center-card__link">CV</a> /{' '} */}
+          <a href="/files/Soheum_CV.pdf" className="center-card__link" target="_blank" rel="noopener noreferrer">CV</a> /{' '}
           <a href="mailto:sohheum@gmail.com" className="center-card__link">Email</a>
         </p>
         {scrollHint ? (

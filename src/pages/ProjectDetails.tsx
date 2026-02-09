@@ -14,6 +14,10 @@ const ProjectDetails: React.FC = () => {
   const [rotatingImageIndex2, setRotatingImageIndex2] = useState(0);
   const [rotatingImageIndex3, setRotatingImageIndex3] = useState(0);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const challengeVideoRef = useRef<HTMLVideoElement | null>(null);
+  const challenge1VideoRef = useRef<HTMLVideoElement | null>(null);
+  const challenge4VideoRef = useRef<HTMLVideoElement | null>(null);
+  const coverVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const handleBack = () => {
     navigate('/');
@@ -100,30 +104,6 @@ const ProjectDetails: React.FC = () => {
     });
   }, []);
 
-  // Rotate Customer portal image every 1 second (01-1 → 01-4)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingImageIndex((i) => (i + 1) % ROTATING_IMAGES.length);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Rotate Assessor workspace image (02-4 → 02-6)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingImageIndex2((i) => (i + 1) % ROTATING_IMAGES_2.length);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Rotate Admin workspace image (03-1 → 03-3)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingImageIndex3((i) => (i + 1) % ROTATING_IMAGES_3.length);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
-
   // Auto-scroll navigation to show active item on mobile
   useEffect(() => {
     const activeNavItem = document.querySelector('.nav-item.active');
@@ -195,8 +175,29 @@ const ProjectDetails: React.FC = () => {
               </p> */}
             </div>
 
-            <div className="section-image image-full about-mobile-image">
-              <img src="/img/Scarlet/Intro.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+            <div
+              className="section-image image-full about-mobile-image"
+              onMouseEnter={() => coverVideoRef.current?.play()}
+              onMouseLeave={() => {
+                const v = coverVideoRef.current;
+                if (v) {
+                  v.pause();
+                  v.currentTime = 0;
+                }
+              }}
+            >
+              <div className="video-hover-zoom">
+                <video
+                  ref={coverVideoRef}
+                  src="/img/Scarlet/Cover.mp4"
+                  className="about-hero-image"
+                  preload="auto"
+                  muted
+                  loop
+                  playsInline
+                  aria-label="Scarlet project overview"
+                />
+              </div>
             </div>
           </section>
 
@@ -223,24 +224,84 @@ const ProjectDetails: React.FC = () => {
                     <strong>Customer portal</strong> a{'\u00A0'}<strong>submission space</strong>{'\u00A0'}where medical device manufacturers can submit their regulatory evidence, track their progress, and respond to findings across multiple rounds
                   </li>
                
-                  <div className="section-image image-large about-mobile-image">
-                    <img src={`/img/Scarlet/${ROTATING_IMAGES[rotatingImageIndex]}`} alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  <div className="outcome-carousel">
+                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
+                      <img
+                        src={`/img/Scarlet/${ROTATING_IMAGES[rotatingImageIndex]}`}
+                        alt="Scarlet project overview - Pre-submission stage"
+                        className="about-hero-image"
+                      />
+                    </div>
+                    <div className="outcome-carousel__thumbnails">
+                      {ROTATING_IMAGES.map((filename, i) => (
+                        <button
+                          key={filename}
+                          type="button"
+                          className={`outcome-carousel__thumb ${i === rotatingImageIndex ? 'outcome-carousel__thumb--active' : ''}`}
+                          onClick={() => setRotatingImageIndex(i)}
+                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES.length}`}
+                          aria-pressed={i === rotatingImageIndex}
+                        >
+                          <img src={`/img/Scarlet/${filename}`} alt="" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div id="outcome-assessor-workspace">
                   <li>
                     <strong>Assessor workspace</strong> an <strong>internal tool used by Scarlet assessors</strong> to review customer's documentation, evaluate evidence against regulatory requirements, and raise findings
                   </li>
-                  <div className="section-image image-large about-mobile-image">
-                    <img src={`/img/Scarlet/${ROTATING_IMAGES_2[rotatingImageIndex2]}`} alt="Scarlet project overview - Assessor workspace" className="about-hero-image" />
+                  <div className="outcome-carousel">
+                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
+                      <img
+                        src={`/img/Scarlet/${ROTATING_IMAGES_2[rotatingImageIndex2]}`}
+                        alt="Scarlet project overview - Assessor workspace"
+                        className="about-hero-image"
+                      />
+                    </div>
+                    <div className="outcome-carousel__thumbnails">
+                      {ROTATING_IMAGES_2.map((filename, i) => (
+                        <button
+                          key={filename}
+                          type="button"
+                          className={`outcome-carousel__thumb ${i === rotatingImageIndex2 ? 'outcome-carousel__thumb--active' : ''}`}
+                          onClick={() => setRotatingImageIndex2(i)}
+                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES_2.length}`}
+                          aria-pressed={i === rotatingImageIndex2}
+                        >
+                          <img src={`/img/Scarlet/${filename}`} alt="" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div id="outcome-admin-workspace">
                   <li>
                     <strong>Admin workspace</strong> an operational interface that <strong>keeps a record of all certification activities</strong> to ensure Scarlet remains authorised as a notified body 
                   </li>
-                  <div className="section-image image-large about-mobile-image">
-                    <img src={`/img/Scarlet/${ROTATING_IMAGES_3[rotatingImageIndex3]}`} alt="Scarlet project overview - Admin workspace" className="about-hero-image" />
+                  <div className="outcome-carousel">
+                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
+                      <img
+                        src={`/img/Scarlet/${ROTATING_IMAGES_3[rotatingImageIndex3]}`}
+                        alt="Scarlet project overview - Admin workspace"
+                        className="about-hero-image"
+                      />
+                    </div>
+                    <div className="outcome-carousel__thumbnails">
+                      {ROTATING_IMAGES_3.map((filename, i) => (
+                        <button
+                          key={filename}
+                          type="button"
+                          className={`outcome-carousel__thumb ${i === rotatingImageIndex3 ? 'outcome-carousel__thumb--active' : ''}`}
+                          onClick={() => setRotatingImageIndex3(i)}
+                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES_3.length}`}
+                          aria-pressed={i === rotatingImageIndex3}
+                        >
+                          <img src={`/img/Scarlet/${filename}`} alt="" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </ul>
@@ -252,8 +313,29 @@ const ProjectDetails: React.FC = () => {
               <h2>Challenge</h2>
               <div className="pain-points-grid">
                 <div id="pain-limited-visibility" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challenge1VideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challenge1VideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challenge1VideoRef}
+                        src="/img/Scarlet/Challenge_1.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Limited visibility into customer's documents"
+                      />
+                    </div>
                   </div>
                   <h3 className="pain-point-title">Limited visibility into customer's documents</h3>
                   <p className="pain-point-description">
@@ -272,8 +354,29 @@ const ProjectDetails: React.FC = () => {
                 </div>
                 
                 <div id="pain-regulatory-evaluation" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challengeVideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challengeVideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challengeVideoRef}
+                        src="/img/Scarlet/Challenge_3.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Regulatory evaluation at scale"
+                      />
+                    </div>
                   </div>
                   <h3 className="pain-point-title">Complex regulatory evaluation at scale</h3>
                   <p className="pain-point-description">
@@ -282,8 +385,29 @@ const ProjectDetails: React.FC = () => {
                 </div>
                 
                 <div id="pain-admin-workflows" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_4.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challenge4VideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challenge4VideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challenge4VideoRef}
+                        src="/img/Scarlet/Challenge_4.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Deprioritised admin workflows"
+                      />
+                    </div>
                   </div>
                   <h3 className="pain-point-title">Deprioritised admin workflows</h3>
                   <p className="pain-point-description">

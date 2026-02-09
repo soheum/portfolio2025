@@ -59,7 +59,7 @@
 }
 
 .back-button:hover {
-  color: #ff3737;
+  color: #ffffff;
 }
 
 .nav-sections {
@@ -352,6 +352,36 @@
   object-fit: cover;
 }
 
+/* Challenge videos: zoom in 1.05x on hover, container size unchanged */
+.pain-point-card .grid-image .video-hover-zoom {
+  overflow: hidden;
+  width: 100%;
+}
+
+.pain-point-card .grid-image .video-hover-zoom video {
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.pain-point-card .grid-image:hover .video-hover-zoom video {
+  transform: scale(1.05);
+}
+
+/* Cover video (section-image): same zoom on hover */
+.section-image .video-hover-zoom {
+  overflow: hidden;
+  width: 100%;
+}
+
+.section-image .video-hover-zoom video {
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.section-image:hover .video-hover-zoom video {
+  transform: scale(1.01);
+}
+
 .pain-point-image {
   width: 100%;
   aspect-ratio: 4/3;
@@ -517,6 +547,69 @@
   max-width: 50%;
 }
 
+/* Customer portal carousel: image same size as Assessor workspace, thumbnails on the right next to it */
+.outcome-carousel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+  width: 100%;
+}
+
+/* Match outcome-list .section-image.image-large so the main image is the same size as below */
+.outcome-list .outcome-carousel .outcome-carousel__main {
+  flex: 0 0 auto;
+  width: calc(100% / 0.5);
+  max-width: 165%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.outcome-carousel__main {
+  margin-top: 0;
+}
+
+.outcome-carousel__main .about-hero-image {
+  width: 100%;
+  display: block;
+}
+
+.outcome-carousel__thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 64px;
+}
+
+.outcome-carousel__thumb {
+  display: block;
+  width: 64px;
+  height: 48px;
+  padding: 0;
+  /* border: 2px solid transparent; */
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  background: #eee;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.outcome-carousel__thumb:hover {
+  opacity: 0.9;
+}
+
+.outcome-carousel__thumb--active {
+  border-color: #fff;
+}
+
+.outcome-carousel__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* 3 columns out of 6 = 50% width */
 .section-image.image-small {
   max-width: 50%;
@@ -667,6 +760,25 @@
 
   .about-mobile-image {
     margin-top: 40px;
+  }
+
+  /* Carousel: on small screens stack thumbnails below the image in a row */
+  .outcome-carousel {
+    flex-direction: column;
+  }
+
+  .outcome-carousel__thumbnails {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .outcome-carousel__thumb {
+    width: 56px;
+    height: 42px;
   }
 
   .pain-points-grid {
