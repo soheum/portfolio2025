@@ -75,11 +75,8 @@
   line-height: calc(1.5 - var(--scroll-progress, 0) * 0.1);
   /* Scroll-linked letter spacing: -0.01em to 0 */
   letter-spacing: calc(-0.01em + var(--scroll-progress, 0) * 0.01em);
-  /* Scroll-linked color: #ccc (rgb 204,204,204) to #aaa (rgb 170,170,170) */
-  --text-color-r: calc(204 - var(--scroll-progress, 0) * 34);
-  --text-color-g: calc(204 - var(--scroll-progress, 0) * 34);
-  --text-color-b: calc(204 - var(--scroll-progress, 0) * 34);
-  color: var(--center-text-color, rgb(var(--text-color-r), var(--text-color-g), var(--text-color-b)));
+  /* Keep intro paragraph at a darker fixed gray for stronger contrast. */
+  color: var(--center-text-color, #818181);
   margin: 0;
   transition: font-size 0.1s ease-out, line-height 0.1s ease-out, letter-spacing 0.1s ease-out, color 0.1s ease-out;
   display: block;
@@ -91,6 +88,10 @@
 
 .center-card__text-line + .center-card__text-line {
   margin-top: 8px;
+}
+
+.center-card__text-highlight {
+  color: #d8d8d8;
 }
 
 .center-card__typed {

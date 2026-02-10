@@ -28,6 +28,23 @@
   background-repeat: no-repeat;
 }
 
+/* Scarlet logo: upper-left, visible on hover */
+.box2-container .box2-scarlet-logo {
+  position: absolute;
+  top: 32px;
+  left: 30px;
+  height: 22px;
+  width: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.box2-container:hover .box2-scarlet-logo {
+  opacity: 1;
+}
+
 /* Scoped to Box2 only so Box9 can use yellow; this one stays pink */
 /* Arrow always visible (was opacity: 0, shown only on hover) */
 .box2-container .arrow-icon-wrapper {

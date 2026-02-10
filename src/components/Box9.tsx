@@ -108,6 +108,12 @@ const Box9: React.FC<Box9Props> = ({ progress }) => {
         {budgetPercentage}%
       </div>
 
+      <img
+        src="/logo/mck_logo.png"
+        alt="McKinsey & Company"
+        className="box9-mck-logo"
+      />
+
       <div className="arrow-icon-wrapper">
         <img 
           src="/img/ArrowUpRight.svg" 

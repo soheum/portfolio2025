@@ -5,13 +5,55 @@ interface CenterCardProps {
   text: string;
   startReveal: boolean;
   typedSegment?: string;
+  highlightSegments?: string[];
   scrollHint?: string;
 }
 
-const CenterCard: React.FC<CenterCardProps> = ({ text, startReveal, typedSegment, scrollHint }) => {
+const CenterCard: React.FC<CenterCardProps> = ({
+  text,
+  startReveal,
+  typedSegment,
+  highlightSegments,
+  scrollHint,
+}) => {
   const fullName = "Soheum Hwang";
 
   const textLines = text.split('\n');
+
+  const renderHighlightedLine = (line: string) => {
+    if (!highlightSegments || highlightSegments.length === 0) {
+      return line;
+    }
+
+    let remaining = line;
+    const parts: React.ReactNode[] = [];
+
+    highlightSegments.forEach((segment, index) => {
+      if (!segment || !remaining.includes(segment)) {
+        return;
+      }
+
+      const segmentIndex = remaining.indexOf(segment);
+      const before = remaining.slice(0, segmentIndex);
+      const after = remaining.slice(segmentIndex + segment.length);
+
+      parts.push(before);
+      parts.push(
+        <span key={`${segment}-${index}`} className="center-card__text-highlight">
+          {segment}
+        </span>
+      );
+
+      remaining = after;
+    });
+
+    if (parts.length === 0) {
+      return line;
+    }
+
+    parts.push(remaining);
+    return parts;
+  };
 
   return (
     <div className={`center-card ${startReveal ? 'center-card--reveal' : 'center-card--hidden'}`}>
@@ -46,7 +88,7 @@ const CenterCard: React.FC<CenterCardProps> = ({ text, startReveal, typedSegment
               key={`${index}-${line}`}
               className="center-card__text-line center-card__reveal center-card__reveal--text"
             >
-              {line}
+              {renderHighlightedLine(line)}
             </span>
           );
         })}

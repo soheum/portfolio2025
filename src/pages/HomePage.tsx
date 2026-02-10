@@ -314,6 +314,7 @@ function HomePage() {
                   key="center-card-first"
                   startReveal
                   scrollHint="Scroll down"
+                  highlightSegments={["Scarlet", "Bank of England", "McKinsey Design"]}
                   text={
                     "Currently designing digital experiences to accelerate medical software devices to market at Scarlet.\nPreviously at the Bank of England and McKinsey Design."
                   }

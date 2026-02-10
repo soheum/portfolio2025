@@ -32,6 +32,11 @@ const Box2: React.FC<Box2Props> = ({ progress }) => {
       }}
     >
       <>
+        <img
+          src="/logo/scarlet_logo.svg"
+          alt="Scarlet"
+          className="box2-scarlet-logo"
+        />
         <div className="arrow-icon-wrapper">
           <img 
             src="/img/ArrowUpRight.svg" 

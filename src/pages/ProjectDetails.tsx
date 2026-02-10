@@ -167,12 +167,27 @@ const ProjectDetails: React.FC = () => {
           {/* About Section - Full viewport hero */}
           <section id="about" className="about-hero">
             <div className="hero-header">
-              <h1>Scarlet</h1>
-              <p className="subtitle">While working as a product designer at Scarlet, Europe's only notified body specialised in software medical devivce certification, 
-                I owned the <strong>0→1 design of customer, assessor and admin workflows,</strong> replacing GitHub submissions with a fully productized certification experience</p>
-              {/* <p className="subtitle_dates">
-                2025 February - present, in London, UK
-              </p> */}
+            {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
+              <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" />
+              <div className="subtitle-container">
+                <p className="subtitle">Redefining medical regulation through</p>
+                <p className="subtitle subtitle-highlight">
+                  {Array.from('a digital-first, AI-assisted platform').map((char, index) => (
+                    <span
+                      key={index}
+                      className="subtitle-highlight-char"
+                      style={{ ['--char-index' as string]: index } as React.CSSProperties}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                </p>
+              </div>
+              <p style={{ width: '45%', color: '#ffffff' }}>
+              0 → 1 product design and development, challenging how regulation can be a driver of innovation. Founding design work at an early stage startup, defining core user experience and design direction with 10+ product team.
+              </p>
+
+              {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
             </div>
 
             <div
@@ -217,6 +232,10 @@ const ProjectDetails: React.FC = () => {
               <h2>Outcome</h2>
               <p>
               We designed and delivered three platforms that support Scarlet's end-to-end certification workflow:
+              <br/>
+              <span className="outcome-note">
+                *This end-to-end experience is still actively evolving as we iterate it day by day.
+              </span>
               </p>
               <ul className="outcome-list">
                 <div id="outcome-customer-portal">
