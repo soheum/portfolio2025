@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import ScrambleText from './ScrambleText';
 import './CenterCard.css';
 
 interface CenterCardProps {
@@ -94,11 +96,24 @@ const CenterCard: React.FC<CenterCardProps> = ({
         })}
       </p>
       <div className="center-card__footer">
-        <p className="center-card__links">
-          <a href="https://www.linkedin.com/in/so-heum-hwang/" className="center-card__link" target="_blank" rel="noopener noreferrer">LinkedIn</a> /{' '}
-          <a href="/files/Soheum_CV.pdf" className="center-card__link" target="_blank" rel="noopener noreferrer">CV</a> /{' '}
-          <a href="mailto:sohheum@gmail.com" className="center-card__link">Email</a>
-        </p>
+        <div className="center-card__footer-row">
+          <p className="center-card__links">
+            <a href="https://www.linkedin.com/in/so-heum-hwang/" className="center-card__link" target="_blank" rel="noopener noreferrer">
+              <ScrambleText>LinkedIn</ScrambleText>
+            </a>
+            {' / '}
+            <a href="/files/Soheum_CV.pdf" className="center-card__link" target="_blank" rel="noopener noreferrer">
+              <ScrambleText>CV</ScrambleText>
+            </a>
+            {' / '}
+            <a href="mailto:sohheum@gmail.com" className="center-card__link">
+              <ScrambleText>Email</ScrambleText>
+            </a>
+          </p>
+          <Link to="/about" className="center-card__link center-card__link--about">
+            <ScrambleText>About me</ScrambleText>
+          </Link>
+        </div>
         {scrollHint ? (
           <p className="center-card__scroll-hint">{scrollHint}</p>
         ) : null}

@@ -1,0 +1,187 @@
+/* About Me page: use same nav as ProjectDetails but normal scroll (no snap) */
+.about-me.project-details-container {
+  scroll-snap-type: none;
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+/* Side nav top padding: only on About Me page (ProjectDetails keeps its 20px) */
+.about-me .side-navigation {
+  padding-top: 40px;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+/* Load animation for side nav */
+.about-me .side-navigation--loaded {
+  animation: fadeInSlideUp 0.8s ease-out forwards;
+}
+
+/* Active nav item: white on About Me (ProjectDetails keeps #ff3737) */
+.about-me .nav-item.active {
+  color: #586EFF;
+}
+
+/* Override ProjectDetails .text-content p margin-bottom for AboutMe only */
+.about-me .text-content p {
+  margin-bottom: 0;
+}
+
+/* Custom text cursor for About Me page: blue vertical line instead of red */
+.about-me p,
+.about-me li,
+.about-me h1,
+.about-me h2,
+.about-me h3,
+.about-me h4,
+.about-me h5,
+.about-me h6 {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="24" viewBox="0 0 2 24"><rect width="2" height="24" fill="%232837DD"/></svg>') 1 0, text;
+}
+
+/* Muted text spans for emphasis */
+.about-me__text-muted {
+  /* color: #858585; */
+  font-weight: 300;
+  color: #586EFF;
+  /* background-color: rgba(88, 110, 255, 0.35);
+  padding: 2px 2px;
+  border-radius: 2px; */
+}
+
+/* External links in About Me text */
+.about-me__link {
+  color: #cacaca;
+  text-decoration: none;
+}
+
+.about-me__link:hover {
+  text-decoration: underline;
+}
+
+/* Glowing link: character-by-character animation */
+.about-me__link--glow {
+  text-decoration: none;
+}
+
+.about-me__link--glow:hover {
+  text-decoration: none;
+}
+
+/* Letter-by-letter color: loops gray → white (staggered, instant per letter) */
+.about-me__link-char {
+  color: #858585;
+  animation: linkCharToWhite 5s linear 1 forwards;
+  animation-delay: calc(0.4s + var(--char-index, 0) * 0.06s);
+  transition: color 0.2s ease;
+}
+
+/* On hover: all characters turn blue, animation paused */
+.about-me__link--glow:hover .about-me__link-char {
+  color: #586EFF !important;
+  animation-play-state: paused;
+}
+
+@keyframes linkCharToWhite {
+  0%,
+  4.99% {
+    color: #858585;
+  }
+  5% {
+    color: #ffffff;
+  }
+  69.99% {
+    color: #ffffff;
+  }
+  70% {
+    color: #858585;
+  }
+  100% {
+    color: #858585;
+  }
+}
+
+/* Content wrapper: initial state hidden for load animation */
+.about-me-content {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+/* Load animation: fade in and slide up (delayed slightly after nav) */
+.about-me-content--loaded {
+  animation: fadeInSlideUp 0.8s ease-out 0.1s forwards;
+}
+
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* All paragraphs: same typography, override .text-content p from ProjectDetails.css */
+.about-me .text-content .about-me__text {
+  font-size: 1em;
+  line-height: 1.6em;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  /* margin: 0 0 1.5em 0; */
+  width: 45%;
+  font-weight: 300;
+  padding-top: 10px;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.about-me .text-content .about-me__text:last-child {
+  margin-bottom: 0;
+}
+
+/* Hidden state for paragraphs 2 and 3 until revealed by scroll */
+.about-me .text-content .about-me__text--hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Scroll hint: appears after first paragraph, removed after first scroll */
+.about-me__scroll-hint {
+  margin: 12px 0 0;
+  font-size: 16px;
+  color: #969696;
+  opacity: 0;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  --scroll-hint-chars: 11;
+  animation:
+    scrollHintReveal 0.6s ease-out 0.9s forwards,
+    scrollHintType 2.8s steps(var(--scroll-hint-chars), end) 1s 1 forwards;
+}
+
+@keyframes scrollHintReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes scrollHintType {
+  from {
+    width: 0;
+  }
+  28.6% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+  100% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+}

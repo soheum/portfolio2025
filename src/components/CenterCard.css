@@ -121,11 +121,29 @@
   padding-top: 40px;
 }
 
+/* Row: left = LinkedIn/CV/Email, right = About me */
+.center-card__footer-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .center-card__links {
   margin: 0;
   font-size: 28px;
   transition: opacity 0.1s ease-out, max-height 0.1s ease-out;
   /* Set from JS (--center-links-opacity, --center-links-max-height) to avoid postcss-calc parse errors */
+  opacity: var(--center-links-opacity, 0);
+  max-height: var(--center-links-max-height, 0);
+  overflow: hidden;
+}
+
+.center-card__link--about {
+  flex-shrink: 0;
+  font-size: 28px;
+  /* Same opacity/max-height as .center-card__links so it reveals with the other links */
   opacity: var(--center-links-opacity, 0);
   max-height: var(--center-links-max-height, 0);
   overflow: hidden;

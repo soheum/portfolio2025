@@ -1,4 +1,5 @@
 .project-details-container {
+  --project-highlight-color: #ff3737;
   min-height: 100vh;
   background-color: #000000;
   color: #ffffff;
@@ -25,6 +26,22 @@
 .project-details-container blockquote,
 .project-details-container figcaption {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="24" viewBox="0 0 2 24"><rect width="2" height="24" fill="%23ff3737"/></svg>') 1 0, text;
+}
+
+.project-details-container.project-details--box9 p,
+.project-details-container.project-details--box9 li,
+.project-details-container.project-details--box9 h1,
+.project-details-container.project-details--box9 h2,
+.project-details-container.project-details--box9 h3,
+.project-details-container.project-details--box9 h4,
+.project-details-container.project-details--box9 h5,
+.project-details-container.project-details--box9 h6,
+.project-details-container.project-details--box9 td,
+.project-details-container.project-details--box9 th,
+.project-details-container.project-details--box9 label,
+.project-details-container.project-details--box9 blockquote,
+.project-details-container.project-details--box9 figcaption {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="24" viewBox="0 0 2 24"><rect width="2" height="24" fill="%23fad205"/></svg>') 1 0, text;
 }
 
 .project-grid {
@@ -89,8 +106,12 @@
 }
 
 .nav-item.active {
-  color: #ff3737;
+  color: var(--project-highlight-color);
   font-weight: 500;
+}
+
+.project-details-container.project-details--box9 {
+  --project-highlight-color: #fad205;
 }
 
 /* Sub-navigation styles */

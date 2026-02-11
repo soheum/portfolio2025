@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Box9.css';
 
-/** PDF shown when clicking Box9. Put your file in public/files/ (e.g. document.pdf) or public/img/ and set the path here. */
-const BOX9_PDF_URL = '/files/Kan_portfolio.pdf';
+/** Route opened when clicking Box9. */
+const BOX9_PROJECT_URL = '/project-box9';
 
 interface Box9Props {
   progress: number;
@@ -20,9 +20,9 @@ const Box9: React.FC<Box9Props> = ({ progress }) => {
   const translateX = 30 * (1 - fadeOpacity);
   const translateY = 0;
 
-  // Open PDF in new tab when clicked
+  // Open Box9 project page in new tab when clicked
   const handleClick = () => {
-    window.open(BOX9_PDF_URL, '_blank', 'noopener,noreferrer');
+    window.open(BOX9_PROJECT_URL, '_blank', 'noopener,noreferrer');
   };
 
   // Counter animation effect

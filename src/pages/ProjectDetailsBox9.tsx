@@ -6,11 +6,7 @@ const ROTATING_IMAGES = ['01-1.jpg', '01-2.jpg', '01-3.jpg', '01-4.jpg'];
 const ROTATING_IMAGES_2 = ['02-4.jpg', '02-5.jpg', '02-6.jpg'];
 const ROTATING_IMAGES_3 = ['03-1.jpg', '03-2.jpg', '03-3.jpg'];
 
-interface ProjectDetailsProps {
-  className?: string;
-}
-
-const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
+const ProjectDetailsBox9: React.FC = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('about');
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
@@ -30,8 +26,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const sections = [
     { id: 'about', label: 'Overview' },
     { id: 'context', label: 'Background' },
-    { 
-      id: 'outcome', 
+    {
+      id: 'outcome',
       label: 'Outcome',
       subsections: [
         { id: 'outcome-customer-portal', label: 'Customer portal' },
@@ -56,7 +52,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
-          
+
           // Check if it's a subsection
           if (id.startsWith('outcome-') || id.startsWith('pain-') || id.startsWith('key-')) {
             setActiveSubsection(id);
@@ -79,7 +75,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       if (element && observerRef.current) {
         observerRef.current.observe(element);
       }
-      
+
       // Observe subsections
       if (section.subsections) {
         section.subsections.forEach((sub) => {
@@ -129,14 +125,14 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   };
 
   return (
-    <div className={`project-details-container ${className ?? ''}`.trim()}>
+    <div className="project-details-container project-details--box9">
       <div className="project-grid">
         {/* Column 1: Side Navigation */}
         <nav className="side-navigation">
           <button className="back-button" onClick={handleBack}>
             Previous
           </button>
-          
+
           <div className="nav-sections">
             {sections.map((section) => (
               <div key={section.id}>
@@ -146,7 +142,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 >
                   {section.label}
                 </button>
-                
+
                 {/* Render sub-navigation if exists */}
                 {section.subsections && (
                   <div className="sub-nav">
@@ -171,10 +167,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
           {/* About Section - Full viewport hero */}
           <section id="about" className="about-hero">
             <div className="hero-header">
-            {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
+              {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
               <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" />
               <div className="subtitle-container">
-                <p className="subtitle">Redefining medical regulation through</p>
+                <p className="subtitle">Employee benefit service for better financial health</p>
                 <p className="subtitle subtitle-highlight">
                   {Array.from('a digital-first, AI-assisted platform').map((char, index) => (
                     <span
@@ -188,7 +184,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </p>
               </div>
               <p style={{ width: '45%', color: '#ffffff' }}>
-              0 → 1 product design and development, challenging how regulation can be a driver of innovation. Founding design work at an early stage startup, defining core user experience and design direction with 10+ product team.
+              Developed an early MVP focused on debt repayment support into a scalable financial health platform, shaping design direction and identifying business opportunities alongside business consultants 
               </p>
 
               {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
@@ -224,7 +220,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             <section id="context" className="content-section">
               <h2>Background</h2>
               <p>
-              I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. <br/>At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches. 
+                I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. <br />At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches.
               </p>
             </section>
             <div className="section-image image-full">
@@ -235,18 +231,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             <section id="outcome" className="content-section">
               <h2>Outcome</h2>
               <p>
-              We designed and delivered three platforms that support Scarlet's end-to-end certification workflow:
-              <br/>
-              <span className="outcome-note">
-                *This end-to-end experience is still actively evolving as we iterate it day by day.
-              </span>
+                We designed and delivered three platforms that support Scarlet's end-to-end certification workflow:
+                <br />
+                <span className="outcome-note">
+                  *This end-to-end experience is still actively evolving as we iterate it day by day.
+                </span>
               </p>
               <ul className="outcome-list">
                 <div id="outcome-customer-portal">
                   <li>
                     <strong>Customer portal</strong> a{'\u00A0'}<strong>submission space</strong>{'\u00A0'}where medical device manufacturers can submit their regulatory evidence, track their progress, and respond to findings across multiple rounds
                   </li>
-               
+
                   <div className="outcome-carousel">
                     <div className="outcome-carousel__main section-image image-large about-mobile-image">
                       <img
@@ -301,7 +297,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </div>
                 <div id="outcome-admin-workspace">
                   <li>
-                    <strong>Admin workspace</strong> an operational interface that <strong>keeps a record of all certification activities</strong> to ensure Scarlet remains authorised as a notified body 
+                    <strong>Admin workspace</strong> an operational interface that <strong>keeps a record of all certification activities</strong> to ensure Scarlet remains authorised as a notified body
                   </li>
                   <div className="outcome-carousel">
                     <div className="outcome-carousel__main section-image image-large about-mobile-image">
@@ -362,12 +358,12 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                   </div>
                   <h3 className="pain-point-title">Limited visibility into customer's documents</h3>
                   <p className="pain-point-description">
-                  Customers hesitated to upload evidence until it felt “perfect,” limiting our visibility into submission structures and making it <strong>harder to design for different documentation models</strong>
+                    Customers hesitated to upload evidence until it felt "perfect," limiting our visibility into submission structures and making it <strong>harder to design for different documentation models</strong>
                   </p>
                 </div>
-                
+
                 <div id="pain-user-research" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
+                  <div className="grid-image image-full about-mobile-image">
                     <img src="/img/Scarlet/PP_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Difficulty in user research</h3>
@@ -375,7 +371,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                     Our users - software and AI medical device manufacturers - are a <strong>highly niche group, and the regulatory dynamic</strong> between Scarlet often reduced openness in feedback. This made traditional user research very challenging.
                   </p>
                 </div>
-                
+
                 <div id="pain-regulatory-evaluation" className="pain-point-card">
                   <div
                     className="grid-image image-full about-mobile-image"
@@ -406,7 +402,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                     Assessors navigate <strong>100+ customer-specific core and supporting requirements,</strong> creating a workflow that is both highly structured and deeply complex.
                   </p>
                 </div>
-                
+
                 <div id="pain-admin-workflows" className="pain-point-card">
                   <div
                     className="grid-image image-full about-mobile-image"
@@ -446,9 +442,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               <h2>Design approach</h2>
               <div className="key-design-grid">
                 <div id="key-submission-playground" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
+                  <div className="grid-image image-full about-mobile-image">
                     <img src="/img/Scarlet/DD_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                </div>
+                  </div>
                   <h3 className="pain-point-title">Clear distinction between submission and exploration</h3>
                   <p className="pain-point-description">
                     Kept the submission flow broad and flexible with accepting any evidence type, which was clearly separated from a "playground" space with <strong>an AI coverage checker.</strong> This checked customers' submission readiness based on requirements, and gave us a better understanding of their documentation model
@@ -456,7 +452,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </div>
                 <div id="key-customer-feedback" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Customer feedback through real touchpoints</h3>
                   <p className="pain-point-description">
@@ -464,18 +460,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                   </p>
                 </div>
                 <div id="key-atomic-evaluation" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  <div className="grid-image image-full about-mobile-image">
+                    <img src="/img/Scarlet/DD_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Atomic, scalable regulatory evaluation with contextual agent support</h3>
                   <p className="pain-point-description">
-                  Structured assessment into requirement-level actions, enabling review of core and supporting requirements individually or in bulk, while layering in <strong>assessor agents</strong> that provide guidance tailored to each evaluator’s context.
+                    Structured assessment into requirement-level actions, enabling review of core and supporting requirements individually or in bulk, while layering in <strong>assessor agents</strong> that provide guidance tailored to each evaluator's context.
                   </p>
                 </div>
-               
+
                 <div id="key-vibe-prototypes" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_4.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_4.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Vibe-coded prototypes for admin workflows</h3>
                   <p className="pain-point-description">
@@ -492,11 +488,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               <div className="design-process-grid">
                 <div className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Rapid iteration through design PRs</h3>
                   <p className="pain-point-description">
-                  Designers contributed directly through GitHub pull requests, delivering small, high-impact improvements. <strong>Led by the design team, this cultural shift</strong> proved the value of vibe coding through incremental wins and fostered a more collaborative product-building culture.
+                    Designers contributed directly through GitHub pull requests, delivering small, high-impact improvements. <strong>Led by the design team, this cultural shift</strong> proved the value of vibe coding through incremental wins and fostered a more collaborative product-building culture.
                   </p>
                 </div>
                 <div className="pain-point-card">
@@ -510,7 +506,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </div>
                 <div className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Grounding concrete decisions in real customer feedback</h3>
                   <p className="pain-point-description">
@@ -526,4 +522,4 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   );
 };
 
-export default ProjectDetails;
+export default ProjectDetailsBox9;
