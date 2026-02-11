@@ -68,10 +68,10 @@
   text-decoration: none;
 }
 
-/* Letter-by-letter color: loops gray → white (staggered, instant per letter) */
+/* Letter-by-letter color: runs once gray → white → gray (staggered, instant per letter) */
 .about-me__link-char {
   color: #858585;
-  animation: linkCharToWhite 5s linear 1 forwards;
+  animation: linkCharToWhite 5s linear 1;
   animation-delay: calc(0.4s + var(--char-index, 0) * 0.06s);
   transition: color 0.2s ease;
 }
