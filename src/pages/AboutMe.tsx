@@ -11,6 +11,7 @@ const AboutMe: React.FC = () => {
   const [showSection2, setShowSection2] = useState(false);
   const [showSection3, setShowSection3] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showPotteryImages, setShowPotteryImages] = useState(false);
   const scrollCountRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -130,9 +131,34 @@ const AboutMe: React.FC = () => {
             {showSection2 && !showSection3 && (
               <p className="about-me__scroll-hint">Scroll down</p>
             )}
-            <p className={`about-me__text ${!showSection3 ? 'about-me__text--hidden' : ''}`}>
+            <p 
+              className={`about-me__text ${!showSection3 ? 'about-me__text--hidden' : ''}`}
+              onMouseEnter={() => setShowPotteryImages(true)}
+              onMouseLeave={() => setShowPotteryImages(false)}
+            >
               Outside of design, you can find me in front of a pottery wheel, crafting outside of digital screens in North London.
             </p>
+            {showPotteryImages && (
+              <div className="pottery-images">
+                <div className="pottery-image pottery-image--1">
+                  <img src="/img/pottery_1.jpg" alt="Pottery 1" className="pottery-image-content" />
+                </div>
+                <div className="pottery-image pottery-image--2">
+                  <img src="/img/pottery_2.jpg" alt="Pottery 2" className="pottery-image-content" />
+                </div>
+                <div className="pottery-image pottery-image--3">
+                  <video 
+                    src="/img/pottery_3.mp4" 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                    className="pottery-image-content"
+                    aria-label="Pottery 3"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
