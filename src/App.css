@@ -140,6 +140,7 @@
   left: 0;
   z-index: 6;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .grid-lines-svg-loading.fade-out {
@@ -303,6 +304,7 @@
 }
 
 .grid-cell {
+  position: relative; /* Needed for absolute positioning of fill layer */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,4 +322,102 @@
   align-items: center;
   justify-content: center;
   /* Add your content styles here */
+}
+
+/* Grid cell image fill layer - Box2 and Box9 hover effects */
+/* These layers appear ON TOP of everything (including CenterCard) when hovering */
+/* Each cell has two fill layers: one for Box2 hover, one for Box9 hover */
+/* Images are set per-cell via inline style in HomePage.tsx */
+.grid-cell-image-fill {
+  /* Position it to cover the entire cell */
+  position: absolute;
+  inset: 0; /* Same as top: 0, right: 0, bottom: 0, left: 0 */
+  
+  /* Place it on top of all content (CenterCard is z-index: 2, grid lines are z-index: 5-6) */
+  z-index: 10;
+  
+  /* Background image is set per-cell via inline style */
+  background-size: cover; /* Image covers the entire cell */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat;
+  
+  /* Hidden by default */
+  opacity: 0;
+  
+  /* Smooth fade-in transition when shown */
+  transition: opacity 0.3s ease;
+  
+  /* Don't interfere with mouse events */
+  pointer-events: none;
+}
+
+/* Center card fill layers - cover the CenterCard area on hover */
+/* Separate layers for Box2 and Box9 hover effects */
+.center-card-fill-layer {
+  /* Position it over the center card */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  /* Match the center card dimensions */
+  width: var(--card-scaled-width, 300px);
+  height: var(--card-scaled-height, 300px);
+  
+  /* Place it on top of the center card */
+  z-index: 10;
+  
+  /* Background image is set per-cell via inline style */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Hidden by default */
+  opacity: 0;
+  
+  /* Smooth fade-in transition when shown */
+  transition: opacity 0.3s ease;
+  
+  /* Don't interfere with mouse events */
+  pointer-events: none;
+}
+
+/* BOX9 HOVER EFFECT */
+/* Show Box9 fill on all cells EXCEPT the Box9 cell itself */
+.grid-content-overlay:has(.box9-container:hover) .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9 {
+  opacity: 1;
+}
+
+/* Show the center card Box9 fill when Box9 is hovered */
+.grid-content-overlay:has(.box9-container:hover) .center-card-fill-layer--box9 {
+  opacity: 1;
+}
+
+/* Hide grid lines when Box9 is hovered */
+.app-root:has(.box9-container:hover) .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box9-container:hover) .grid-lines-svg-loading {
+  opacity: 0;
+}
+
+/* BOX2 HOVER EFFECT */
+/* Show Box2 fill on all cells EXCEPT the Box2 cell itself */
+.grid-content-overlay:has(.box2-container:hover) .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2 {
+  opacity: 1;
+}
+
+/* Show the center card Box2 fill when Box2 is hovered */
+.grid-content-overlay:has(.box2-container:hover) .center-card-fill-layer--box2 {
+  opacity: 1;
+}
+
+/* Hide grid lines when Box2 is hovered */
+.app-root:has(.box2-container:hover) .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box2-container:hover) .grid-lines-svg-loading {
+  opacity: 0;
 }

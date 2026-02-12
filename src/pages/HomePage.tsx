@@ -59,6 +59,83 @@ function HomePage() {
     }
   };
 
+  // Define which image appears in each cell when Box9 is hovered
+  // You can customize this to show different images per cell
+  // Cell indices: 0-4 (top row), 5-8 (middle row, excluding center), 9-13 (bottom row)
+  // Index 14 is reserved for the center card position
+  // Note: Index 8 (Box9's own cell) won't show because it's excluded from the effect
+  const getCellFillImage = (cellIndex: number): string => {
+    const imageMap: { [key: number]: string } = {
+      0: '/img/Grid/Box9.jpg',   // Top-left
+      1: '/img/Grid/Box9.jpg',   // Top-center-left (Box2)
+      2: '/img/Grid/Box9.jpg',   // Top-center-right
+      3: '/img/Grid/Box9.jpg',   // Top-right-left
+      4: '/img/Grid/Box9.jpg',   // Top-right
+      5: '/img/Grid/Box9_10_1.jpg',   // Middle-left
+      6: '/img/Grid/Box9_5.jpg',   // Middle-center-left
+      7: '/img/Grid/Box9_9.jpg',   // Middle-center-right (to the right of center card)
+      8: '/img/Grid/Box9_8.jpg',   // Middle-right (Box9 itself - won't show, this cell is excluded)
+      9: '/img/Grid/Box9.jpg',   // Bottom-left
+      10: '/img/Grid/Box9.jpg',  // Bottom-center-left
+      11: '/img/Grid/Box9.jpg',  // Bottom-center-right (Box12)
+      12: '/img/Grid/Box9.jpg',  // Bottom-right-left
+      13: '/img/Grid/Box9.jpg',  // Bottom-right
+      14: '/img/Grid/Box9_8.jpg',  // Center card position (separate from grid cells)
+    };
+    
+    // Return the mapped image or a default image if not specified
+    return imageMap[cellIndex] || '/img/Scarlet/01-1.jpg';
+  };
+
+  // Get transition delay for staggered animation (5 → 6 → 14 → 7)
+  const getCellTransitionDelay = (cellIndex: number): string => {
+    const delayMap: { [key: number]: string } = {
+      5: '0s',      // First (leftmost)
+      6: '0.15s',   // Second
+      14: '0.3s',   // Third (center card)
+      7: '0.45s',   // Fourth (rightmost)
+    };
+    return delayMap[cellIndex] || '0s'; // All other cells have no delay
+  };
+
+  // BOX 2 HOVER EFFECT
+  // Define which image appears in each cell when Box2 is hovered
+  // Box2 is at cell index 1
+  // You can customize these images independently from Box9
+  const getBox2FillImage = (cellIndex: number): string => {
+    const imageMap: { [key: number]: string } = {
+      0: '/img/Grid/Box2_1.jpg',   // Top-left
+      1: '/img/Scarlet/01-1.jpg',   // Top-center-left (Box2 itself - won't show, this cell is excluded)
+      2: '/img/Grid/Box2_2.jpg',   // Top-center-right
+      3: '/img/Grid/Box2_3.jpg',   // Top-right-left
+      4: '/img/Grid/Box2_4.jpg',   // Top-right
+      5: '/img/Grid/Box9.jpg',   // Middle-left
+      6: '/img/Grid/Box9.jpg',    // Middle-center-left
+      7: '/img/Grid/Box9.jpg',    // Middle-center-right
+      8: '/img/Grid/Box9.jpg',    // Middle-right (Box9)
+      9: '/img/Grid/Box9.jpg',    // Bottom-left
+      10: '/img/Grid/Box9.jpg',   // Bottom-center-left
+      11: '/img/Grid/Box9.jpg',  // Bottom-center-right (Box12)
+      12: '/img/Grid/Box9.jpg',   // Bottom-right-left
+      13: '/img/Grid/Box9.jpg',   // Bottom-right
+      14: '/img/Grid/Box9.jpg',  // Center card position
+    };
+    
+    return imageMap[cellIndex] || '/img/Scarlet/01-1.jpg';
+  };
+
+  // Get transition delay for Box2 staggered animation (0 → 2 → 3 → 4)
+  // Sequential reveal of the top row cells
+  const getBox2TransitionDelay = (cellIndex: number): string => {
+    const delayMap: { [key: number]: string } = {
+      0: '0s',      // First (leftmost)
+      2: '0.15s',   // Second (after Box2, to the right of it)
+      3: '0.3s',    // Third
+      4: '0.45s',   // Fourth (rightmost)
+    };
+    return delayMap[cellIndex] || '0s';
+  };
+
   const gridCells = [];
   const totalRows = 3;
   const totalCols = 5;
@@ -277,15 +354,55 @@ function HomePage() {
           '--grid-size': `${gridSize}px`,
         } as React.CSSProperties}
       >
+        {/* Center card fill layers - covers the CenterCard on hover */}
+        {/* Box9 hover fill */}
+        <div 
+          className="center-card-fill-layer center-card-fill-layer--box9" 
+          aria-hidden="true"
+          style={{
+            backgroundImage: `url(${getCellFillImage(14)})`,
+            transitionDelay: getCellTransitionDelay(14),
+          }}
+        />
+        {/* Box2 hover fill */}
+        <div 
+          className="center-card-fill-layer center-card-fill-layer--box2" 
+          aria-hidden="true"
+          style={{
+            backgroundImage: `url(${getBox2FillImage(14)})`,
+            transitionDelay: getBox2TransitionDelay(14),
+          }}
+        />
+        
         {gridCells.map((cell) => (
           <div
             key={`${cell.row}-${cell.col}`}
-            className="grid-cell"
+            className={`grid-cell ${cell.index === 1 ? 'grid-cell--box2' : ''} ${cell.index === 8 ? 'grid-cell--box9' : ''}`}
             style={{
               gridColumn: cell.col + 1,
               gridRow: cell.row + 1,
             }}
           >
+            {/* Box9 hover fill layer */}
+            <div 
+              className="grid-cell-image-fill grid-cell-image-fill--box9" 
+              aria-hidden="true"
+              style={{
+                backgroundImage: `url(${getCellFillImage(cell.index)})`,
+                transitionDelay: getCellTransitionDelay(cell.index),
+              }}
+            />
+            
+            {/* Box2 hover fill layer */}
+            <div 
+              className="grid-cell-image-fill grid-cell-image-fill--box2" 
+              aria-hidden="true"
+              style={{
+                backgroundImage: `url(${getBox2FillImage(cell.index)})`,
+                transitionDelay: getBox2TransitionDelay(cell.index),
+              }}
+            />
+            
             <div className="grid-cell-content">
               {getBoxInteraction(cell.index, scrollProgress)}
             </div>

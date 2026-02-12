@@ -6,7 +6,7 @@ const ROTATING_IMAGES = ['01-1.jpg', '01-2.jpg', '01-3.jpg', '01-4.jpg'];
 const ROTATING_IMAGES_2 = ['02-4.jpg', '02-5.jpg', '02-6.jpg'];
 const ROTATING_IMAGES_3 = ['03-1.jpg', '03-2.jpg', '03-3.jpg'];
 
-const ProjectDetailsBox9: React.FC = () => {
+const Kan: React.FC = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('about');
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
@@ -522,4 +522,4 @@ const ProjectDetailsBox9: React.FC = () => {
   );
 };
 
-export default ProjectDetailsBox9;
+export default Kan;

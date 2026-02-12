@@ -3,7 +3,7 @@ import './Box9.css';
 
 /** Route opened when clicking Box9. Temporarily using PDF until project page is ready. */
 const BOX9_PROJECT_URL = '/files/Kan_portfolio.pdf';
-// const BOX9_PROJECT_URL = '/project-box9'; // Uncomment when ready to show project page
+// const BOX9_PROJECT_URL = '/kan'; // Uncomment when ready to show project page
 
 interface Box9Props {
   progress: number;

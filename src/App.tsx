@@ -1,16 +1,34 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProjectDetails from './pages/ProjectDetails';
-import ProjectDetailsBox9 from './pages/ProjectDetailsBox9';
+import Kan from './pages/Kan';
 import AboutMe from './pages/AboutMe';
 
 function App() {
+  const location = useLocation();
+
+  // Disable browser scroll restoration
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  // Reset scroll to top on route change (with small delay to ensure it runs after route transition)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Force scroll after a frame to override any browser restoration
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/project" element={<ProjectDetails />} />
-      <Route path="/project-box9" element={<ProjectDetailsBox9 />} />
+      <Route path="/kan" element={<Kan />} />
       <Route path="/about" element={<AboutMe />} />
     </Routes>
   );
