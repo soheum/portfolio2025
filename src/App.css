@@ -27,7 +27,7 @@
   /* Grid size scales with scroll progress */
   /* First view: 300px, Second view: 300px */
   /* Grid size stays at 300px */
-  --grid-size: 300px;
+  --grid-size: 250px;
   
   /* Opacity for transitioning between first and second view */
   --first-opacity: calc(1 - var(--scroll-progress, 0));
@@ -135,7 +135,7 @@
 
 /* SVG Grid Lines - Loading Animation */
 .grid-lines-svg-loading {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 6;
@@ -143,23 +143,18 @@
   transition: opacity 0.3s ease;
 }
 
+/* Keep the animated lines visible - don't fade out */
 .grid-lines-svg-loading.fade-out {
-  animation: fadeOutSvg 0.5s ease-out forwards;
+  opacity: 1; /* Stay visible instead of fading out */
 }
 
-/* SVG Grid Lines - Static Grid (after loading) */
+/* SVG Grid Lines - Static Grid (hidden permanently) */
 .grid-lines-svg-static {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease-out;
+  display: none; /* Never show static grid lines */
 }
 
 .grid-lines-svg-static.visible {
-  opacity: 1;
+  display: none; /* Keep hidden even when visible class is applied */
 }
 
 /* SVG Grid Lines Animation */
@@ -213,15 +208,12 @@
   }
 }
 
-/* Center card wrapper - ensures card stays centered in viewport during scale */
+/* Center card wrapper - centered with fixed size */
 .center-card-wrapper {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
-  /* Combine translate for centering with scale from scroll progress */
-  /* First view: 600px (scale 1.0), Second view: 300px (scale 0.5) */
-  /* First scroll: scale 1.0 to 0.5 (600px to 300px) */
-  --scale: calc(1 - var(--scroll-progress, 0) * 0.5);
+  --scale: 1;
   transform: translate(-50%, -50%) scale(var(--scale));
   transform-origin: center center;
   transition: transform 0.1s ease-out;
@@ -239,6 +231,7 @@
   opacity: 0;
   visibility: visible;
   animation: fadeInCenterCard 0.6s ease-out forwards;
+  animation-delay: 0s; /* Appears immediately after line animation */
 }
 
 /* Fade-in animation for CenterCard */
@@ -255,21 +248,34 @@
 .app-root {
   position: relative;
   z-index: 1;
-  width: 100%;
+  width: max(100vw, var(--canvas-width, 100vw));
+  height: max(100vh, var(--canvas-height, 100vh));
+}
+
+/* Scroll container for oversized home canvas with drag-to-scroll */
+.home-scroll-shell {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  cursor: grab;
+}
+
+.home-scroll-shell.is-dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 /* Pinned section - stays fixed in viewport during scroll */
 .pinned-section {
-  position: relative;
-  height: 140vh; /* 100vh viewport + 40vh scroll range */
-  /* This creates the scroll space for the pinned animation */
+  position: absolute;
+  inset: 0;
 }
 
 /* Pinned content - stays in view while scrolling */
 .pinned-content {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,29 +284,28 @@
 
 /* Grid content overlay - aligns with exact grid boxes in second view */
 .grid-content-overlay {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 4; /* Below grid lines (z-index: 5), below center card (z-index: 2, but center-card-wrapper is fixed) */
   display: grid;
   pointer-events: none;
-  
+
   /* Variables set from JavaScript to match SVG line calculations */
-  --card-scaled-width: 300px;
-  --card-scaled-height: 300px;
+  --card-scaled-width: 250px;
+  --card-scaled-height: 250px;
   --grid-size: 300px;
   --second-opacity: var(--scroll-progress, 0);
-  
-  /* Grid structure for second view: uniform grid using --card-scaled-width */
-  /* 5 columns × 3 rows = 15 boxes (excluding center) */
-  grid-template-columns: var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width) var(--card-scaled-width);
-  grid-template-rows: var(--card-scaled-height) var(--card-scaled-height) var(--card-scaled-height);
+
+  /* Grid structure: 6x6 tracks of 250, with center card occupying 2x2 tracks */
+  grid-template-columns: repeat(6, var(--card-scaled-width));
+  grid-template-rows: repeat(6, var(--card-scaled-height));
   gap: 0;
-  
-  /* Show only in second scroll */
-  opacity: var(--second-opacity);
-  transition: opacity 0.1s ease-out;
+
+  /* Always visible - individual boxes control their own visibility */
+  opacity: 1;
+  visibility: visible;
 }
 
 .grid-cell {
@@ -309,6 +314,23 @@
   align-items: center;
   justify-content: center;
   pointer-events: auto; /* Allow interaction with content */
+  opacity: 0; /* Hidden by default */
+}
+
+/* Grid cell reveal animation */
+.grid-cell--reveal {
+  animation: fadeInBox 0.6s ease-out forwards;
+}
+
+@keyframes fadeInBox {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Grid cell content - centered within each cell */
@@ -316,8 +338,8 @@
   text-align: center;
   color: #fff;
   font-size: 14px;
-  width: 100%;
-  height: 100%;
+  width: var(--card-scaled-width, 250px);
+  height: var(--card-scaled-height, 250px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,9 +351,13 @@
 /* Each cell has two fill layers: one for Box2 hover, one for Box9 hover */
 /* Images are set per-cell via inline style in HomePage.tsx */
 .grid-cell-image-fill {
-  /* Position it to cover the entire cell */
+  /* Position and size to match 250x250 card */
   position: absolute;
-  inset: 0; /* Same as top: 0, right: 0, bottom: 0, left: 0 */
+  top: 50%;
+  left: 50%;
+  width: var(--card-scaled-width, 250px);
+  height: var(--card-scaled-height, 250px);
+  transform: translate(-50%, -50%);
   
   /* Place it on top of all content (CenterCard is z-index: 2, grid lines are z-index: 5-6) */
   z-index: 10;
@@ -355,14 +381,14 @@
 /* Separate layers for Box2 and Box9 hover effects */
 .center-card-fill-layer {
   /* Position it over the center card */
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   
   /* Match the center card dimensions */
-  width: var(--card-scaled-width, 300px);
-  height: var(--card-scaled-height, 300px);
+  width: var(--center-card-width, 500px);
+  height: var(--center-card-height, 500px);
   
   /* Place it on top of the center card */
   z-index: 10;

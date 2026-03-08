@@ -188,13 +188,20 @@
   align-self: flex-start; /* Keep logo left-aligned in flex container */
 }
 
+/* Make logo 20% bigger in Kan.tsx only */
+.project-details--box9 .hero-header .hero-logo {
+  height: 3.6em; /* 3em × 1.2 = 3.6em (20% bigger) */
+}
+
 .hero-header .subtitle-container {
   width: 100%; /* Full width so subtitles aren't constrained by flex shrink-to-fit */
+  padding-bottom: 1em;
 }
 
 .hero-header .subtitle {
   margin-bottom: 0;
 }
+
 
 .text-content h1 {
   font-size: 2em;
@@ -211,7 +218,7 @@
   font-weight: 300;
   width: 100%;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
-  color: #cacaca;
+  color: #767676;
   letter-spacing: 0em;
   line-height: 1.3em;
 }
@@ -364,6 +371,11 @@
   /* Break out of content-section 50% width to use full text-content width */
   width: calc(100% / 0.5);
   max-width: none;
+}
+
+/* 3 columns for Kan.tsx only */
+.project-details--box9 .pain-points-grid {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* Key Design Decisions: dedicated 2-column grid with larger horizontal gap */
@@ -830,6 +842,11 @@
 
   .about-hero .hero-header .hero-logo {
     height: calc(32px * 1.2);
+  }
+
+  /* Make logo 20% bigger in Kan.tsx only (responsive) */
+  .project-details--box9 .about-hero .hero-header .hero-logo {
+    height: calc(32px * 1.44); /* 32px * 1.2 (base) * 1.2 (20% increase) = 32px * 1.44 */
   }
 
   .about-hero .subtitle {

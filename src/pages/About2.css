@@ -1,11 +1,11 @@
-.about-me {
+.about2-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.about-me__box1-frame {
+.about2-frame {
   width: 250px;
   height: 250px;
   display: flex;

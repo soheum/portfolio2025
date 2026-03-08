@@ -7,9 +7,10 @@ const BOX9_PROJECT_URL = '/files/Kan_portfolio.pdf';
 
 interface Box9Props {
   progress: number;
+  onHoverChange?: (isHovered: boolean) => void;
 }
 
-const Box9: React.FC<Box9Props> = ({ progress }) => {
+const Box9: React.FC<Box9Props> = ({ progress, onHoverChange }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [budgetPercentage, setBudgetPercentage] = useState(0);
   const animationRef = useRef<number | null>(null);
@@ -101,8 +102,14 @@ const Box9: React.FC<Box9Props> = ({ progress }) => {
         transform: `translate(${translateX}px, ${translateY}px)`,
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        onHoverChange?.(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        onHoverChange?.(false);
+      }}
       onClick={handleClick}
     >
       <div className="budget-percentage-counter">

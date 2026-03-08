@@ -30,9 +30,9 @@ const Kan: React.FC = () => {
       id: 'outcome',
       label: 'Outcome',
       subsections: [
-        { id: 'outcome-customer-portal', label: 'Customer portal' },
-        { id: 'outcome-assessor-workspace', label: 'Assessor workspace' },
-        { id: 'outcome-admin-workspace', label: 'Admin workspace' }
+        { id: 'outcome-customer-portal', label: 'Step 1' },
+        { id: 'outcome-assessor-workspace', label: 'Step 2' },
+        { id: 'outcome-admin-workspace', label: 'Step 3' }
       ]
     },
     { id: 'pain-points', label: 'Challenge' },
@@ -168,11 +168,11 @@ const Kan: React.FC = () => {
           <section id="about" className="about-hero">
             <div className="hero-header">
               {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
-              <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" />
+              <img src="/logo/mck_logo.png" alt="McKinsey & Company" className="hero-logo" />
               <div className="subtitle-container">
-                <p className="subtitle">Employee benefit service for better financial health</p>
+              <p className="subtitle">Transforming debt support into </p>
                 <p className="subtitle subtitle-highlight">
-                  {Array.from('a digital-first, AI-assisted platform').map((char, index) => (
+                  {Array.from('a financial health platform').map((char, index) => (
                     <span
                       key={index}
                       className="subtitle-highlight-char"
@@ -184,7 +184,7 @@ const Kan: React.FC = () => {
                 </p>
               </div>
               <p style={{ width: '45%', color: '#ffffff' }}>
-              Developed an early MVP focused on debt repayment support into a scalable financial health platform, shaping design direction and identifying business opportunities alongside business consultants 
+              During my time at McKinsey & Design, I expanded an early MVP focused on debt repayment support into a scalable financial health platform, shaping design direction and identifying business opportunities alongside business consultants 
               </p>
 
               {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
@@ -202,15 +202,10 @@ const Kan: React.FC = () => {
               }}
             >
               <div className="video-hover-zoom">
-                <video
-                  ref={coverVideoRef}
-                  src="/img/Scarlet/Cover.mp4"
+                <img
+                  src="/img/Kan/Cover.jpg"
+                  alt="Kan project overview"
                   className="about-hero-image"
-                  preload="auto"
-                  muted
-                  loop
-                  playsInline
-                  aria-label="Scarlet project overview"
                 />
               </div>
             </div>
@@ -220,7 +215,8 @@ const Kan: React.FC = () => {
             <section id="context" className="content-section">
               <h2>Background</h2>
               <p>
-                I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. <br />At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches.
+              Kan is a Norwegian employee benefit service focused on improving financial health for individuals under financial stress, in a country with one of the highest household debt rates in Europe.  </p>
+              <p>I joined after the launch of its repayment-focused MVP, as the product expanded into a broader financial wellbeing platform for all employees.
               </p>
             </section>
             <div className="section-image image-full">
@@ -231,16 +227,14 @@ const Kan: React.FC = () => {
             <section id="outcome" className="content-section">
               <h2>Outcome</h2>
               <p>
-                We designed and delivered three platforms that support Scarlet's end-to-end certification workflow:
-                <br />
-                <span className="outcome-note">
-                  *This end-to-end experience is still actively evolving as we iterate it day by day.
-                </span>
+              I refined Kan’s core financial insights experience, expanding it from a static debt overview into a more actionable, personalized financial health product.
+              
+                The implementation was done in 3 steps:
               </p>
               <ul className="outcome-list">
                 <div id="outcome-customer-portal">
                   <li>
-                    <strong>Customer portal</strong> a{'\u00A0'}<strong>submission space</strong>{'\u00A0'}where medical device manufacturers can submit their regulatory evidence, track their progress, and respond to findings across multiple rounds
+                    <strong>Step 1 — Strengthening financial awareness:</strong> Redesigned the Debt Overview experience to give users a clearer understanding of their financial situation, introducing monthly spend goals and progress tracking to provide actionable awareness.
                   </li>
 
                   <div className="outcome-carousel">
@@ -269,8 +263,7 @@ const Kan: React.FC = () => {
                 </div>
                 <div id="outcome-assessor-workspace">
                   <li>
-                    <strong>Assessor workspace</strong> an <strong>internal tool used by Scarlet assessors</strong> to review customer's documentation, evaluate evidence against regulatory requirements, and raise findings
-                  </li>
+                    <strong>Step 2 — Improving data accuracy:</strong> Enhanced spending categorisation through Tink integration, an open banking provider, improving transaction accuracy and transparency</li>
                   <div className="outcome-carousel">
                     <div className="outcome-carousel__main section-image image-large about-mobile-image">
                       <img
@@ -297,7 +290,7 @@ const Kan: React.FC = () => {
                 </div>
                 <div id="outcome-admin-workspace">
                   <li>
-                    <strong>Admin workspace</strong> an operational interface that <strong>keeps a record of all certification activities</strong> to ensure Scarlet remains authorised as a notified body
+                    <strong>Step 3 — Enabling proactive financial planning:</strong> Introduced advanced budgeting support through an SIFO-based calculator, a Norwegian standard for estimating essential living costs, alongside contextual nudges and clearer guidance.
                   </li>
                   <div className="outcome-carousel">
                     <div className="outcome-carousel__main section-image image-large about-mobile-image">
@@ -331,7 +324,7 @@ const Kan: React.FC = () => {
             <section id="pain-points" className="content-section">
               <h2>Challenge</h2>
               <div className="pain-points-grid">
-                <div id="pain-limited-visibility" className="pain-point-card">
+                <div id="pain-stigma-engagement" className="pain-point-card">
                   <div
                     className="grid-image image-full about-mobile-image"
                     onMouseEnter={() => challenge1VideoRef.current?.play()}
@@ -352,27 +345,27 @@ const Kan: React.FC = () => {
                         muted
                         loop
                         playsInline
-                        aria-label="Scarlet project - Limited visibility into customer's documents"
+                        aria-label="Kan project - Stigma and low engagement"
                       />
                     </div>
                   </div>
-                  <h3 className="pain-point-title">Limited visibility into customer's documents</h3>
+                  <h3 className="pain-point-title">Stigma and low engagement around debt positioning</h3>
                   <p className="pain-point-description">
-                    Customers hesitated to upload evidence until it felt "perfect," limiting our visibility into submission structures and making it <strong>harder to design for different documentation models</strong>
+                    Although Kan was offered as a free employee benefit, <strong>its focus on debt repayment created negative connotations.</strong> Many users avoided the service altogether, resulting in low adoption and engagement.
                   </p>
                 </div>
 
-                <div id="pain-user-research" className="pain-point-card">
+                <div id="pain-disposable-income" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/PP_2.jpg" alt="Kan project - Lack of clarity around disposable income" className="about-hero-image" />
                   </div>
-                  <h3 className="pain-point-title">Difficulty in user research</h3>
+                  <h3 className="pain-point-title">Lack of clarity around disposable income</h3>
                   <p className="pain-point-description">
-                    Our users - software and AI medical device manufacturers - are a <strong>highly niche group, and the regulatory dynamic</strong> between Scarlet often reduced openness in feedback. This made traditional user research very challenging.
+                    Both users with and without debt struggled to understand how much they could safely spend. The absence of <strong>a clear "guilt-free" spending view</strong> created ongoing financial stress and uncertainty.
                   </p>
                 </div>
 
-                <div id="pain-regulatory-evaluation" className="pain-point-card">
+                <div id="pain-low-trust" className="pain-point-card">
                   <div
                     className="grid-image image-full about-mobile-image"
                     onMouseEnter={() => challengeVideoRef.current?.play()}
@@ -393,44 +386,13 @@ const Kan: React.FC = () => {
                         muted
                         loop
                         playsInline
-                        aria-label="Scarlet project - Regulatory evaluation at scale"
+                        aria-label="Kan project - Low trust in financial insight tools"
                       />
                     </div>
                   </div>
-                  <h3 className="pain-point-title">Complex regulatory evaluation at scale</h3>
+                  <h3 className="pain-point-title">Low trust in financial insight tools</h3>
                   <p className="pain-point-description">
-                    Assessors navigate <strong>100+ customer-specific core and supporting requirements,</strong> creating a workflow that is both highly structured and deeply complex.
-                  </p>
-                </div>
-
-                <div id="pain-admin-workflows" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challenge4VideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challenge4VideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challenge4VideoRef}
-                        src="/img/Scarlet/Challenge_4.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Deprioritised admin workflows"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">Deprioritised admin workflows</h3>
-                  <p className="pain-point-description">
-                    Administrators need <strong>a thorough audit trail as Scarlet scaled into new regions and hardware,</strong> but these were often deprioritized behind customer and assessor-facing product work.
+                    Existing financial services offered spending insights, but <strong>inaccurate categorisation and unclear logic reduced user trust.</strong> As a result, many users disengaged from insight-based features altogether.
                   </p>
                 </div>
               </div>
@@ -441,41 +403,41 @@ const Kan: React.FC = () => {
             <section id="key-design" className="content-section">
               <h2>Design approach</h2>
               <div className="key-design-grid">
-                <div id="key-submission-playground" className="pain-point-card">
+                <div id="key-actionable-insights" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_1.jpg" alt="Kan project - Actionable, personalised financial insights" className="about-hero-image" />
                   </div>
-                  <h3 className="pain-point-title">Clear distinction between submission and exploration</h3>
+                  <h3 className="pain-point-title">Actionable, personalised financial insights</h3>
                   <p className="pain-point-description">
-                    Kept the submission flow broad and flexible with accepting any evidence type, which was clearly separated from a "playground" space with <strong>an AI coverage checker.</strong> This checked customers' submission readiness based on requirements, and gave us a better understanding of their documentation model
+                    Designed insight cards that highlight the most important signals for each user—<strong>such as savings progress and disposable income</strong>—personalised through individual spend goals and category targets.
                   </p>
                 </div>
-                <div id="key-customer-feedback" className="pain-point-card">
+                <div id="key-trusted-integrations" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_2.jpg" alt="Kan project - Accurate guidance through trusted integrations" className="about-hero-image" />
                   </div>
-                  <h3 className="pain-point-title">Customer feedback through real touchpoints</h3>
+                  <h3 className="pain-point-title">Accurate guidance through trusted integrations</h3>
                   <p className="pain-point-description">
-                    Collated feedback through natural customer interactions, <strong>vibe coding prototypes like the Scarlet Calculator</strong> that were used during sales calls to uncover customer needs and pain points. This tool allowed prospects to estimate certification timelines based on submission readiness.
+                    Integrated services like <strong>Tink (open banking) and the SIFO calculator (baseline living cost benchmark)</strong> to improve transaction categorisation and enable realistic budgeting support.
                   </p>
                 </div>
-                <div id="key-atomic-evaluation" className="pain-point-card">
+                <div id="key-high-craft-design" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_3.jpg" alt="Kan project - High-craft design for data-heavy experiences" className="about-hero-image" />
                   </div>
-                  <h3 className="pain-point-title">Atomic, scalable regulatory evaluation with contextual agent support</h3>
+                  <h3 className="pain-point-title">High-craft design for data-heavy experiences</h3>
                   <p className="pain-point-description">
-                    Structured assessment into requirement-level actions, enabling review of core and supporting requirements individually or in bulk, while layering in <strong>assessor agents</strong> that provide guidance tailored to each evaluator's context.
+                    Focused on <strong>intuitive spend visualisations, consistent component systems, and clear hierarchy</strong> across insights and categories to make complex financial data easy to interpret.
                   </p>
                 </div>
 
-                <div id="key-vibe-prototypes" className="pain-point-card">
+                <div id="key-user-control" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_4.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_4.jpg" alt="Kan project - User control and transparency in spending data" className="about-hero-image" />
                   </div>
-                  <h3 className="pain-point-title">Vibe-coded prototypes for admin workflows</h3>
+                  <h3 className="pain-point-title">User control and transparency in spending data</h3>
                   <p className="pain-point-description">
-                    With limited engineering bandwidth available for non-customer-facing work, we <strong>vibe-coded lightweight prototypes</strong> (e.g., an automated PDF certificate generator) to deliver small, high-impact wins and reduce manual admin effort.
+                    Enabled <strong>recategorisation and clearer breakdowns</strong> so users could understand and trust how their financial activity was represented.
                   </p>
                 </div>
               </div>

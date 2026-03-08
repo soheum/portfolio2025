@@ -1,0 +1,62 @@
+@font-face {
+  font-family: 'SA No Rules';
+  src: url('../fonts/SANoRules.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.photo-cloud-3d {
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  overscroll-behavior: contain;
+  touch-action: none;
+  position: relative;
+}
+
+.photo-cloud-3d canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.photo-cloud-3d__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.photo-cloud-3d__overlay-canvas-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-cloud-3d__overlay-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.photo-cloud-3d__debug {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}

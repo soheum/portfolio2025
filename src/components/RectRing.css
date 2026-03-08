@@ -1,0 +1,14 @@
+/* Typewriter effect: each letter appears instantly (no opacity fade) */
+@keyframes rect-ring-letter-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rect-ring-caption-letter {
+  opacity: 0;
+  animation: rect-ring-letter-reveal 0.01s steps(1) forwards;
+}

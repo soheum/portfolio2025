@@ -96,30 +96,7 @@ const Box1: React.FC<Box1Props> = ({ progress }) => {
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
     >
-      <span 
-        ref={textRef} 
-        className={`text ${textClicked ? 'text-clicked' : ''}`}
-        onClick={handleClick}
-      >
-        click me
-      </span>
-      <span 
-        ref={badgeRef}
-        className={`badge ${isBadgeVisible ? 'is-visible' : ''}`}
-        aria-label="count"
-      >
-        <svg className="ring" viewBox="0 0 36 36" aria-hidden="true">
-          <circle className="ring-track" cx="18" cy="18" r="16"></circle>
-          <circle 
-            ref={ringProgressRef}
-            className="ring-progress" 
-            cx="18" 
-            cy="18" 
-            r="16"
-          ></circle>
-        </svg>
-        <span ref={badgeNumRef} className="badge-num">1</span>
-      </span>
+    
     </div>
   );
 };

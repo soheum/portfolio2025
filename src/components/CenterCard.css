@@ -1,9 +1,9 @@
 .center-card {
-  width: 600px;
-  height: 600px;
+  width: 500px;
+  height: 500px;
   background: #000000;
   opacity: 1;
-  padding: 40px;
+  padding: 1.5rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -14,25 +14,29 @@
 }
 
 .center-card__name {
-  /* Scroll-linked font size: 32px to 24px */
-  font-size: calc(32px - var(--scroll-progress, 0) * 8px);
-  /* Scroll-linked letter spacing: -0.02em to -0.01em */
-  letter-spacing: calc(-0.02em + var(--scroll-progress, 0) * 0.01em);
-  margin-bottom: 16px;
-  color: #fff;
+  font-size: 1.5rem;   /* 24px at 16px base */
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem; /* 12px at 16px base */
+  color: var(--center-name-color, #fff);
   font-weight: 400;
   transition: font-size 0.1s ease-out, letter-spacing 0.1s ease-out, opacity 0.1s ease-out, max-height 0.1s ease-out;
   /* Set from JS (--center-name-opacity, --center-name-max-height) to avoid postcss-calc parse errors */
   opacity: var(--center-name-opacity, 1);
-  max-height: var(--center-name-max-height, 100px);
+  max-height: var(--center-name-max-height, 6.25rem); /* 100px at 16px base */
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: auto;
   display: flex;
   align-items: baseline;
 }
 
 .center-card__name-text {
   display: inline;
+}
+
+.center-card__name-link {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
 }
 
 .center-card__reveal {
@@ -69,16 +73,12 @@
 }
 
 .center-card__text {
-  /* Scroll-linked font size: 18px to 32px */
-  font-size: calc(18px + var(--scroll-progress, 0) * 14px);
-  /* Scroll-linked line height: 1.5 to 1.4 */
-  line-height: calc(1.5 - var(--scroll-progress, 0) * 0.1);
-  /* Scroll-linked letter spacing: -0.01em to 0 */
-  letter-spacing: calc(-0.01em + var(--scroll-progress, 0) * 0.01em);
-  /* Keep intro paragraph at a darker fixed gray for stronger contrast. */
-  color: var(--center-text-color, #818181);
+  font-size: 0.9rem;  /* 18px at 16px base */
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--center-text-color, #A3A3A3);
   margin: 0;
-  transition: font-size 0.1s ease-out, line-height 0.1s ease-out, letter-spacing 0.1s ease-out, color 0.1s ease-out;
+  transition: color 0.1s ease-out;
   display: block;
 }
 
@@ -87,11 +87,31 @@
 }
 
 .center-card__text-line + .center-card__text-line {
-  margin-top: 8px;
+  margin-top: 0.5rem;
+}
+
+.center-card__text-line--muted,
+.center-card__text-line--muted * {
+  color: var(--center-text-muted-color, #000000) !important;
 }
 
 .center-card__text-highlight {
-  color: #d8d8d8;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.center-card__text-previously {
+  font-style: italic;
+}
+
+/* [1], [2], [x] labels – distinct style */
+.center-card__text-label {
+  display: inline;
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5b5a5a;
+  margin-right: 0.25em;
 }
 
 .center-card__typed {
@@ -118,7 +138,7 @@
 
 .center-card__footer {
   margin-top: auto;
-  padding-top: 40px;
+  padding-top: 1.5rem;
 }
 
 /* Row: left = LinkedIn/CV/Email, right = About me */
@@ -127,12 +147,12 @@
   flex-direction: row;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
+  gap: 0.75rem;
 }
 
 .center-card__links {
   margin: 0;
-  font-size: 28px;
+  font-size: 1rem;
   transition: opacity 0.1s ease-out, max-height 0.1s ease-out;
   /* Set from JS (--center-links-opacity, --center-links-max-height) to avoid postcss-calc parse errors */
   opacity: var(--center-links-opacity, 0);
@@ -140,9 +160,18 @@
   overflow: hidden;
 }
 
+/* Footer paragraph variant: keep in footer, but style like center-card__text */
+.center-card__footer-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  letter-spacing: 0;
+  color: var(--center-text-color, #ffffff);
+  white-space: normal;
+}
+
 .center-card__link--about {
   flex-shrink: 0;
-  font-size: 28px;
+  font-size: 1rem;
   /* Same opacity/max-height as .center-card__links so it reveals with the other links */
   opacity: var(--center-links-opacity, 0);
   max-height: var(--center-links-max-height, 0);
@@ -151,7 +180,7 @@
 
 .center-card__scroll-hint {
   margin: 12px 0 0;
-  font-size: 16px;
+  font-size: 0.875rem;
   color: #969696;
   opacity: 0.8;
   display: inline-block;
