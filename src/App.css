@@ -487,3 +487,62 @@
 .app-root.box2-hovered .grid-lines-svg-loading {
   opacity: 0;
 }
+
+/* Sticky links - fixed to viewport lower-right, stays visible during drag */
+.home-sticky-links {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.home-sticky-links--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.home-sticky-links--visible > * {
+  pointer-events: auto;
+}
+
+.home-sticky-links > * {
+  pointer-events: auto;
+}
+
+.home-sticky-link {
+  position: relative;
+  font-size: 0.9rem;
+  border-color: #585858;
+  border-width: 0.25px;
+  border-style: solid;
+  color: #a3a3a3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+}
+
+/* Rectangular outward feather: semi-transparent white on each side fading outward (same as Box2/5/9) */
+.home-sticky-link::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  background-size: 100% 24px, 100% 24px, 24px 100%, 24px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+
+.home-sticky-link:hover {
+  color: #ffffff;
+}

@@ -7,6 +7,7 @@ import Box2 from '../components/Box2';
 import Box3 from '../components/Box3';
 import Box5 from '../components/Box5';
 import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
+import Box4 from '../components/Box4';
 import Box10 from '../components/Box10';
 import Box12 from '../components/Box12';
 
@@ -14,6 +15,7 @@ function HomePage() {
   const [vh, setVh] = useState(0);
   const [vw, setVw] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [showStickyLinks, setShowStickyLinks] = useState(false);
   const [isBox2Hovered, setIsBox2Hovered] = useState(false);
   const [isBox5Hovered, setIsBox5Hovered] = useState(false);
   const [isBox9Hovered, setIsBox9Hovered] = useState(false);
@@ -49,6 +51,12 @@ function HomePage() {
     }, 1400);
     return () => clearTimeout(timer);
   }, []);
+
+  // Show sticky links after all boxes are done appearing (last box: 1.8s delay + 0.6s fade = 2.4s)
+  useEffect(() => {
+    const timer = setTimeout(() => setShowStickyLinks(true), 3400);
+    return () => clearTimeout(timer);
+  }, []);
   
   // Set scrollProgress to 1 (grid view) permanently - no scrolling needed
   const scrollProgress = 1;
@@ -74,6 +82,8 @@ function HomePage() {
         return <Box10 progress={progress} />;
       case 11:
         return <Box12 progress={progress} />;
+      case 19:
+        return <Box4 progress={progress} />;
       case 15:
         return <Box10 progress={progress} />;
       default:
@@ -107,6 +117,7 @@ function HomePage() {
       16: '/img/Grid/Box9_5.jpg',  // New cell above Box9
       17: '/img/Grid/Box9_8.jpg',  // New cell immediately above index 16
       18: '/img/Grid/Box9.jpg',    // Box5 – left of center card
+      19: '/img/Grid/Box9.jpg',    // Box4 – row 4 col 1
     };
     
     // Return the mapped image or a default image if not specified
@@ -161,6 +172,7 @@ function HomePage() {
       16: '/img/Grid/Box9.jpg',  // New cell above Box9
       17: '/img/Grid/Box2_1.jpg',  // New cell immediately above index 16
       18: '/img/Grid/Box9.jpg',    // Box5 – left of center card
+      19: '/img/Grid/Box9.jpg',    // Box4 – row 4 col 1
     };
     
     return imageMap[cellIndex] || '/img/Scarlet/01-1.jpg';
@@ -195,8 +207,8 @@ function HomePage() {
     { row: 2, col: 4, index: 16 }, // New box above Box9
     { row: 3, col: 4, index: 8 },  // Box9 moved to bottom-right of CenterCard
     { row: 1, col: 5, index: 9 },  // Box10
-    { row: 4, col: 0, index: 10 },
-    { row: 4, col: 1, index: 11 }, // Box12
+    { row: 4, col: 0, index: 11 }, // Box12
+    { row: 4, col: 1, index: 19 }, // Box4
     { row: 4, col: 4, index: 12 },
     { row: 4, col: 5, index: 13 },
   ];
@@ -682,6 +694,19 @@ function HomePage() {
           </div>
         </div>
       </section>
+    </div>
+    <div className={`home-sticky-links ${showStickyLinks ? 'home-sticky-links--visible' : ''}`}>
+      <a
+        href="https://www.linkedin.com/in/so-heum-hwang/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="home-sticky-link"
+      >
+        LinkedIn
+      </a>
+      <a href="mailto:sohheum@gmail.com" className="home-sticky-link">
+        Contact
+      </a>
     </div>
     </div>
   );
