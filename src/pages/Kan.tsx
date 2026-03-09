@@ -16,6 +16,7 @@ const Kan: React.FC = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const challengeVideoRef = useRef<HTMLVideoElement | null>(null);
   const challenge1VideoRef = useRef<HTMLVideoElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const challenge4VideoRef = useRef<HTMLVideoElement | null>(null);
   const coverVideoRef = useRef<HTMLVideoElement | null>(null);
 

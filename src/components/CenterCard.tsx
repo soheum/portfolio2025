@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import ScrambleText from './ScrambleText';
 import './CenterCard.css';
 
 interface CenterCardProps {

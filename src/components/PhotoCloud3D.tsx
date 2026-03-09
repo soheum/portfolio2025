@@ -149,6 +149,7 @@ const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images, onOverlayChange }) 
       pendingCancelRef.current = true;
       cancelAnimationFrame(rafId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingIndex]);
 
   const handleCanvasClick = () => {

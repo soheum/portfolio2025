@@ -8,7 +8,7 @@ interface Box1Props {
 const Box1: React.FC<Box1Props> = ({ progress }) => {
   const [count, setCount] = useState(0);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
-  const [textClicked, setTextClicked] = useState(false);
+  const [, setTextClicked] = useState(false);
   const textRef = useRef<HTMLSpanElement>(null);
   const badgeRef = useRef<HTMLSpanElement>(null);
   const badgeNumRef = useRef<HTMLSpanElement>(null);
@@ -41,6 +41,7 @@ const Box1: React.FC<Box1Props> = ({ progress }) => {
     element.classList.add(className);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleClick = () => {
     if (!badgeRef.current || !badgeNumRef.current || !textRef.current) return;
 

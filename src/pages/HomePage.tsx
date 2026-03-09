@@ -233,6 +233,7 @@ function HomePage() {
       recenterToCard();
     });
     return () => window.cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [centerX, centerY, canvasWidth, canvasHeight, isLoading]);
 
   const handleCanvasMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {

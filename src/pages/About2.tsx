@@ -280,6 +280,7 @@ const About2: React.FC = () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging, currentIndex, data]);
 
   return (
