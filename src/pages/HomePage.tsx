@@ -5,7 +5,8 @@ import CenterCard from '../components/CenterCard';
 import Box1 from '../components/Box1';
 import Box2 from '../components/Box2';
 import Box3 from '../components/Box3';
-import Box9 from '../components/Box9';
+import Box5 from '../components/Box5';
+import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
 import Box10 from '../components/Box10';
 import Box12 from '../components/Box12';
 
@@ -14,6 +15,7 @@ function HomePage() {
   const [vw, setVw] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isBox2Hovered, setIsBox2Hovered] = useState(false);
+  const [isBox5Hovered, setIsBox5Hovered] = useState(false);
   const [isBox9Hovered, setIsBox9Hovered] = useState(false);
   const [isDraggingCanvas, setIsDraggingCanvas] = useState(false);
   const scrollShellRef = useRef<HTMLDivElement | null>(null);
@@ -56,11 +58,13 @@ function HomePage() {
       case 0:
         return <Box1 progress={progress} />;
       case 1:
-        return <Box2 progress={progress} onHoverChange={setIsBox2Hovered} />;
+        return <Box2 progress={progress} onHoverChange={setIsBox2Hovered} isHovered={isBox2Hovered} />;
+      case 18:
+        return <Box5 progress={progress} onHoverChange={setIsBox5Hovered} isHovered={isBox5Hovered} />;
       case 2:
         return <Box3 progress={progress} />;
       case 8:
-        return <Box9 progress={progress} onHoverChange={setIsBox9Hovered} />;
+        return <Box9 progress={progress} onHoverChange={setIsBox9Hovered} isHovered={isBox9Hovered} />;
       case 9:
         return <Box10 progress={progress} />;
       case 11:
@@ -97,6 +101,7 @@ function HomePage() {
       15: '/img/Grid/Box9.jpg',  // New cell next to Box2
       16: '/img/Grid/Box9_5.jpg',  // New cell above Box9
       17: '/img/Grid/Box9_8.jpg',  // New cell immediately above index 16
+      18: '/img/Grid/Box9.jpg',    // Box5 – left of center card
     };
     
     // Return the mapped image or a default image if not specified
@@ -150,6 +155,7 @@ function HomePage() {
       15: '/img/Grid/Box2_2.jpg',  // New cell next to Box2
       16: '/img/Grid/Box9.jpg',  // New cell above Box9
       17: '/img/Grid/Box2_1.jpg',  // New cell immediately above index 16
+      18: '/img/Grid/Box9.jpg',    // Box5 – left of center card
     };
     
     return imageMap[cellIndex] || '/img/Scarlet/01-1.jpg';
@@ -171,6 +177,7 @@ function HomePage() {
   // This keeps grid-cell placement aligned exactly to the drawn lines.
   const gridCells = [
     { row: 2, col: 0, index: 0 },  // Box1 moved two rows down
+    { row: 2, col: 1, index: 18 }, // Box5 – left of center card, top-left
     { row: 1, col: 2, index: 1 },  // Box2 moved down and closer to center
     { row: 0, col: 2, index: 2 },
     { row: 0, col: 3, index: 3 },
@@ -342,7 +349,7 @@ function HomePage() {
       onMouseLeave={stopCanvasDrag}
     >
     <div
-      className="app-root"
+      className={`app-root ${isBox2Hovered ? 'box2-hovered' : ''} ${isBox5Hovered ? 'box5-hovered' : ''} ${isBox9Hovered ? 'box9-hovered' : ''}`}
       style={{
         '--canvas-width': `${canvasWidth}px`,
         '--canvas-height': `${canvasHeight}px`,
@@ -585,11 +592,10 @@ function HomePage() {
             transitionDelay: getBox2TransitionDelay(14),
           }}
         />
-        
         {gridCells.map((cell) => (
           <div
             key={`${cell.row}-${cell.col}`}
-            className={`grid-cell ${cell.index === 1 ? 'grid-cell--box2' : ''} ${cell.index === 8 ? 'grid-cell--box9' : ''} ${!isLoading ? 'grid-cell--reveal' : ''}`}
+            className={`grid-cell ${cell.index === 1 ? 'grid-cell--box2' : ''} ${cell.index === 8 ? 'grid-cell--box9' : ''} ${cell.index === 18 ? 'grid-cell--box5' : ''} ${!isLoading ? 'grid-cell--reveal' : ''}`}
             style={{
               gridColumn: cell.col + 1,
               gridRow: cell.row + 1,
@@ -615,7 +621,6 @@ function HomePage() {
                 transitionDelay: getBox2TransitionDelay(cell.index),
               }}
             />
-            
             <div className="grid-cell-content">
               {getBoxInteraction(cell.index, scrollProgress)}
             </div>
@@ -635,7 +640,7 @@ function HomePage() {
                 '--center-reveal-delay': '0.7s',
                 '--center-name-opacity': 1,
                 '--center-name-max-height': '6.25rem', /* 100px at 16px base */
-                '--center-name-color': isBox2Hovered || isBox9Hovered ? '#000000' : '#ffffff',
+                '--center-name-color': isBox2Hovered || isBox5Hovered || isBox9Hovered ? '#000000' : '#ffffff',
                 '--center-text-muted-color': '#000000',
                 '--center-links-opacity': 1,
                 '--center-links-max-height': '20rem',
@@ -645,7 +650,20 @@ function HomePage() {
                 key="center-card-grid-view"
                 startReveal
                 highlightSegments={['Scarlet', 'Bank of England', 'McKinsey & Company']}
-                focusLineIndex={isBox2Hovered ? 1 : isBox9Hovered ? 5 : null}
+                focusLineIndex={isBox2Hovered ? 1 : isBox5Hovered ? 3 : isBox9Hovered ? 5 : null}
+                interactiveLineIndices={[1, 3, 5]}
+                onLineHover={(lineIndex) => {
+                  setIsBox2Hovered(lineIndex === 1);
+                  setIsBox5Hovered(false);
+                  setIsBox9Hovered(lineIndex === 5);
+                }}
+                onLineClick={(lineIndex) => {
+                  if (lineIndex === 1) {
+                    window.open('/project', '_blank', 'noopener,noreferrer');
+                  } else if (lineIndex === 5) {
+                    window.open(BOX9_PROJECT_URL, '_blank', 'noopener,noreferrer');
+                  }
+                }}
                 text={
                   "[1] A strong believer that creativity thrives at the intersection of contrasting values\n[2] A digital designer, exploring how AI can help accelerate medical devices to market at Scarlet\n[3] A ceramist by practice, expressing creativity through material and form\n[4] A visual storyteller, curating thoughtfully designed spaces through photography and text\n[5] Previously a public sector product designer at the Bank of England, transforming regulatory data collection process\n[6] Previously a digital product designer at McKinsey & Company, helping clients to build digital businesses"
                 }

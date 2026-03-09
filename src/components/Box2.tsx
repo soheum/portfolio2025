@@ -4,9 +4,10 @@ import './Box2.css';
 interface Box2Props {
   progress: number;
   onHoverChange?: (isHovered: boolean) => void;
+  isHovered?: boolean;
 }
 
-const Box2: React.FC<Box2Props> = ({ progress, onHoverChange }) => {
+const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false }) => {
   const handleClick = () => {
     window.open('/project', '_blank', 'noopener,noreferrer');
   };
@@ -24,7 +25,7 @@ const Box2: React.FC<Box2Props> = ({ progress, onHoverChange }) => {
 
   return (
     <div 
-      className={`box2-container ${isSecondView ? 'second-view' : ''}`}
+      className={`box2-container ${isSecondView ? 'second-view' : ''} ${isHovered ? 'hovered' : ''}`}
       onClick={handleClick}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}

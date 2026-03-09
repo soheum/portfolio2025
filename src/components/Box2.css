@@ -41,7 +41,8 @@
   pointer-events: none;
 }
 
-.box2-container:hover .box2-scarlet-logo {
+.box2-container:hover .box2-scarlet-logo,
+.box2-container.hovered .box2-scarlet-logo {
   opacity: 1;
 }
 
@@ -69,7 +70,8 @@
   transition: filter 0.3s ease;
 }
 
-.box2-container:hover .arrow-icon {
+.box2-container:hover .arrow-icon,
+.box2-container.hovered .arrow-icon {
   filter: none;
 }
 
@@ -118,21 +120,25 @@
   opacity: 0;
 }
 
-/* Hover animations */
-.box2-container:hover .file-front {
+/* Hover animations (direct hover or external via CenterCard line hover) */
+.box2-container:hover .file-front,
+.box2-container.hovered .file-front {
   transform: rotate(2deg);
 }
 
-.box2-container:hover .file-name {
+.box2-container:hover .file-name,
+.box2-container.hovered .file-name {
   color: #ffffff;
 }
 
-.box2-container:hover .file-back-1 {
+.box2-container:hover .file-back-1,
+.box2-container.hovered .file-back-1 {
   transform: rotate(-2.91deg);
   opacity: 1;
 }
 
-.box2-container:hover .file-back-2 {
+.box2-container:hover .file-back-2,
+.box2-container.hovered .file-back-2 {
   transform: rotate(-9.81deg);
   opacity: 1;
 }
@@ -159,7 +165,7 @@
   50% { transform: scale(1.002); }
 }
 
-.box2-container.second-view:not(:hover) .file-stack {
+.box2-container.second-view:not(:hover):not(.hovered) .file-stack {
   animation: box2-emphasis-pulse 2s ease-in-out infinite;
 }
 

@@ -104,7 +104,7 @@ const UnfoldingCard: React.FC<{
             padding: 0,
           }}
         >
-          <span style={{ color: '#ffffff', fontSize: 24, fontFamily: "'SA No Rules', sans-serif", margin: 0, padding: 0, display: 'inline-block' }}>
+          <span style={{ color: '#ffffff', fontSize: 18, fontFamily: "'SA No Rules', sans-serif", margin: 0, padding: 0, display: 'inline-block' }}>
             {Array.from(caption).map((letter, i) => (
               <span
                 key={i}
@@ -131,17 +131,18 @@ const UnfoldingCard: React.FC<{
 const HoverRaycaster: React.FC<{
   groupRef: React.RefObject<THREE.Group | null>;
   onHoveredChange: (index: number | null) => void;
-}> = ({ groupRef, onHoveredChange }) => {
+  isPointerOver: boolean;
+}> = ({ groupRef, onHoveredChange, isPointerOver }) => {
   const { camera, pointer, raycaster } = useThree();
   const prevRef = useRef<number | null>(null);
 
   useFrame(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !isPointerOver) return;
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObject(groupRef.current, true);
     const hit = hits.find((h) => h.object.userData.index !== undefined);
     const next = hit ? (hit.object.userData.index as number) : null;
-    // Only update when we have a hit; don't clear when cursor is between images
+    // Only update when we have a hit; don't clear when cursor is between images (avoids flicker while scrolling)
     if (next !== null) {
       prevRef.current = next;
       onHoveredChange(next);
@@ -163,6 +164,7 @@ interface RectRingProps {
   openedIndex?: number | null;
   openedSpinY?: number;
   overlayStartTime?: number;
+  isPointerOver?: boolean;
 }
 
 const HALF_H = 1.4 / 2;
@@ -187,6 +189,7 @@ const RectRing: React.FC<RectRingProps> = ({
   openedIndex = null,
   openedSpinY = 0,
   overlayStartTime = 0,
+  isPointerOver = true,
 }) => {
   // Load textures: color and bw versions (cycles if count > images.length)
   const colorUrls = useMemo(
@@ -223,7 +226,7 @@ const RectRing: React.FC<RectRingProps> = ({
 
   return (
     <>
-      <HoverRaycaster groupRef={groupRef} onHoveredChange={onHoveredChange} />
+      <HoverRaycaster groupRef={groupRef} onHoveredChange={onHoveredChange} isPointerOver={isPointerOver} />
       <group
         ref={groupRef}
         rotation={[0, spinY, 0]}

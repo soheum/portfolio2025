@@ -343,6 +343,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.3s ease;
   /* Add your content styles here */
 }
 
@@ -408,42 +409,81 @@
   pointer-events: none;
 }
 
+/* BOX5 HOVER EFFECT - hide grid lines, hide other boxes (no fill images, only text hint) */
+.app-root:has(.box5-container:hover) .grid-lines-svg-static,
+.app-root.box5-hovered .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box5-container:hover) .grid-lines-svg-loading,
+.app-root.box5-hovered .grid-lines-svg-loading {
+  opacity: 0;
+}
+
+/* Hide Box2, Box9, and other grid cells when Box5 is hovered */
+.app-root:has(.box5-container:hover) .grid-cell:not(.grid-cell--box5) .grid-cell-content,
+.app-root.box5-hovered .grid-cell:not(.grid-cell--box5) .grid-cell-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Box5 CenterCard text: CSS-only hide using grid cell hover (works with WebGL Canvas).
+   The grid cell receives :hover when the pointer is over it, including over the Canvas.
+   Box2/Box9 use .box5-container:hover because their DOM propagates events; Box5's Canvas blocks
+   container hover, so we use .grid-cell--box5:hover instead. */
+.app-root:has(.grid-cell--box5:hover) .center-card__text .center-card__text-line:not(:nth-child(4)),
+.app-root:has(.grid-cell--box5:hover) .center-card__text .center-card__text-line:not(:nth-child(4)) * {
+  color: #000000 !important;
+}
+.app-root:has(.grid-cell--box5:hover) .center-card__name,
+.app-root:has(.grid-cell--box5:hover) .center-card__name * {
+  color: #000000 !important;
+}
+
 /* BOX9 HOVER EFFECT */
-/* Show Box9 fill on all cells EXCEPT the Box9 cell itself */
-.grid-content-overlay:has(.box9-container:hover) .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9 {
+/* Show Box9 fill on all cells EXCEPT the Box9 cell itself (direct hover or CenterCard line hover) */
+.grid-content-overlay:has(.box9-container:hover) .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9,
+.app-root.box9-hovered .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9 {
   opacity: 1;
 }
 
 /* Show the center card Box9 fill when Box9 is hovered */
-.grid-content-overlay:has(.box9-container:hover) .center-card-fill-layer--box9 {
+.grid-content-overlay:has(.box9-container:hover) .center-card-fill-layer--box9,
+.app-root.box9-hovered .center-card-fill-layer--box9 {
   opacity: 1;
 }
 
 /* Hide grid lines when Box9 is hovered */
-.app-root:has(.box9-container:hover) .grid-lines-svg-static {
+.app-root:has(.box9-container:hover) .grid-lines-svg-static,
+.app-root.box9-hovered .grid-lines-svg-static {
   opacity: 0;
 }
 
-.app-root:has(.box9-container:hover) .grid-lines-svg-loading {
+.app-root:has(.box9-container:hover) .grid-lines-svg-loading,
+.app-root.box9-hovered .grid-lines-svg-loading {
   opacity: 0;
 }
 
 /* BOX2 HOVER EFFECT */
-/* Show Box2 fill on all cells EXCEPT the Box2 cell itself */
-.grid-content-overlay:has(.box2-container:hover) .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2 {
+/* Show Box2 fill on all cells EXCEPT the Box2 cell itself (direct hover or CenterCard line hover) */
+.grid-content-overlay:has(.box2-container:hover) .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2,
+.app-root.box2-hovered .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2 {
   opacity: 1;
 }
 
 /* Show the center card Box2 fill when Box2 is hovered */
-.grid-content-overlay:has(.box2-container:hover) .center-card-fill-layer--box2 {
+.grid-content-overlay:has(.box2-container:hover) .center-card-fill-layer--box2,
+.app-root.box2-hovered .center-card-fill-layer--box2 {
   opacity: 1;
 }
 
 /* Hide grid lines when Box2 is hovered */
-.app-root:has(.box2-container:hover) .grid-lines-svg-static {
+.app-root:has(.box2-container:hover) .grid-lines-svg-static,
+.app-root.box2-hovered .grid-lines-svg-static {
   opacity: 0;
 }
 
-.app-root:has(.box2-container:hover) .grid-lines-svg-loading {
+.app-root:has(.box2-container:hover) .grid-lines-svg-loading,
+.app-root.box2-hovered .grid-lines-svg-loading {
   opacity: 0;
 }

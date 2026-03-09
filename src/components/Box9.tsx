@@ -2,16 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Box9.css';
 
 /** Route opened when clicking Box9. Temporarily using PDF until project page is ready. */
-const BOX9_PROJECT_URL = '/files/Kan_portfolio.pdf';
+export const BOX9_PROJECT_URL = '/files/Kan_portfolio.pdf';
 // const BOX9_PROJECT_URL = '/kan'; // Uncomment when ready to show project page
 
 interface Box9Props {
   progress: number;
   onHoverChange?: (isHovered: boolean) => void;
+  isHovered?: boolean;
 }
 
-const Box9: React.FC<Box9Props> = ({ progress, onHoverChange }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const Box9: React.FC<Box9Props> = ({ progress, onHoverChange, isHovered: isExternallyHovered = false }) => {
+  const [isHoveredInternal, setIsHoveredInternal] = useState(false);
+  const isHovered = isHoveredInternal || isExternallyHovered;
   const [budgetPercentage, setBudgetPercentage] = useState(0);
   const animationRef = useRef<number | null>(null);
 
@@ -103,11 +105,11 @@ const Box9: React.FC<Box9Props> = ({ progress, onHoverChange }) => {
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
       onMouseEnter={() => {
-        setIsHovered(true);
+        setIsHoveredInternal(true);
         onHoverChange?.(true);
       }}
       onMouseLeave={() => {
-        setIsHovered(false);
+        setIsHoveredInternal(false);
         onHoverChange?.(false);
       }}
       onClick={handleClick}

@@ -5,9 +5,10 @@ import './PhotoCloud3D.css';
 
 interface PhotoCloud3DProps {
   images: string[];
+  onOverlayChange?: (isOpen: boolean) => void;
 }
 
-const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images }) => {
+const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images, onOverlayChange }) => {
   const [spinY, setSpinY] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [openedImageUrl, setOpenedImageUrl] = useState<string | null>(null);
@@ -27,6 +28,10 @@ const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images }) => {
   useEffect(() => {
     spinYRef.current = spinY;
   }, [spinY]);
+
+  useEffect(() => {
+    onOverlayChange?.(!!openedImageUrl || pendingIndex !== null);
+  }, [openedImageUrl, pendingIndex, onOverlayChange]);
 
   useEffect(() => {
     if (!openedImageUrl) return;
@@ -51,6 +56,18 @@ const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images }) => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+  }, [isCanvasActive]);
+
+  // Block page scroll when pointer is over the 3D view (e.g. when Box5 is inside HomePage scroll shell)
+  useEffect(() => {
+    if (!isCanvasActive) return;
+
+    const handleWheelBlock = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener('wheel', handleWheelBlock, { capture: true, passive: false });
+    return () => document.removeEventListener('wheel', handleWheelBlock, { capture: true });
   }, [isCanvasActive]);
 
   useEffect(() => {
@@ -181,6 +198,7 @@ const PhotoCloud3D: React.FC<PhotoCloud3DProps> = ({ images }) => {
           images={images}
           hoveredIndex={hoveredIndex}
           onHoveredChange={setHoveredIndex}
+          isPointerOver={isCanvasActive}
           pendingIndex={pendingIndex}
           pendingOpacity={pendingOpacity}
           openedIndex={openedImageUrl ? openedImageIndex : null}

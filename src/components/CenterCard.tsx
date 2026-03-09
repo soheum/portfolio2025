@@ -10,6 +10,10 @@ interface CenterCardProps {
   highlightSegments?: string[];
   scrollHint?: string;
   focusLineIndex?: number | null;
+  /** Line indices (0-based) that have hover/click effects. Only these show pointer cursor. */
+  interactiveLineIndices?: number[];
+  onLineHover?: (lineIndex: number | null) => void;
+  onLineClick?: (lineIndex: number) => void;
 }
 
 const CenterCard: React.FC<CenterCardProps> = ({
@@ -19,10 +23,16 @@ const CenterCard: React.FC<CenterCardProps> = ({
   highlightSegments,
   scrollHint,
   focusLineIndex,
+  interactiveLineIndices,
+  onLineHover,
+  onLineClick,
 }) => {
   const fullName = "@soheum";
 
   const textLines = text.split('\n');
+
+  const isLineInteractive = (index: number) =>
+    interactiveLineIndices ? interactiveLineIndices.includes(index) : Boolean(onLineHover || onLineClick);
 
   /* Match [1], [2], [x], [X], [3], etc. for badge styling */
   const labelRegex = /\[\d+\]|\[x\]/gi;
@@ -113,6 +123,10 @@ const CenterCard: React.FC<CenterCardProps> = ({
               <span
                 key={`${index}-${line}`}
                 className="center-card__text-line center-card__reveal center-card__reveal--text"
+                onMouseEnter={() => onLineHover?.(index)}
+                onMouseLeave={() => onLineHover?.(null)}
+                onClick={() => onLineClick?.(index)}
+                style={isLineInteractive(index) ? { cursor: 'pointer' } : undefined}
               >
                 {before}
                 <span
@@ -134,6 +148,10 @@ const CenterCard: React.FC<CenterCardProps> = ({
                   ? 'center-card__text-line--muted'
                   : ''
               }`}
+              onMouseEnter={() => onLineHover?.(index)}
+              onMouseLeave={() => onLineHover?.(null)}
+              onClick={() => onLineClick?.(index)}
+              style={isLineInteractive(index) ? { cursor: 'pointer' } : undefined}
             >
               {renderHighlightedLine(line)}
             </span>

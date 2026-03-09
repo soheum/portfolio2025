@@ -1,0 +1,61 @@
+.box5-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.box5-hover-hint {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.box5-container:hover .box5-hover-hint,
+.box5-container.hovered .box5-hover-hint {
+  opacity: 1;
+}
+
+/* Hide hint when image overlay is open */
+.box5-container.overlay-open .box5-hover-hint {
+  opacity: 0;
+}
+
+.box5-photo-cloud-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 0; /* Allow flex child to shrink */
+  z-index: 0;
+}
+
+/* Rectangular outward feather: semi-transparent white on each side fading outward (same as Box2/Box9).
+   z-index: 1 so it sits on top of the 3D content; pointer-events: none so clicks pass through. */
+.box5-container::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  background-size: 100% 24px, 100% 24px, 24px 100%, 24px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
