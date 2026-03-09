@@ -32,8 +32,12 @@ const Box5: React.FC<Box5Props> = ({ progress, onHoverChange, isHovered = false 
   return (
     <div
       className={`box5-container ${isHovered ? 'hovered' : ''} ${isOverlayOpen ? 'overlay-open' : ''}`}
-      onMouseEnter={() => onHoverChange?.(true)}
+      onMouseEnter={() => {
+        // Only trigger hover if not already hovered (prevents fighting with CenterCard)
+        if (!isHovered) onHoverChange?.(true);
+      }}
       onMouseLeave={() => {
+        // Only clear hover if overlay is closed
         if (!isOverlayOpen) onHoverChange?.(false);
       }}
       style={{

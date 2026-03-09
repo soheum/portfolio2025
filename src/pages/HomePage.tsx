@@ -60,7 +60,12 @@ function HomePage() {
       case 1:
         return <Box2 progress={progress} onHoverChange={setIsBox2Hovered} isHovered={isBox2Hovered} />;
       case 18:
-        return <Box5 progress={progress} onHoverChange={setIsBox5Hovered} isHovered={isBox5Hovered} />;
+        return <Box5 progress={progress} onHoverChange={(val) => {
+          // If we are hovering line [4] (isBox5Hovered is true), ignore false updates from Box5
+          // unless it's explicitly setting true (e.g. from overlay open)
+          if (!val && isBox5Hovered) return;
+          setIsBox5Hovered(val);
+        }} isHovered={isBox5Hovered} />;
       case 2:
         return <Box3 progress={progress} />;
       case 8:
@@ -602,6 +607,8 @@ function HomePage() {
               gridRow: cell.row + 1,
               animationDelay: getBoxRevealDelay(cell.index),
             }}
+            onMouseEnter={cell.index === 18 ? () => setIsBox5Hovered(true) : undefined}
+            onMouseLeave={cell.index === 18 ? () => setIsBox5Hovered(false) : undefined}
           >
             {/* Box9 hover fill layer */}
             <div 
@@ -655,12 +662,14 @@ function HomePage() {
                 interactiveLineIndices={[1, 3, 5]}
                 onLineHover={(lineIndex) => {
                   setIsBox2Hovered(lineIndex === 1);
-                  setIsBox5Hovered(false);
+                  setIsBox5Hovered(lineIndex === 3);
                   setIsBox9Hovered(lineIndex === 5);
                 }}
                 onLineClick={(lineIndex) => {
                   if (lineIndex === 1) {
                     window.open('/project', '_blank', 'noopener,noreferrer');
+                  } else if (lineIndex === 3) {
+                    window.open('https://www.instagram.com/iso_heum/', '_blank', 'noopener,noreferrer');
                   } else if (lineIndex === 5) {
                     window.open(BOX9_PROJECT_URL, '_blank', 'noopener,noreferrer');
                   }
