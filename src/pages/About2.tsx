@@ -2,8 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../components/Box12.css';
 import './About2.css';
 
+// Rise → dip → steep rise (stock-like): sparse points, smooth curves, overall upward trend
+const INITIAL_DATA = [
+  14.2, 14.8, 15.4, 15.9, 15.5, 15.0, 14.9, 15.2, 16.0, 17.2, 18.5, 20.0,
+];
+
+
 const About2: React.FC = () => {
-  const [data, setData] = useState([14.7, 14.6, 14.8, 14.5, 15.3, 14.6, 14.7, 14.7, 14.5, 14.6, 14.7, 14.8, 14.9, 14.4, 14.3, 14.2, 14.6, 14.7, 14.7, 14.8, 14.7, 14.8, 14.9, 14.6, 14.8, 14.8]);
+  const [data, setData] = useState(INITIAL_DATA);
   const [dragging, setDragging] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayValue, setDisplayValue] = useState(43);
@@ -27,8 +33,8 @@ const About2: React.FC = () => {
   const maxYRef = useRef(0);
   const rangeYRef = useRef(1);
 
-  const viewBoxWidth = 100;
-  const viewBoxHeight = 80;
+  const viewBoxWidth = 200;
+  const viewBoxHeight = 100;
 
   function recomputeRange() {
     const dataMin = Math.min(...data);
@@ -203,7 +209,6 @@ const About2: React.FC = () => {
     const t = getTForIndex(index);
     const xPercent = t * 100;
     dividerRef.current.style.left = `${xPercent}%`;
-    valueElRef.current.style.left = `${xPercent}%`;
     updateClipRects(index);
     updateValueFromGraph(index);
     updateCirclePosition(index);
@@ -285,24 +290,25 @@ const About2: React.FC = () => {
   return (
     <main className="about2-page">
       <div className="about2-frame">
-        <div ref={cardRef} className={`card ${dragging ? 'dragging' : ''}`}>
-          <div className="hover-text">try dragging the dot up and down</div>
-          <div ref={valueElRef} className="value">{displayValue}</div>
-          <svg ref={graphRef} id="graph" viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`} preserveAspectRatio="xMidYMax meet">
-            <defs>
+        <div ref={cardRef} className={`card about2-card ${dragging ? 'dragging' : ''}`}>
+          <div className="about2-graph-wrapper">
+            <div className="hover-text">try dragging the dot up and down</div>
+            <div ref={valueElRef} className="value">{displayValue}</div>
+            <svg ref={graphRef} id="graph" viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`} preserveAspectRatio="xMidYMax meet">
+              <defs>
               <linearGradient id="area-gradient" x1="0%" x2="0%" y1="0%" y2="100%">
                 <stop offset="0%" stopColor="#1E1D1C" />
                 <stop offset="100%" stopColor="#000000" />
               </linearGradient>
-              <linearGradient id="vertical-lines-gradient" x1="0" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+              <linearGradient id="vertical-lines-gradient" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor="#2D2D2D" />
                 <stop offset="100%" stopColor="#000000" />
               </linearGradient>
               <clipPath id="clip-left">
-                <rect ref={clipLeftRectRef} id="clip-left-rect" x="0" y="0" width="50" height="80" />
+                <rect ref={clipLeftRectRef} id="clip-left-rect" x="0" y="0" width="100" height="100" />
               </clipPath>
               <clipPath id="clip-right">
-                <rect ref={clipRightRectRef} id="clip-right-rect" x="50" y="0" width="50" height="80" />
+                <rect ref={clipRightRectRef} id="clip-right-rect" x="100" y="0" width="100" height="100" />
               </clipPath>
             </defs>
             <path ref={areaPathRef} id="area" />
@@ -310,10 +316,29 @@ const About2: React.FC = () => {
             <g ref={verticalLinesRef} id="vertical-lines" />
             <path ref={lineLeftRef} id="line-left" clipPath="url(#clip-left)" />
             <path ref={lineRightRef} id="line-right" clipPath="url(#clip-right)" />
-            <line ref={dragLineRef} id="drag-line" x1="50" y1="0" x2="50" y2="80" stroke="transparent" strokeWidth="3" />
+            <line ref={dragLineRef} id="drag-line" x1="100" y1="0" x2="100" y2="100" stroke="transparent" strokeWidth="3" />
             <circle ref={circleRef} id="intersection-circle" fill="#ffffff" />
           </svg>
-          <div ref={dividerRef} id="divider" />
+            <div ref={dividerRef} id="divider" />
+          </div>
+          <div className="about2-x-axis">
+            {data.slice(1, -1).map((_, i) => {
+              const dataIndex = i + 1;
+              const leftPercent = (dataIndex / (data.length - 1)) * 100;
+              return (
+                <svg
+                  key={i}
+                  className="about2-x-axis__dot"
+                  width={4}
+                  height={4}
+                  viewBox="0 0 4 4"
+                  style={{ left: `${leftPercent}%` }}
+                >
+                  <circle cx={2} cy={2} r={2} fill="currentColor" />
+                </svg>
+              );
+            })}
+          </div>
         </div>
       </div>
     </main>

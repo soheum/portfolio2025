@@ -37,7 +37,7 @@
   left: 50%;
   transform: translateX(-50%);
   transition: transform 0.18s ease-out;
-  font-size: 16px;
+  font-size: 32px;
   color: #ffffff;
   font-weight: 300;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
@@ -113,12 +113,13 @@
 /* draggable circle */
 #intersection-circle {
   pointer-events: all;
-  r: 0.5px;
+  r: 1.5px;
 }
 
 #intersection-circle:hover {
   cursor: pointer;
-  r: 0.7px;
+  r: 4px;
+  opacity: 0.5;
   animation: pulse 1s infinite;
 }
 

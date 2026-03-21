@@ -5,11 +5,74 @@
   justify-content: center;
 }
 
+.about2-frame .value {
+  top: 12px;
+  left: 16px;
+  transform: translateX(0);
+  transform-origin: left top;
+}
+
+.about2-frame .value.bump {
+  transform: scale(1.08);
+}
+
+.about2-frame .hover-text {
+  display: none;
+}
+
+.about2-frame #divider {
+  top: 0;
+}
+
+.about2-frame .about2-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.about2-frame .about2-graph-wrapper {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.about2-frame .about2-graph-wrapper #graph,
+.about2-frame .about2-graph-wrapper #divider {
+  position: absolute;
+}
+
+.about2-frame .about2-graph-wrapper #graph {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.about2-frame .about2-x-axis {
+  flex-shrink: 0;
+  height: 32px;
+  position: relative;
+  color: #8d8d8d;
+  font-size: 11px;
+  font-weight: 400;
+  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+}
+
+.about2-frame .about2-x-axis__dot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  color: #8d8d8d;
+}
+
 .about2-frame {
-  width: 250px;
-  height: 250px;
+  width: 400px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  border-radius: 12px;
+  background-color: #191919;
 }

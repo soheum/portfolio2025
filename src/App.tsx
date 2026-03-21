@@ -3,9 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProjectDetails from './pages/ProjectDetails';
 import Kan from './pages/Kan';
-import AboutMe from './pages/AboutMe';
 import About2 from './pages/About2';
-import About3 from './pages/About3';
 
 function App() {
   const location = useLocation();
@@ -31,9 +29,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/project" element={<ProjectDetails />} />
       <Route path="/kan" element={<Kan />} />
-      <Route path="/about" element={<AboutMe />} />
       <Route path="/about2" element={<About2 />} />
-      <Route path="/about3" element={<About3 />} />
     </Routes>
   );
 }
