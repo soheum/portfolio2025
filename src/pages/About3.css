@@ -3,12 +3,208 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #000000;
 }
 
 .about3-box {
+  position: relative;
   width: 500px;
   height: 500px;
   border-radius: 8px;
   background-color: #181818;
   overflow: hidden;
+}
+
+.about3-box--interactive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.about-card-layer {
+  position: absolute;
+  width: 30%;
+  aspect-ratio: 1 / 1.586;
+  padding: 26px;
+  box-sizing: content-box;
+  transform-origin: 50% 100%;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  pointer-events: none;
+}
+
+.about-card-body {
+  width: 100%;
+  height: 100%;
+}
+
+.about-card-layer--current {
+  pointer-events: auto;
+}
+
+.about-controls {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-50% + 152px));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.about-nav-handle {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: #444444;
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+}
+
+.about-nav-handle-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: invert(1);
+}
+
+.about-rotate-handle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #444444;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.88);
+  cursor: grab;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-rotate-handle--active {
+  cursor: grabbing;
+}
+
+.about-rotate-handle-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: invert(1);
+}
+
+.about-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 100%;
+  transition: box-shadow 220ms ease;
+}
+
+.about-card--elevated {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.about-card-corner {
+  position: absolute;
+  width: 8%;
+  height: auto;
+  object-fit: contain;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.about-card-corner--top-left {
+  top: 16%;
+  left: 8%;
+}
+
+.about-card-corner--bottom-right {
+  right: 8%;
+  bottom: 16%;
+  transform: rotate(180deg);
+}
+
+.about-card-corner--rank-top-left {
+  top: 6%;
+  left: 8%;
+}
+
+.about-card-corner--rank-bottom-right {
+  right: 8%;
+  bottom: 6%;
+  transform: rotate(180deg);
+}
+
+.about-stack {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.about-stack-svg {
+  position: absolute;
+  width: 30%;
+  height: 50%;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform 420ms cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.about3-cube-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.about3-cube-svg {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.about3-cube-face {
+  stroke: none;
+}
+
+.about3-cursor-svg {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.about3-trail-svg {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 1;
+  z-index: 1;
 }

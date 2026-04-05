@@ -4,6 +4,9 @@ import HomePage from './pages/HomePage';
 import ProjectDetails from './pages/ProjectDetails';
 import Kan from './pages/Kan';
 import About2 from './pages/About2';
+import About from './pages/About';
+import About3 from './pages/About3';
+import About4 from './pages/About4';
 
 function App() {
   const location = useLocation();
@@ -29,7 +32,10 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/project" element={<ProjectDetails />} />
       <Route path="/kan" element={<Kan />} />
+      <Route path="/about" element={<About />} />
       <Route path="/about2" element={<About2 />} />
+      <Route path="/about3" element={<About3 />} />
+      <Route path="/about4" element={<About4 />} />
     </Routes>
   );
 }
