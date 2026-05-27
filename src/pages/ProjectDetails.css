@@ -1,13 +1,18 @@
 .project-details-container {
   --project-highlight-color: #ff3737;
+  --project-shell-max: 1280px;
+  --project-nav-width: 190px;
+  --project-layout-gap: 72px;
+  --project-page-gutter: 24px;
+  --project-content-max: 42rem;
   min-height: 100vh;
   background-color: #000000;
   color: #ffffff;
-  padding: 20px 32px;
+  width: 100%;
+  max-width: calc(var(--project-shell-max) + (var(--project-page-gutter) * 2));
+  margin: 0 auto;
+  padding: 0 var(--project-page-gutter);
   letter-spacing: -0.02em;
-  scroll-snap-type: y mandatory;
-  overflow-y: auto;
-  height: 100vh;
   cursor: default;
 }
 
@@ -46,19 +51,21 @@
 
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
-  max-width: 1600px;
-  margin: 0 auto;
+  grid-template-columns: minmax(160px, var(--project-nav-width)) minmax(0, 1fr);
+  column-gap: var(--project-layout-gap);
+  align-items: start;
+  min-height: 100vh;
 }
 
-/* Column 1: Side Navigation */
+/* Left docs-style navigation column */
 .side-navigation {
-  grid-column: 1 / 2;
   position: sticky;
-  top: 20px; /* Match container padding so sticky nav doesn’t overlap top padding */
-  height: fit-content;
-  padding-top: 20px; /* Same as text-content and image-content so all columns align */
+  top: 0;
+  align-self: start;
+  width: 100%;
+  height: 100vh;
+  padding: 64px 0 32px;
+  overflow-y: auto;
 }
 
 .back-button {
@@ -66,7 +73,7 @@
   background: none;
   border: none;
   color: #949494;
-  font-size: 16px;
+  font-size: 14px;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
   cursor: pointer;
   padding-bottom: 6px;
@@ -90,7 +97,7 @@
   background: none;
   border: none;
   text-align: left;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
   cursor: pointer;
@@ -106,7 +113,7 @@
 }
 
 .nav-item.active {
-  color: var(--project-highlight-color);
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -146,26 +153,33 @@
 
 .sub-nav-item.active {
   color: #ffffff;
-  font-weight: 400;
+  font-weight: 500;
 }
 
-/* Columns 2-8: Text Content */
+/* Centered content column */
 .text-content {
-  grid-column: 2 / 8;
-  padding-top: 40px; /* Match side-navigation so both columns align at the same vertical position */
+  min-height: 100vh;
+  min-width: 0;
+  padding: 64px 24px;
 }
 
-/* About Hero Section - Full viewport */
+.text-content > * {
+  width: 100%;
+  max-width: var(--project-content-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* About Hero Section */
 .about-hero {
-  min-height: 90vh;
+  min-height: auto;
   display: flex;
-  /* padding-bottom: 100px; */
   flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 0;
+  justify-content: flex-start;
+  gap: 32px;
+  margin-bottom: 64px;
+  padding-bottom: 24px;
   scroll-margin-top: 50px; /* Match text-content padding so scroll doesn't hide the top padding */
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .hero-header {
@@ -181,7 +195,7 @@
 }
 
 .hero-header .hero-logo {
-  height: 3em;
+  height: 2.25em;
   width: auto;
   display: block;
   margin-bottom: 1.2em;
@@ -227,14 +241,14 @@
   font-size: 1.5em;
   font-weight: 400;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
-  color: #cacaca;
+  color: #a3a3a3;
   letter-spacing: 0em;
   line-height: 1.4em;
 }
 
 /* Letter-by-letter color: loops gray → white (staggered, instant per letter, no fade) → hold → gray → repeat */
 .text-content .subtitle-highlight .subtitle-highlight-char {
-  color: #cacaca;
+  color: #a3a3a3;
   animation: subtitleCharToWhite 5s linear infinite;
   animation-delay: calc(0.4s + var(--char-index, 0) * 0.06s);
 }
@@ -242,7 +256,7 @@
 @keyframes subtitleCharToWhite {
   0%,
   4.99% {
-    color: #cacaca;
+    color: #a3a3a3;
   }
   5% {
     color: #ffffff; /* instant change, no fade */
@@ -251,10 +265,10 @@
     color: #ffffff;
   }
   70% {
-    color: #cacaca; /* instant change back */
+    color: #a3a3a3; /* instant change back */
   }
   100% {
-    color: #cacaca;
+    color: #a3a3a3;
   }
 }
 
@@ -264,11 +278,9 @@
 }
 
 .content-section {
-  margin-bottom: 120px;
+  margin-bottom: 96px;
   scroll-margin-top: 110px;
-  width: 50%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  width: 100%;
 }
 
 .content-section:last-child {
@@ -285,14 +297,14 @@
 }
 
 .text-content p {
-  font-size: 1.1em;
+  font-size: 16px;
   font-weight: 300;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
   line-height: 1.6em;
-  color: #cacaca;
+  color: #a3a3a3;
   margin-bottom: 0.75em;
   letter-spacing: 0em;
-  max-width: 80%;
+  max-width: none;
 }
 
 .text-content p strong {
@@ -342,7 +354,7 @@
   font-weight: 300;
   line-height: 1.6em;
   letter-spacing: 0em;
-  color: #cacaca;
+  color: #a3a3a3;
   transition: all 0.2s ease;
   background-color: transparent;
   border-left: 1px solid transparent;
@@ -362,38 +374,35 @@
   display: block;
 }
 
-/* Pain points horizontal grid */
+/* Challenge section: stacked media blocks with text underneath */
 .pain-points-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
   margin-top: 24px;
-  /* Break out of content-section 50% width to use full text-content width */
-  width: calc(100% / 0.5);
-  max-width: none;
+  width: 100%;
 }
 
-/* 3 columns for Kan.tsx only */
+/* Keep the same stacked layout for the Kan variant */
 .project-details--box9 .pain-points-grid {
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Key Design Decisions: dedicated 2-column grid with larger horizontal gap */
 .key-design-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 12px; /* horizontal space between columns */
-  row-gap: 20px;    /* vertical space between rows */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 24px;
   margin-top: 24px;
-  width: calc(100% / 0.5);
-  max-width: none;
+  width: 100%;
 }
 
-/* Key Design section: more height and less aggressive snap so it feels less clingy when scrolling */
+/* Key Design section: add breathing room so scrolling feels less cramped */
 #key-design.content-section {
   padding-top: 40px;
   padding-bottom: 150px;
-  scroll-snap-stop: normal; /* allow scrolling past without forcing a stop */
 }
 
 /* Extra padding after Outcome (Admin workspace) so scroll feels less bouncy */
@@ -406,20 +415,23 @@
   padding-bottom: 160px;
 }
 
-/* Design process: 3-column grid */
+/* Process section: stacked like Challenge */
 .design-process-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
   margin-top: 24px;
-  width: calc(100% / 0.5);
-  max-width: none;
+  width: 100%;
 }
 
 .pain-point-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
+}
+
+.pain-point-card--text-only .pain-point-title {
+  margin-top: 0;
 }
 
 /* Videos/images inside pain-point-card grids: natural fit, no breakout */
@@ -500,20 +512,19 @@
 /* Same text style as .outcome-list li; .text-content .pain-point-description wins over .text-content p */
 .text-content .pain-point-description,
 .pain-point-description {
-  font-size: 1.1em;
+  font-size: 16px;
   font-weight: 300;
   line-height: 1.6em;
   letter-spacing: 0em;
-  color: #cacaca;
+  color: #a3a3a3;
   font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
   width: 100%;
   min-width: 0; /* Allow flex item to shrink so 100% = card width and text wraps */
   margin: 0;
 }
 
-/* Columns 4-5: Image */
+/* Unused legacy sticky image column */
 .image-content {
-  grid-column: 4 / 6;
   position: sticky;
   top: 20px; /* Match container padding so sticky image doesn’t overlap top padding */
   height: fit-content;
@@ -593,12 +604,12 @@
   display: block;
 }
 
-/* Video inside outcome-list: break out to full content width (same as .section-image) */
+/* Keep outcome media inside the centered column */
 .outcome-list .grid-image {
   margin-left: 0;
   margin-right: 0;
-  width: calc(100% / 0.6);
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
 }
 
 .outcome-list .grid-image video,
@@ -611,25 +622,24 @@
   height: auto;
 }
 
-/* Images inside outcome-list need to break out to full content width */
+/* Images inside outcome-list stay within the centered column */
 .outcome-list .section-image {
   margin-left: 0;
   margin-right: 0;
-  /* Break out of content-section 50% width constraint */
-  width: calc(100% / 0.5); /* Double the width to escape 50% parent */
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
 }
 
 .outcome-list .section-image.image-full {
-  max-width: none; /* Override to be truly full width of text-content */
+  max-width: 100%;
 }
 
 .outcome-list .section-image.image-large {
-  max-width: 165%;
+  max-width: 100%;
 }
 
 .outcome-list .section-image.image-small {
-  max-width: 50%;
+  max-width: 100%;
 }
 
 /* Customer portal carousel: image same size as Assessor workspace, thumbnails on the right next to it */
@@ -641,11 +651,11 @@
   width: 100%;
 }
 
-/* Match outcome-list .section-image.image-large so the main image is the same size as below */
+/* Let the main carousel image fill the centered column */
 .outcome-list .outcome-carousel .outcome-carousel__main {
-  flex: 0 0 auto;
-  width: calc(100% / 0.5);
-  max-width: 165%;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
   margin-left: 0;
   margin-right: 0;
 }
@@ -697,12 +707,12 @@
 
 /* 3 columns out of 6 = 50% width */
 .section-image.image-small {
-  max-width: 50%;
+  max-width: 100%;
 }
 
 /* 5 columns out of 6 = ~83% width */
 .section-image.image-large {
-  max-width: 83.33%;
+  max-width: 100%;
 }
 
 /* 6 columns = full width */
@@ -716,22 +726,15 @@
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .project-grid {
-    grid-template-columns: 200px repeat(6, 1fr);
-    gap: 12px;
-  }
-
-  .side-navigation {
-    grid-column: 1 / 2;
-  }
-
-  .text-content {
-    grid-column: 2 / 8;
+  .project-details-container {
+    --project-nav-width: 168px;
+    --project-layout-gap: 48px;
+    --project-page-gutter: 20px;
   }
 }
 
 /* Mobile Layout */
-@media (max-width: 900px) {
+@media (max-width: 780px) {
   .project-details-container {
     padding: 0;
     padding-top: 80px;
@@ -743,6 +746,7 @@
   }
 
   .project-grid {
+    display: grid;
     grid-template-columns: 1fr;
     gap: 0;
   }
@@ -802,7 +806,13 @@
   /* Content takes full width */
   .text-content {
     grid-column: 1 / 2;
-    /* padding: 40px 20px; */
+    margin-left: 0;
+    min-height: auto;
+    padding: 32px 20px 48px;
+  }
+
+  .text-content > * {
+    max-width: none;
   }
 
   /* All images full width on mobile */
@@ -889,7 +899,6 @@
   }
 
   .design-process-grid {
-    grid-template-columns: 1fr;
     gap: 40px;
     width: 100%;
   }
