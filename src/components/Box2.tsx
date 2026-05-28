@@ -8,10 +8,6 @@ interface Box2Props {
 }
 
 const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false }) => {
-  const handleClick = () => {
-    window.open('/project', '_blank', 'noopener,noreferrer');
-  };
-
   // Calculate fade-in opacity based on scroll progress
   // Start fading in at progress 0.3, fully visible at progress 0.7
   const fadeOpacity = Math.min(1, Math.max(0, (progress - 0.3) / 0.4));
@@ -26,7 +22,6 @@ const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false 
   return (
     <div 
       className={`box2-container ${isSecondView ? 'second-view' : ''} ${isHovered ? 'hovered' : ''}`}
-      onClick={handleClick}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
       style={{ 

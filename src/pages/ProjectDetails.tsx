@@ -30,6 +30,26 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const sections = [
     { id: 'about', label: 'Overview' },
     { id: 'context', label: 'Background' },
+    {
+      id: 'pain-points',
+      label: 'Challenge',
+      subsections: [
+        { id: 'pain-limited-visibility', label: '1. Constraints in conducting user research' },
+        { id: 'pain-user-research', label: '2. Designing AI tools under regulatory constraints' },
+        { id: 'pain-regulatory-evaluation', label: '3. Scaling compliance with growing regulatory scope' },
+        { id: 'pain-admin-workflows', label: '4. Complex regulatory evaluation at scale' }
+      ]
+    },
+    {
+      id: 'design-process',
+      label: 'Process',
+      subsections: [
+        { id: 'process-customer-feedback', label: '1. Collated customer feedback through natural touch points' },
+        { id: 'process-incremental-ai', label: '2. Incremental AI grounded in existing workflows' },
+        { id: 'process-sme-collaboration', label: '3. Early collaboration with subject matter experts' },
+        { id: 'process-flexible-interaction', label: '4. Flexible interaction for dense regulatory information' }
+      ]
+    },
     { 
       id: 'outcome', 
       label: 'Outcome',
@@ -39,9 +59,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
         { id: 'outcome-admin-workspace', label: 'Admin workspace' }
       ]
     },
-    { id: 'pain-points', label: 'Challenge' },
-    { id: 'key-design', label: 'Design approach' },
-    { id: 'design-process', label: 'Process' }
+    { id: 'key-design', label: 'Design process' }
   ];
 
   // Scroll spy: detect which section is in view
@@ -58,12 +76,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
           const id = entry.target.id;
           
           // Check if it's a subsection
-          if (id.startsWith('outcome-') || id.startsWith('pain-') || id.startsWith('key-')) {
+          if (id.startsWith('outcome-') || id.startsWith('pain-') || id.startsWith('key-') || id.startsWith('process-')) {
             setActiveSubsection(id);
             // Also set the parent section active
             if (id.startsWith('outcome-')) setActiveSection('outcome');
             else if (id.startsWith('pain-')) setActiveSection('pain-points');
             else if (id.startsWith('key-')) setActiveSection('key-design');
+            else if (id.startsWith('process-')) setActiveSection('design-process');
           } else {
             // Main section
             setActiveSection(id);
@@ -111,7 +130,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   // Auto-scroll navigation to show active item on mobile
   useEffect(() => {
     const activeNavItem = document.querySelector('.nav-item.active');
-    if (activeNavItem && window.innerWidth <= 900) {
+    if (activeNavItem && window.innerWidth <= 780) {
       activeNavItem.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
@@ -132,7 +151,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     <div className={`project-details-container ${className ?? ''}`.trim()}>
       <div className="project-grid">
         {/* Column 1: Side Navigation */}
-        <nav className="side-navigation">
+        <nav className="side-navigation hidden xl:block">
           <button className="back-button" onClick={handleBack}>
             Previous
           </button>
@@ -187,7 +206,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                   ))}
                 </p>
               </div>
-              <p style={{ width: '45%', color: '#ffffff' }}>
+              <p style={{ color: '#ffffff' }}>
               0 → 1 product design and development, challenging how regulation can be a driver of innovation. Founding design work at an early stage startup, defining core user experience and design direction with 10+ product team.
               </p>
 
@@ -224,11 +243,166 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             <section id="context" className="content-section">
               <h2>Background</h2>
               <p>
-              I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. <br/>At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches. 
+              I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches. 
+              This setup made it clear that a dedicated, user-friendly web platform was needed.
               </p>
             </section>
             <div className="section-image image-full">
             </div>
+          </div>
+
+          <div className="section-with-image">
+            <section id="pain-points" className="content-section">
+              <h2>Challenge</h2>
+              <p>
+                While the limitations of the GitHub setup were clear, transitioning to a web-based platform introduced a new set of challenges.
+              </p>
+              <div className="pain-points-grid">
+                <div id="pain-limited-visibility" className="pain-point-card">
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challenge1VideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challenge1VideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challenge1VideoRef}
+                        src="/img/Scarlet/Challenge_1.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Limited visibility into customer's documents"
+                      />
+                    </div>
+                  </div>
+                  <h3 className="pain-point-title">1. Constraints in conducting user research</h3>
+                  <p className="pain-point-description">
+                    Access to reliable user insights was limited in the early stages. Our initial customers (fewer than 20) were all busy preparing submissions, and even when we arranged research sessions, customers were not giving candid feedback because of the regulatory dynamic. It was also difficult to recruit external users since our customer base is very niche: software and AI medical device manufacturers.
+                  </p>
+                </div>
+                
+                <div id="pain-user-research" className="pain-point-card">
+                <div className="grid-image image-full about-mobile-image">
+                    <img src="/img/Scarlet/PP_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  </div>
+                  <h3 className="pain-point-title">2. Designing AI tools under regulatory constraints</h3>
+                  <p className="pain-point-description">
+                    We identified strong opportunities for AI in customer workflows with repetitive documentation. However, as a notified body, we had to operate within strict boundaries to maintain impartiality. We had to ensure that no implicit or explicit gap analysis was provided before the official review of customer documentation.
+                  </p>
+                </div>
+                
+                <div id="pain-regulatory-evaluation" className="pain-point-card">
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challengeVideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challengeVideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challengeVideoRef}
+                        src="/img/Scarlet/Challenge_3.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Regulatory evaluation at scale"
+                      />
+                    </div>
+                  </div>
+                  <h3 className="pain-point-title">3. Scaling compliance with growing regulatory scope</h3>
+                  <p className="pain-point-description">
+                    As Scarlet expanded into new regions and device types, such as hardware, we needed to maintain a comprehensive audit trail of all activities while ensuring the system remained scalable and manageable.
+                  </p>
+                </div>
+                
+                <div id="pain-admin-workflows" className="pain-point-card">
+                  <div
+                    className="grid-image image-full about-mobile-image"
+                    onMouseEnter={() => challenge4VideoRef.current?.play()}
+                    onMouseLeave={() => {
+                      const v = challenge4VideoRef.current;
+                      if (v) {
+                        v.pause();
+                        v.currentTime = 0;
+                      }
+                    }}
+                  >
+                    <div className="video-hover-zoom">
+                      <video
+                        ref={challenge4VideoRef}
+                        src="/img/Scarlet/Challenge_4.mp4"
+                        className="about-hero-image"
+                        preload="auto"
+                        muted
+                        loop
+                        playsInline
+                        aria-label="Scarlet project - Deprioritised admin workflows"
+                      />
+                    </div>
+                  </div>
+                  <h3 className="pain-point-title">4. Complex regulatory evaluation at scale</h3>
+                  <p className="pain-point-description">
+                    Assessors had to navigate 100+ customer-specific requirements per case, each carrying dense regulatory context. This made assessments cognitively demanding, with evaluation workflows that were difficult to navigate.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div className="section-with-image">
+            <section id="design-process" className="content-section">
+              <h2>Process</h2>
+              <div className="design-process-grid">
+                <div id="process-customer-feedback" className="pain-point-card">
+                  <div className="grid-image image-full about-mobile-image">
+                      <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  </div>
+                  <h3 className="pain-point-title">1. Collated customer feedback through natural touch points</h3>
+                  <p className="pain-point-description">
+                    Instead of relying on traditional interviews, we embedded feedback into real customer interactions by creating lightweight artifacts. For example, we built a "Scarlet Calculator" used in sales conversations to visualise certification timelines, helping prospects understand the offering while surfacing their pain points. Although not yet customers, these users provided valuable insights into real submission workflows without requiring formal research sessions.
+                  </p>
+                </div>
+                <div id="process-incremental-ai" className="pain-point-card">
+                  <div className="grid-image image-full about-mobile-image">
+                    <video src="/img/Scarlet/P_2.mp4" autoPlay muted loop playsInline className="about-hero-image" aria-label="Scarlet project - design craft and interactions" />
+                  </div>
+                  <h3 className="pain-point-title">2. Incremental AI grounded in existing workflows</h3>
+                  <p className="pain-point-description">
+                    We introduced AI through small, incremental features rather than building complex solutions upfront. We focused on augmenting, not replacing, customers' existing behaviour. We started with a simple prompt-copy feature, allowing users to reuse structured prompts in their own LLM tools. This informed the development of a coverage checker, which shifted the focus from evaluating quality to validating completeness by checking whether required content was present based on our existing knowledge base. This approach allowed us to deliver practical value while staying within strict regulatory constraints.
+                  </p>
+                </div>
+                <div id="process-sme-collaboration" className="pain-point-card">
+                  <div className="grid-image image-full about-mobile-image">
+                      <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                  </div>
+                  <h3 className="pain-point-title">3. Early collaboration with subject matter experts</h3>
+                  <p className="pain-point-description">
+                    We worked closely with compliance and engineering from the beginning, expanding design into a cross-functional role that aligned stakeholder needs. As engineers shaped new data models, we designed interfaces directly on top of these structures, building lightweight prototypes to explore solutions within clear regulatory and technical boundaries.
+                  </p>
+                </div>
+                <div id="process-flexible-interaction" className="pain-point-card pain-point-card--text-only">
+                  <h3 className="pain-point-title">4. Flexible interaction for dense regulatory information</h3>
+                  <p className="pain-point-description">
+                    Designed adaptable layouts and bulk actions to manage high information density, allowing assessors to navigate and act on requirements efficiently. Through rapid vibe-coded iterations, with less than 2 weeks turnaround time, we refined interaction details to support different workflows.
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
 
           <div className="section-with-image">
@@ -332,118 +506,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
           </div>
 
           <div className="section-with-image">
-            <section id="pain-points" className="content-section">
-              <h2>Challenge</h2>
-              <div className="pain-points-grid">
-                <div id="pain-limited-visibility" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challenge1VideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challenge1VideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challenge1VideoRef}
-                        src="/img/Scarlet/Challenge_1.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Limited visibility into customer's documents"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">Limited visibility into customer's documents</h3>
-                  <p className="pain-point-description">
-                  Customers hesitated to upload evidence until it felt “perfect,” limiting our visibility into submission structures and making it <strong>harder to design for different documentation models</strong>
-                  </p>
-                </div>
-                
-                <div id="pain-user-research" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Difficulty in user research</h3>
-                  <p className="pain-point-description">
-                    Our users - software and AI medical device manufacturers - are a <strong>highly niche group, and the regulatory dynamic</strong> between Scarlet often reduced openness in feedback. This made traditional user research very challenging.
-                  </p>
-                </div>
-                
-                <div id="pain-regulatory-evaluation" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challengeVideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challengeVideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challengeVideoRef}
-                        src="/img/Scarlet/Challenge_3.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Regulatory evaluation at scale"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">Complex regulatory evaluation at scale</h3>
-                  <p className="pain-point-description">
-                    Assessors navigate <strong>100+ customer-specific core and supporting requirements,</strong> creating a workflow that is both highly structured and deeply complex.
-                  </p>
-                </div>
-                
-                <div id="pain-admin-workflows" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challenge4VideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challenge4VideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challenge4VideoRef}
-                        src="/img/Scarlet/Challenge_4.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Deprioritised admin workflows"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">Deprioritised admin workflows</h3>
-                  <p className="pain-point-description">
-                    Administrators need <strong>a thorough audit trail as Scarlet scaled into new regions and hardware,</strong> but these were often deprioritized behind customer and assessor-facing product work.
-                  </p>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <div className="section-with-image">
             <section id="key-design" className="content-section">
-              <h2>Design approach</h2>
+              <h2>Design process</h2>
               <div className="key-design-grid">
                 <div id="key-submission-playground" className="pain-point-card">
                 <div className="grid-image image-full about-mobile-image">
@@ -480,41 +544,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                   <h3 className="pain-point-title">Vibe-coded prototypes for admin workflows</h3>
                   <p className="pain-point-description">
                     With limited engineering bandwidth available for non-customer-facing work, we <strong>vibe-coded lightweight prototypes</strong> (e.g., an automated PDF certificate generator) to deliver small, high-impact wins and reduce manual admin effort.
-                  </p>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <div className="section-with-image">
-            <section id="design-process" className="content-section">
-              <h2>Process</h2>
-              <div className="design-process-grid">
-                <div className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Rapid iteration through design PRs</h3>
-                  <p className="pain-point-description">
-                  Designers contributed directly through GitHub pull requests, delivering small, high-impact improvements. <strong>Led by the design team, this cultural shift</strong> proved the value of vibe coding through incremental wins and fostered a more collaborative product-building culture.
-                  </p>
-                </div>
-                <div className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                    <video src="/img/Scarlet/P_2.mp4" autoPlay muted loop playsInline className="about-hero-image" aria-label="Scarlet project - design craft and interactions" />
-                  </div>
-                  <h3 className="pain-point-title">Elevating digital craft with AI-assisted execution</h3>
-                  <p className="pain-point-description">
-                    To ensure a high-quality, premium experience, we implemented <strong>interaction details</strong>—such as banner interactions, and well-designed error states—through vibe coding and direct design PRs.
-                  </p>
-                </div>
-                <div className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Grounding concrete decisions in real customer feedback</h3>
-                  <p className="pain-point-description">
-                    Since we had limited opportunities for proper user research, <strong>we partnered closely with Account Managers</strong> to gather concrete insights from ongoing customer interactions, keeping design decisions tied to real customer needs.
                   </p>
                 </div>
               </div>
