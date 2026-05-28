@@ -151,7 +151,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     <div className={`project-details-container ${className ?? ''}`.trim()}>
       <div className="project-grid">
         {/* Column 1: Side Navigation */}
-        <nav className="side-navigation">
+        <nav className="side-navigation hidden xl:block">
           <button className="back-button" onClick={handleBack}>
             Previous
           </button>
