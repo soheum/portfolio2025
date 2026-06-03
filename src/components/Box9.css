@@ -33,7 +33,7 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Geist', sans-serif;
   font-size: clamp(18px, 3vw, 28px);
   font-weight: 300;
   color: #fff;
@@ -168,7 +168,7 @@
 }
 
 .budget-label {
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Geist', sans-serif;
   font-size: 10px;
   font-weight: 400;
   text-align: left;
@@ -179,7 +179,7 @@
 }
 
 .budget-percentage {
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Geist', sans-serif;
   font-size: 10px;
   font-weight: 400;
   line-height: 0.9;
@@ -294,7 +294,7 @@
 .pdf-error {
   padding: 40px;
   text-align: center;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Geist', sans-serif;
   color: #666;
 }
 
@@ -319,7 +319,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Geist', sans-serif;
   font-size: 14px;
   font-weight: 500;
   transition: background 0.2s ease;
@@ -336,7 +336,7 @@
 }
 
 .pdf-page-info {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Geist', sans-serif;
   font-size: 14px;
   color: #666;
 }

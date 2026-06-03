@@ -1,66 +1,346 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'lottie-react';
+import fileUploaderAnimation from '../file-uploader-empty-state.json';
 import './ProjectDetails.css';
 
-const ROTATING_IMAGES = ['01-1.jpg', '01-2.jpg', '01-3.jpg', '01-4.jpg'];
-const ROTATING_IMAGES_2 = ['02-4.jpg', '02-5.jpg', '02-6.jpg'];
-const ROTATING_IMAGES_3 = ['03-1.jpg', '03-2.jpg', '03-3.jpg'];
+
+const PHASE_SUBSECTIONS = [
+  { id: 'challenge', label: 'Challenge' },
+  { id: 'approach', label: 'Approach' },
+  { id: 'outcome', label: 'Outcome' },
+] as const;
+
+const sections: NavSection[] = [
+  { id: 'about', label: 'Overview' },
+  { id: 'context', label: 'Background' },
+  { id: 'timeline', label: 'Timeline' },
+  ...([1, 2, 3, 4] as const).map((n) => ({
+    id: `phase-${n}`,
+    label: `Phase ${n}`,
+    subsections: PHASE_SUBSECTIONS.map(({ id, label }) => ({
+      id: `phase-${n}-${id}`,
+      label,
+    })),
+  })),
+];
 
 interface ProjectDetailsProps {
   className?: string;
 }
 
+type NavSubsection = { id: string; label: string };
+type NavSection =
+  | { id: string; label: string; subsections?: undefined }
+  | { id: string; label: string; subsections: NavSubsection[] };
+
+const COVERAGE_CATEGORIES = [
+  { label: 'Post market surveillance', score: 91 },
+  { label: 'Device information', score: 48 },
+  { label: 'Software', score: 12 },
+  { label: 'Clinical', score: 60 },
+  { label: 'Risk and usability', score: 97 },
+];
+
+function getCoverageColor(score: number): { text: string; fill: string } {
+  if (score >= 80) return { text: '#4ade80', fill: 'linear-gradient(to bottom, #00381C 0%, #000000 100%)' };
+  if (score >= 40) return { text: '#ca8a04', fill: 'linear-gradient(to bottom, #383014 0%, #000000 100%)' };
+  return { text: '#f87171', fill: 'linear-gradient(to bottom, #5C1417 0%, #000000 100%)' };
+}
+
+const CoverageCheckerDemo: React.FC = () => {
+  const totalScore = Math.round(
+    COVERAGE_CATEGORIES.reduce((sum, c) => sum + c.score, 0) / COVERAGE_CATEGORIES.length
+  );
+
+  return (
+    <div className="coverage-demo">
+      <div className="coverage-demo__score">
+        <span>Your coverage score is {totalScore}</span>
+      </div>
+      <div className="coverage-demo__bars">
+        {COVERAGE_CATEGORIES.map(({ label, score }) => {
+          const { text, fill } = getCoverageColor(score);
+          return (
+            <div key={label} className="coverage-demo__col">
+              <div className="coverage-demo__col-header">
+                <span className="coverage-demo__label">{label}</span>
+                <span className="coverage-demo__pct" style={{ color: text }}>{score}%</span>
+              </div>
+              <div className="coverage-demo__bar-track">
+                <div
+                  className="coverage-demo__bar-fill"
+                  style={{ height: `${score}%`, background: fill }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const HERO_CAROUSEL_IMAGES = [
+  '/img/Scarlet/hero_carousel_1.jpg',
+  '/img/Scarlet/hero_carousel_2.jpg',
+  'lottie',
+];
+
+const HeroCarousel: React.FC = () => {
+  const [index, setIndex] = useState(0);
+  const distRef = useRef(0);
+  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
+  const THRESHOLD = 80;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = e;
+    if (lastPosRef.current) {
+      const dx = clientX - lastPosRef.current.x;
+      const dy = clientY - lastPosRef.current.y;
+      distRef.current += Math.sqrt(dx * dx + dy * dy);
+      if (distRef.current >= THRESHOLD) {
+        distRef.current = 0;
+        setIndex((prev) => (prev + 1) % HERO_CAROUSEL_IMAGES.length);
+      }
+    }
+    lastPosRef.current = { x: clientX, y: clientY };
+  };
+
+  const handleMouseLeave = () => {
+    lastPosRef.current = null;
+    distRef.current = 0;
+  };
+
+  return (
+    <div
+      className="hero-image-grid hero-carousel"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {HERO_CAROUSEL_IMAGES.map((src, i) =>
+        src === 'lottie' ? (
+          <div
+            key={i}
+            className={`hero-carousel__img hero-carousel__lottie ${i === index ? 'hero-carousel__img--visible' : ''}`}
+          >
+            <div className="hero-carousel__lottie-box">
+              <div style={{ width: '30%' }}>
+                <Lottie animationData={fileUploaderAnimation} loop={true} style={{ width: '100%' }} />
+              </div>
+              <p className="hero-carousel__lottie-text">Drag and drop your files here</p>
+            <div className="hero-carousel__lottie-buttons">
+              <button className="hero-carousel__lottie-btn">
+                <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 13H25C25.2652 13 25.5196 13.1054 25.7071 13.2929C25.8946 13.4804 26 13.7348 26 14V26C26 26.2652 25.8946 26.5196 25.7071 26.7071C25.5196 26.8946 25.2652 27 25 27H7C6.73478 27 6.48043 26.8946 6.29289 26.7071C6.10536 26.5196 6 26.2652 6 26V14C6 13.7348 6.10536 13.4804 6.29289 13.2929C6.48043 13.1054 6.73478 13 7 13H10" stroke="#1c1c1c"/>
+                  <path d="M11 8L16 3L21 8" stroke="#1c1c1c" strokeLinejoin="round"/>
+                  <path d="M16 3V17" stroke="#1c1c1c" strokeLinejoin="round"/>
+                </svg>
+                Choose file
+              </button>
+              <button className="hero-carousel__lottie-btn">
+                <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M28 11V25.1112C28 25.347 27.9064 25.573 27.7397 25.7397C27.573 25.9064 27.347 26 27.1112 26H5C4.73478 26 4.48043 25.8946 4.29289 25.7071C4.10536 25.5196 4 25.2652 4 25V8C4 7.73478 4.10536 7.48043 4.29289 7.29289C4.48043 7.10536 4.73478 7 5 7H11.6663C11.8826 7 12.0932 7.07018 12.2662 7.2L16 10H27C27.2652 10 27.5196 10.1054 27.7071 10.2929C27.8946 10.4804 28 10.7348 28 11Z" stroke="#1c1c1c" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Choose folder
+              </button>
+            </div>
+            </div>
+          </div>
+        ) : (
+          <img
+            key={i}
+            src={src}
+            alt={`Scarlet platform ${i + 1}`}
+            className={`hero-carousel__img ${i === index ? 'hero-carousel__img--visible' : ''}`}
+          />
+        )
+      )}
+    </div>
+  );
+};
+
+
+const Phase3ApproachGallery: React.FC = () => (
+  <div className="phase3-gallery">
+    <img src="/img/Scarlet/phase3_approach.jpg" alt="Phase 3 approach" className="phase3-gallery__base" />
+  </div>
+);
+
+const ICON_PATHS = {
+  excel: { d: 'M18 10.5V37.5M30 10.5V37.5M6 19.5H42M6 28.5H42M6.00002 10.5001L42 10.5V37.5H6L6.00002 10.5001Z', color: '#3DA359' },
+  pdf:   { d: 'M30 6H9C8.60218 6 8.22064 6.15804 7.93934 6.43934C7.65804 6.72064 7.5 7.10218 7.5 7.5V40.5C7.5 40.8978 7.65804 41.2794 7.93934 41.5607C8.22064 41.842 8.60218 42 9 42H39C39.3978 42 39.7794 41.842 40.0607 41.5607C40.342 41.2794 40.5 40.8978 40.5 40.5V16.5M30 6L40.5 16.5M30 6V16.5H40.5', color: '#F54D4F' },
+  img:   { d: 'M9.41388 42L31.8423 19.5695C31.9942 19.4174 32.1747 19.2967 32.3734 19.2144C32.572 19.132 32.785 19.0896 33 19.0896C33.215 19.0896 33.428 19.132 33.6266 19.2144C33.8253 19.2967 34.0058 19.4174 34.1577 19.5695L42 27.4139M6.00004 6H42V42H6L6.00004 6ZM20.7273 17.4545C20.7273 19.262 19.262 20.7273 17.4546 20.7273C15.6471 20.7273 14.1818 19.262 14.1818 17.4545C14.1818 15.6471 15.6471 14.1818 17.4546 14.1818C19.262 14.1818 20.7273 15.6471 20.7273 17.4545Z', color: '#309CD9' },
+  code:  { d: 'M12 16.5L3 24L12 31.5M36 16.5L45 24L36 31.5M30 7.5L18 40.5', color: '#AB8C2B' },
+  docx:  { d: 'M30 6H9C8.60218 6 8.22064 6.15804 7.93934 6.43934C7.65804 6.72064 7.5 7.10218 7.5 7.5V40.5C7.5 40.8978 7.65804 41.2794 7.93934 41.5607C8.22064 41.842 8.60218 42 9 42H39C39.3978 42 39.7794 41.842 40.0607 41.5607C40.342 41.2794 40.5 40.8978 40.5 40.5V16.5M30 6L40.5 16.5M30 6V16.5H40.5', color: '#309CD9' },
+};
+
+function getPctColor(pct: string): string {
+  const val = parseInt(pct);
+  if (val < 30) return '#D63B40';
+  if (val < 70) return '#8F730D';
+  return '#038747';
+}
+
+function getIcon(filename: string) {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  if (ext === 'xlsx' || ext === 'xslx') return ICON_PATHS.excel;
+  if (ext === 'pdf') return ICON_PATHS.pdf;
+  if (ext === 'jpg' || ext === 'png') return ICON_PATHS.img;
+  if (ext === 'docx' || ext === 'pptx') return ICON_PATHS.docx;
+  return ICON_PATHS.code;
+}
+
+const EVIDENCE_ITEMS = [
+  { filename: 'full_QMS_internal_audit_report.pdf', pct: '67%' },
+  { filename: 'CAPA_plan.pdf', pct: '89%' },
+  { filename: 'release_screen.jpg', pct: '12%' },
+  { filename: 'usability_testing_plan.xslx', pct: '34%' },
+  { filename: 'structlog_django.docx', pct: '45%' },
+  { filename: 'audit_company_deck.pptx', pct: '23%' },
+  { filename: 'clinical_evaluation_report.pdf', pct: '70%' },
+  { filename: 'design_risk_review_meeting.docx', pct: '26%' },
+  { filename: 'cybersecurity_report.pdf', pct: '19%' },
+  { filename: 'device_Specification_form.jpg', pct: '26%' },
+  { filename: 'software_configuration_report.html', pct: '44%' },
+  { filename: 'vulnerability_report_v2.xlsx', pct: '72%' },
+  { filename: 'validation_test_report.pdf', pct: '82%' },
+  { filename: 'design_phase2_documentation_v2.pdf', pct: '36%' },
+  { filename: 'qualify_manual_v3.jpg', pct: '45%' },
+  { filename: 'supplier_evaluation_v4.pdf', pct: '84%' },
+  { filename: 'post_market_surveillance_v4.pdf', pct: '56%' },
+  { filename: 'analysis_results.json', pct: '64%' },
+];
+
+const EvidenceDemo: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [rightItems, setRightItems] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const containerLeft = container.getBoundingClientRect().left;
+    const lineX = containerLeft + container.offsetWidth * 0.5;
+    const next = new Set<number>();
+    itemRefs.current.forEach((el, idx) => {
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.left >= lineX) next.add(idx);
+      }
+    });
+    setRightItems(next);
+  }, []);
+
+  return (
+    <div className="evidence-demo" ref={containerRef}>
+      <p className="evidence-demo__quote">
+        "Where a documented product realization process exists, it shall incorporate the appropriate parts of the risk management process.'
+      </p>
+      <div className="evidence-demo__badge">Suggested evidence running…</div>
+      <div className="evidence-demo__line" />
+      <div className="evidence-demo__rows">
+        <div className="evidence-demo__fade" />
+        {[0, 1, 2].map((row) => (
+          <div key={row} className="evidence-demo__row">
+            {EVIDENCE_ITEMS.slice(row * 6, row * 6 + 6).map(({ filename, pct }, i) => {
+              const idx = row * 6 + i;
+              const icon = getIcon(filename);
+              return (
+                <span
+                  key={i}
+                  ref={(el) => { itemRefs.current[idx] = el; }}
+                  className={`evidence-demo__row-item${rightItems.has(idx) ? ' evidence-demo__row-item--right' : ''}`}
+                >
+                  <svg className="evidence-demo__file-icon" viewBox="-8 -8 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="-7.5" y="-7.5" width="63" height="63" stroke="#7D7D7D" strokeWidth="1" />
+                    <path d={icon.d} stroke={icon.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span className="evidence-demo__filename">{filename}</span>
+                  <span className="evidence-demo__pct" style={{ color: getPctColor(pct) }}>{pct}</span>
+                </span>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const PromptCopyDemo: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <div className="prompt-copy-demo">
+      <span className="prompt-copy-demo__text">
+        <svg className="prompt-copy-demo__sparkle" width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="sparkleGradient" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+              <stop offset="0%" stopColor="rgb(190, 245, 249)">
+                <animate attributeName="stopColor" values="rgb(190,245,249);rgb(233,183,247);rgb(188,201,248);rgb(190,245,249)" dur="1.2s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="50%" stopColor="rgb(188, 201, 248)">
+                <animate attributeName="stopColor" values="rgb(188,201,248);rgb(190,245,249);rgb(233,183,247);rgb(188,201,248)" dur="1.2s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="100%" stopColor="rgb(233, 183, 247)">
+                <animate attributeName="stopColor" values="rgb(233,183,247);rgb(255,255,255);rgb(190,245,249);rgb(233,183,247)" dur="1.2s" repeatCount="indefinite" />
+              </stop>
+            </linearGradient>
+          </defs>
+          <path d="M8 0 C8 0 8.5 5.5 10.5 8 C8.5 10.5 8 16 8 16 C8 16 7.5 10.5 5.5 8 C7.5 5.5 8 0 8 0Z" fill="url(#sparkleGradient)" />
+          <path d="M0 8 C0 8 5.5 8.5 8 10.5 C10.5 8.5 16 8 16 8 C16 8 10.5 7.5 8 5.5 C5.5 7.5 0 8 0 8Z" fill="url(#sparkleGradient)" />
+        </svg>
+        {copied ? 'Now paste your device description into your LLM' : 'Check your device description with AI'}
+      </span>
+      <button className="prompt-copy-demo__button" onClick={() => setCopied(true)}>
+        Copy prompt
+      </button>
+    </div>
+  );
+};
+
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('about');
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
-  const [rotatingImageIndex, setRotatingImageIndex] = useState(0);
-  const [rotatingImageIndex2, setRotatingImageIndex2] = useState(0);
-  const [rotatingImageIndex3, setRotatingImageIndex3] = useState(0);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const challengeVideoRef = useRef<HTMLVideoElement | null>(null);
-  const challenge1VideoRef = useRef<HTMLVideoElement | null>(null);
-  const challenge4VideoRef = useRef<HTMLVideoElement | null>(null);
-  const coverVideoRef = useRef<HTMLVideoElement | null>(null);
+  const landingRef = useRef<HTMLElement | null>(null);
+  const [hasPassedLanding, setHasPassedLanding] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === '1357') {
+      setIsUnlocked(true);
+      setPasswordError(false);
+    } else {
+      setPasswordError(true);
+      setPassword('');
+    }
+  };
 
   const handleBack = () => {
     navigate('/');
   };
 
-  const sections = [
-    { id: 'about', label: 'Overview' },
-    { id: 'context', label: 'Background' },
-    {
-      id: 'pain-points',
-      label: 'Challenge',
-      subsections: [
-        { id: 'pain-limited-visibility', label: '1. Constraints in conducting user research' },
-        { id: 'pain-user-research', label: '2. Designing AI tools under regulatory constraints' },
-        { id: 'pain-regulatory-evaluation', label: '3. Scaling compliance with growing regulatory scope' },
-        { id: 'pain-admin-workflows', label: '4. Complex regulatory evaluation at scale' }
-      ]
-    },
-    {
-      id: 'design-process',
-      label: 'Process',
-      subsections: [
-        { id: 'process-customer-feedback', label: '1. Collated customer feedback through natural touch points' },
-        { id: 'process-incremental-ai', label: '2. Incremental AI grounded in existing workflows' },
-        { id: 'process-sme-collaboration', label: '3. Early collaboration with subject matter experts' },
-        { id: 'process-flexible-interaction', label: '4. Flexible interaction for dense regulatory information' }
-      ]
-    },
-    { 
-      id: 'outcome', 
-      label: 'Outcome',
-      subsections: [
-        { id: 'outcome-customer-portal', label: 'Customer portal' },
-        { id: 'outcome-assessor-workspace', label: 'Assessor workspace' },
-        { id: 'outcome-admin-workspace', label: 'Admin workspace' }
-      ]
-    },
-    { id: 'key-design', label: 'Design process' }
-  ];
+  // Reveal side nav after the landing section scrolls out of view
+  useEffect(() => {
+    const landing = landingRef.current;
+    if (!landing) return;
+
+    const landingObserver = new IntersectionObserver(
+      ([entry]) => {
+        setHasPassedLanding(!entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: '0px 0px -40% 0px' }
+    );
+
+    landingObserver.observe(landing);
+    return () => landingObserver.disconnect();
+  }, []);
 
   // Scroll spy: detect which section is in view
   useEffect(() => {
@@ -71,25 +351,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     };
 
     observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          
-          // Check if it's a subsection
-          if (id.startsWith('outcome-') || id.startsWith('pain-') || id.startsWith('key-') || id.startsWith('process-')) {
-            setActiveSubsection(id);
-            // Also set the parent section active
-            if (id.startsWith('outcome-')) setActiveSection('outcome');
-            else if (id.startsWith('pain-')) setActiveSection('pain-points');
-            else if (id.startsWith('key-')) setActiveSection('key-design');
-            else if (id.startsWith('process-')) setActiveSection('design-process');
-          } else {
-            // Main section
-            setActiveSection(id);
-            setActiveSubsection(null);
-          }
-        }
-      });
+      const intersecting = entries.filter((e) => e.isIntersecting);
+      if (intersecting.length === 0) return;
+
+      // Pick the topmost element in the viewport among intersecting entries
+      const top = intersecting.reduce((best, e) =>
+        e.boundingClientRect.top < best.boundingClientRect.top ? e : best
+      );
+
+      const id = top.target.id;
+      const phaseSubMatch = id.match(/^(phase-\d+)-(challenge|approach|outcome)$/);
+      if (phaseSubMatch) {
+        setActiveSubsection(id);
+        setActiveSection(phaseSubMatch[1]);
+      } else {
+        setActiveSection(id);
+        setActiveSubsection(null);
+      }
     }, options);
 
     // Observe main sections
@@ -98,7 +376,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       if (element && observerRef.current) {
         observerRef.current.observe(element);
       }
-      
+
       // Observe subsections
       if (section.subsections) {
         section.subsections.forEach((sub) => {
@@ -116,16 +394,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Preload rotating images so they're in cache when we switch (reduces flash)
-  useEffect(() => {
-    const base = '/img/Scarlet/';
-    [...ROTATING_IMAGES, ...ROTATING_IMAGES_2, ...ROTATING_IMAGES_3].forEach((filename) => {
-      const img = new Image();
-      img.src = base + filename;
-    });
-  }, []);
+  }, [isUnlocked]);
 
   // Auto-scroll navigation to show active item on mobile
   useEffect(() => {
@@ -148,14 +417,96 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   };
 
   return (
-    <div className={`project-details-container ${className ?? ''}`.trim()}>
-      <div className="project-grid">
+    <div
+      className={`project-details-page ${hasPassedLanding ? 'project-details-page--past-landing' : ''} ${className ?? ''}`.trim()}
+    >
+      <section ref={landingRef} className="project-landing" id="project-landing" aria-label="Project introduction">
+        {/* <button type="button" className="project-landing-back" onClick={handleBack}>
+          Previous
+        </button> */}
+        <div className="project-landing-inner">
+          <div className="hero-header">
+            {/* <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" /> */}
+            <div className="subtitle-container">
+              <p className="subtitle">From fragmented Git-based workflows to</p>
+              <p className="subtitle subtitle-highlight">
+                {Array.from('a scalable, end-to-end regulatory platform').map((char, index) => (
+                  <span
+                    key={index}
+                    className="subtitle-highlight-char"
+                    style={{ ['--char-index' as string]: index } as React.CSSProperties}
+                  >
+                    {char}
+                  </span>
+                ))}
+              </p>
+            </div>
+          </div>
+          <div className="hero-body">
+            <div className="hero-content text-content">
+              <div className="hero-meta-field">
+                <p>Company</p>
+                <p className="hero-meta-explanation">Scarlet</p>
+              </div>
+              <div className="hero-meta-field">
+                <p>Duration</p>
+                <p className="hero-meta-explanation">Mar 25 - present</p>
+              </div>
+              <div className="hero-meta-field">
+                <p>Role</p>
+                <p className="hero-meta-explanation">Senior Product Designer</p>
+              </div>
+              <div className="hero-meta-field">
+                <p>Team</p>
+                <p className="hero-meta-explanation">1 Design Lead, 1 PM, 8 engineers</p>
+              </div>
+              <div className="hero-meta-field">
+                <p>Responsibilities</p>
+                <p className="hero-meta-explanation">
+                  0 → 1 product design and development
+                  <br />
+                  Founding design work at an early stage startup
+                  <br />
+                  Defining core UX & design direction with 10+ product team.
+                </p>
+              </div>
+            </div>
+            <div className="hero-image" aria-hidden="true">
+              <HeroCarousel />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {!isUnlocked && (
+        <div className="project-details-lock-overlay">
+          <form className="project-details-lock-form" onSubmit={handlePasswordSubmit}>
+            <p className="project-details-lock-label">Email sohheum@gmail.com for access</p>
+            <div className="project-details-lock-row">
+              <input
+                className={`project-details-lock-input ${passwordError ? 'project-details-lock-input--error' : ''}`}
+                type="password"
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
+                placeholder="Enter password"
+                autoFocus
+              />
+              <button className="project-details-lock-btn" type="submit">Unlock</button>
+            </div>
+            {passwordError && <p className="project-details-lock-error">Incorrect password</p>}
+          </form>
+        </div>
+      )}
+
+      {isUnlocked && (
+      <div className="project-details-container">
+      <div className="project-grid" id="project-grid">
         {/* Column 1: Side Navigation */}
-        <nav className="side-navigation hidden xl:block">
+        <nav className={`side-navigation hidden xl:block ${hasPassedLanding ? 'side-navigation--visible' : ''}`}>
           <button className="back-button" onClick={handleBack}>
             Previous
           </button>
-          
+
           <div className="nav-sections">
             {sections.map((section) => (
               <div key={section.id}>
@@ -165,7 +516,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 >
                   {section.label}
                 </button>
-                
+
                 {/* Render sub-navigation if exists */}
                 {section.subsections && (
                   <div className="sub-nav">
@@ -188,369 +539,188 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
         {/* Columns 2-8: Text Content */}
         <div className="text-content">
           {/* About Section - Full viewport hero */}
-          <section id="about" className="about-hero">
-            <div className="hero-header">
-            {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
-              <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" />
-              <div className="subtitle-container">
-                <p className="subtitle">Redefining medical regulation through</p>
-                <p className="subtitle subtitle-highlight">
-                  {Array.from('a digital-first, AI-assisted platform').map((char, index) => (
-                    <span
-                      key={index}
-                      className="subtitle-highlight-char"
-                      style={{ ['--char-index' as string]: index } as React.CSSProperties}
-                    >
-                      {char}
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <p style={{ color: '#ffffff' }}>
-              0 → 1 product design and development, challenging how regulation can be a driver of innovation. Founding design work at an early stage startup, defining core user experience and design direction with 10+ product team.
-              </p>
-
-              {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
-            </div>
-
-            <div
-              className="section-image image-full about-mobile-image"
-              onMouseEnter={() => coverVideoRef.current?.play()}
-              onMouseLeave={() => {
-                const v = coverVideoRef.current;
-                if (v) {
-                  v.pause();
-                  v.currentTime = 0;
-                }
-              }}
-            >
-              <div className="video-hover-zoom">
-                <video
-                  ref={coverVideoRef}
-                  src="/img/Scarlet/Cover.mp4"
-                  className="about-hero-image"
-                  preload="auto"
-                  muted
-                  loop
-                  playsInline
-                  aria-label="Scarlet project overview"
-                />
-              </div>
-            </div>
-          </section>
 
           <div className="section-with-image">
             <section id="context" className="content-section">
               <h2>Background</h2>
-              <p>
-              I joined Scarlet shortly after it completed a three-year accreditation process to become a notified body. At the time, <strong>certification workflows relied entirely on GitHub,</strong> with customers submitting regulatory evidence through repositories and assessors reviewing documents in branches. 
-              This setup made it clear that a dedicated, user-friendly web platform was needed.
-              </p>
+              <p>Scarlet is a Notified Body specialising in AI medical devices and Software as a Medical Device (SaMD). When I joined, certification workflows were still in their early stages and operated entirely through GitHub. Customers submitted regulatory evidence via Git repositories, with assessors reviewing submissions and responding within the repository through issues, comments, and versioned updates.</p>
+              <p>Although this approach enabled a rapid initial setup, the steep learning curve of GitHub created a significant barrier for many users. <span style={{ color: '#ffffff' }}>This made it difficult for non-technical stakeholders to participate effectively, highlighting the need for a more accessible, user-friendly web platform.</span></p>
             </section>
             <div className="section-image image-full">
             </div>
           </div>
 
           <div className="section-with-image">
-            <section id="pain-points" className="content-section">
+            <section id="timeline" className="content-section">
+              <img src="/img/Scarlet/timeline.jpg" alt="User growth timeline across phases" className="timeline-image" />
+              <h2>Timeline</h2>
+              <p>At the outset, Scarlet supported 50 users from 10 customer workspaces on GitHub, with 3 customers successfully certified through this system. <span style={{ color: '#ffffff' }}>Within a year, we launched a web platform and scaled to over 500 users from 65 customer workspaces.</span></p>
+              <p>This growth required continuous iteration as the product evolved from a single workflow into a multi-stakeholder platform, with dedicated interfaces for customers submitting evidence, evaluators reviewing documentation, and administrators managing regulatory processes and compliance.</p>
+            </section>
+            <div className="section-image image-full" />
+          </div>
+
+          <div id="phase-1" className="phase-block section-with-image">
+            <h2 className="phase-heading">Phase 1</h2>
+            <section id="phase-1-challenge" className="content-section">
+              <img src="/img/Scarlet/phase1_challenge.jpg" alt="Phase 1 challenge" className="timeline-image" />
               <h2>Challenge</h2>
-              <p>
-                While the limitations of the GitHub setup were clear, transitioning to a web-based platform introduced a new set of challenges.
-              </p>
-              <div className="pain-points-grid">
-                <div id="pain-limited-visibility" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challenge1VideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challenge1VideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challenge1VideoRef}
-                        src="/img/Scarlet/Challenge_1.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Limited visibility into customer's documents"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">1. Constraints in conducting user research</h3>
-                  <p className="pain-point-description">
-                    Access to reliable user insights was limited in the early stages. Our initial customers (fewer than 20) were all busy preparing submissions, and even when we arranged research sessions, customers were not giving candid feedback because of the regulatory dynamic. It was also difficult to recruit external users since our customer base is very niche: software and AI medical device manufacturers.
-                  </p>
-                </div>
-                
-                <div id="pain-user-research" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">2. Designing AI tools under regulatory constraints</h3>
-                  <p className="pain-point-description">
-                    We identified strong opportunities for AI in customer workflows with repetitive documentation. However, as a notified body, we had to operate within strict boundaries to maintain impartiality. We had to ensure that no implicit or explicit gap analysis was provided before the official review of customer documentation.
-                  </p>
-                </div>
-                
-                <div id="pain-regulatory-evaluation" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challengeVideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challengeVideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challengeVideoRef}
-                        src="/img/Scarlet/Challenge_3.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Regulatory evaluation at scale"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">3. Scaling compliance with growing regulatory scope</h3>
-                  <p className="pain-point-description">
-                    As Scarlet expanded into new regions and device types, such as hardware, we needed to maintain a comprehensive audit trail of all activities while ensuring the system remained scalable and manageable.
-                  </p>
-                </div>
-                
-                <div id="pain-admin-workflows" className="pain-point-card">
-                  <div
-                    className="grid-image image-full about-mobile-image"
-                    onMouseEnter={() => challenge4VideoRef.current?.play()}
-                    onMouseLeave={() => {
-                      const v = challenge4VideoRef.current;
-                      if (v) {
-                        v.pause();
-                        v.currentTime = 0;
-                      }
-                    }}
-                  >
-                    <div className="video-hover-zoom">
-                      <video
-                        ref={challenge4VideoRef}
-                        src="/img/Scarlet/Challenge_4.mp4"
-                        className="about-hero-image"
-                        preload="auto"
-                        muted
-                        loop
-                        playsInline
-                        aria-label="Scarlet project - Deprioritised admin workflows"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="pain-point-title">4. Complex regulatory evaluation at scale</h3>
-                  <p className="pain-point-description">
-                    Assessors had to navigate 100+ customer-specific requirements per case, each carrying dense regulatory context. This made assessments cognitively demanding, with evaluation workflows that were difficult to navigate.
-                  </p>
-                </div>
-              </div>
+              <p>We began building the platform with very limited understanding of our users.</p>
+              <ul>
+                <li>Early customers (fewer than 20) were actively preparing regulatory submissions, making them difficult to engage in research.</li>
+                <li>Even when sessions were arranged, <span style={{ color: '#ffffff' }}>feedback was often guarded due to the regulatory relationship.</span></li>
+                <li><span style={{ color: '#ffffff' }}>Recruiting external users was challenging</span> given the niche audience of AI and software medical device manufacturers.</li>
+              </ul>
             </section>
-          </div>
 
-          <div className="section-with-image">
-            <section id="design-process" className="content-section">
-              <h2>Process</h2>
-              <div className="design-process-grid">
-                <div id="process-customer-feedback" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">1. Collated customer feedback through natural touch points</h3>
-                  <p className="pain-point-description">
-                    Instead of relying on traditional interviews, we embedded feedback into real customer interactions by creating lightweight artifacts. For example, we built a "Scarlet Calculator" used in sales conversations to visualise certification timelines, helping prospects understand the offering while surfacing their pain points. Although not yet customers, these users provided valuable insights into real submission workflows without requiring formal research sessions.
-                  </p>
-                </div>
-                <div id="process-incremental-ai" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                    <video src="/img/Scarlet/P_2.mp4" autoPlay muted loop playsInline className="about-hero-image" aria-label="Scarlet project - design craft and interactions" />
-                  </div>
-                  <h3 className="pain-point-title">2. Incremental AI grounded in existing workflows</h3>
-                  <p className="pain-point-description">
-                    We introduced AI through small, incremental features rather than building complex solutions upfront. We focused on augmenting, not replacing, customers' existing behaviour. We started with a simple prompt-copy feature, allowing users to reuse structured prompts in their own LLM tools. This informed the development of a coverage checker, which shifted the focus from evaluating quality to validating completeness by checking whether required content was present based on our existing knowledge base. This approach allowed us to deliver practical value while staying within strict regulatory constraints.
-                  </p>
-                </div>
-                <div id="process-sme-collaboration" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">3. Early collaboration with subject matter experts</h3>
-                  <p className="pain-point-description">
-                    We worked closely with compliance and engineering from the beginning, expanding design into a cross-functional role that aligned stakeholder needs. As engineers shaped new data models, we designed interfaces directly on top of these structures, building lightweight prototypes to explore solutions within clear regulatory and technical boundaries.
-                  </p>
-                </div>
-                <div id="process-flexible-interaction" className="pain-point-card pain-point-card--text-only">
-                  <h3 className="pain-point-title">4. Flexible interaction for dense regulatory information</h3>
-                  <p className="pain-point-description">
-                    Designed adaptable layouts and bulk actions to manage high information density, allowing assessors to navigate and act on requirements efficiently. Through rapid vibe-coded iterations, with less than 2 weeks turnaround time, we refined interaction details to support different workflows.
-                  </p>
-                </div>
-              </div>
+            <section id="phase-1-approach" className="content-section">
+              <figure className="media-figure">
+                <video src="/img/Scarlet/phase1_approach.mp4" className="timeline-image" autoPlay muted loop playsInline aria-label="Phase 1 approach" />
+                <figcaption className="media-caption">Scarlet Calculator Tool used during sales conversations</figcaption>
+              </figure>
+              <h2>Approach</h2>
+              <p>Instead of relying on traditional research methods, <span style={{ color: '#ffffff' }}>we embedded tools to collate feedback into existing customer touchpoints.</span> We introduced lightweight tools such as a "Scarlet Calculator," used during sales conversations to simulate certification timelines. This helped communicate the product offering and revealed two key insights:</p>
+              <ul>
+                <li>How customers distributed their time across different stages of the certification process.</li>
+                <li>The gap between perceived readiness and actual submission quality.</li>
+              </ul>
             </section>
-          </div>
 
-          <div className="section-with-image">
-            <section id="outcome" className="content-section">
+            <section id="phase-1-outcome" className="content-section">
+              <figure className="media-figure">
+                <img src="/img/Scarlet/phase1_outcome.jpg" alt="Phase 1 outcome" className="timeline-image" />
+                <figcaption className="media-caption">MVP version launched in 2 weeks</figcaption>
+              </figure>
               <h2>Outcome</h2>
-              <p>
-              We designed and delivered three platforms that support Scarlet's end-to-end certification workflow:
-              <br/>
-              <span className="outcome-note">
-                *This end-to-end experience is still actively evolving as we iterate it day by day.
-              </span>
-              </p>
-              <ul className="outcome-list">
-                <div id="outcome-customer-portal">
-                  <li>
-                    <strong>Customer portal</strong> a{'\u00A0'}<strong>submission space</strong>{'\u00A0'}where medical device manufacturers can submit their regulatory evidence, track their progress, and respond to findings across multiple rounds
-                  </li>
-               
-                  <div className="outcome-carousel">
-                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
-                      <img
-                        src={`/img/Scarlet/${ROTATING_IMAGES[rotatingImageIndex]}`}
-                        alt="Scarlet project overview - Pre-submission stage"
-                        className="about-hero-image"
-                      />
-                    </div>
-                    <div className="outcome-carousel__thumbnails">
-                      {ROTATING_IMAGES.map((filename, i) => (
-                        <button
-                          key={filename}
-                          type="button"
-                          className={`outcome-carousel__thumb ${i === rotatingImageIndex ? 'outcome-carousel__thumb--active' : ''}`}
-                          onClick={() => setRotatingImageIndex(i)}
-                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES.length}`}
-                          aria-pressed={i === rotatingImageIndex}
-                        >
-                          <img src={`/img/Scarlet/${filename}`} alt="" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+              <p>We launched an MVP: a simple, low-barrier portal that allowed customers to upload regulatory documents regardless of format, shifting complexity away from the user. The main advantage of this approach was accessibility, as customers could submit files directly.</p>
+              <p>At the same time, the MVP revealed an important learning: <span style={{ color: '#ffffff' }}>the platform needed to do more than collect documents.</span> Customers often believed they were ready to submit, but documentation quality was often incomplete or below the level needed for assessment. This led to more findings, longer certification timelines, and a clear need to better support evidence preparation before submission.</p>
+            </section>
+          </div>
+
+          <div id="phase-2" className="phase-block section-with-image">
+            <h2 className="phase-heading">Phase 2</h2>
+            <section id="phase-2-challenge" className="content-section">
+              <h2>Challenge</h2>
+              <div className="challenge-image-row">
+                <img src="/img/Scarlet/phase2_challenge_1.jpg" alt="Phase 2 challenge" className="challenge-image-placeholder" />
+                <div>
+                  <p><strong>Low quality submissions</strong></p>
+                  <p>With over 20 customers now active on the platform, document submission was easy, but customers were submitting low quality documents that impacted the certification timeline.</p>
                 </div>
-                <div id="outcome-assessor-workspace">
-                  <li>
-                    <strong>Assessor workspace</strong> an <strong>internal tool used by Scarlet assessors</strong> to review customer's documentation, evaluate evidence against regulatory requirements, and raise findings
-                  </li>
-                  <div className="outcome-carousel">
-                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
-                      <img
-                        src={`/img/Scarlet/${ROTATING_IMAGES_2[rotatingImageIndex2]}`}
-                        alt="Scarlet project overview - Assessor workspace"
-                        className="about-hero-image"
-                      />
-                    </div>
-                    <div className="outcome-carousel__thumbnails">
-                      {ROTATING_IMAGES_2.map((filename, i) => (
-                        <button
-                          key={filename}
-                          type="button"
-                          className={`outcome-carousel__thumb ${i === rotatingImageIndex2 ? 'outcome-carousel__thumb--active' : ''}`}
-                          onClick={() => setRotatingImageIndex2(i)}
-                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES_2.length}`}
-                          aria-pressed={i === rotatingImageIndex2}
-                        >
-                          <img src={`/img/Scarlet/${filename}`} alt="" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+              </div>
+              <div className="challenge-image-row">
+                <div className="challenge-image-wrapper">
+                  <div className="challenge-image-bar" />
+                  <div className="challenge-image-bar-shadow" />
+                  <img src="/img/Scarlet/phase2_challenge_2.jpg" alt="Phase 2 challenge 2" className="challenge-image-placeholder" />
                 </div>
-                <div id="outcome-admin-workspace">
-                  <li>
-                    <strong>Admin workspace</strong> an operational interface that <strong>keeps a record of all certification activities</strong> to ensure Scarlet remains authorised as a notified body 
-                  </li>
-                  <div className="outcome-carousel">
-                    <div className="outcome-carousel__main section-image image-large about-mobile-image">
-                      <img
-                        src={`/img/Scarlet/${ROTATING_IMAGES_3[rotatingImageIndex3]}`}
-                        alt="Scarlet project overview - Admin workspace"
-                        className="about-hero-image"
-                      />
-                    </div>
-                    <div className="outcome-carousel__thumbnails">
-                      {ROTATING_IMAGES_3.map((filename, i) => (
-                        <button
-                          key={filename}
-                          type="button"
-                          className={`outcome-carousel__thumb ${i === rotatingImageIndex3 ? 'outcome-carousel__thumb--active' : ''}`}
-                          onClick={() => setRotatingImageIndex3(i)}
-                          aria-label={`View image ${i + 1} of ${ROTATING_IMAGES_3.length}`}
-                          aria-pressed={i === rotatingImageIndex3}
-                        >
-                          <img src={`/img/Scarlet/${filename}`} alt="" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                <div>
+                  <p><strong>Strict impartiality rules with AI</strong></p>
+                  <p>While repetitive documentation tasks were an obvious area where AI could add value and reduce friction for customers, Scarlet had to maintain strict impartiality as a regulatory body. We must avoid offering any implicit or explicit gap analysis before formal assessment, limiting how far AI support could go.</p>
                 </div>
+              </div>
+            </section>
+
+            <section id="phase-2-approach" className="content-section">
+              <img src="/img/Scarlet/phase2_approach.jpg" alt="Phase 2 approach" className="timeline-image" />
+              <h2>Approach</h2>
+              <p>Rather than building an autonomous agent, we focused on incremental impact grounded in existing workflows.</p>
+              <p>A key insight shaped our direction: customers spent little time on the platform and approached it with caution — returning only when they felt fully ready to submit, afraid of making mistakes. This meant <span style={{ color: '#ffffff' }}>they weren't looking for an AI guide, but for reassurance before committing to a submission.</span></p>
+            </section>
+
+            <section id="phase-2-outcome" className="content-section">
+              <h2>Outcome</h2>
+              <p>We introduced AI incrementally through stages.</p>
+              <div className="outcome-demo-group">
+                <PromptCopyDemo />
+                <p>We started with a simple <strong>prompt-copy tool</strong> that allowed users to copy a ready-to-use prompt to the customer's clipboard, which they can paste into their own external LLM alongside their documentation for self-directed feedback.</p>
+              </div>
+              <div className="outcome-demo-group">
+                <CoverageCheckerDemo />
+                <p>This evolved to launching a <strong>coverage checker</strong>, which shifted the role of AI from evaluating quality to validating completeness by checking whether required content was present against Scarlet's existing knowledge base.</p>
+              </div>
+              <div className="outcome-demo-group">
+                <EvidenceDemo />
+                <p>Developing AI features for customers created the foundation for AI-enabled tools for internal assessors. We then built an assessor-facing <strong>suggested evidence tool</strong> that automatically scans uploaded documentation and suggests specific passages as potential evidence for each regulatory requirement.</p>
+              </div>
+            </section>
+          </div>
+
+          <div id="phase-3" className="phase-block section-with-image">
+            <h2 className="phase-heading">Phase 3</h2>
+            <section id="phase-3-challenge" className="content-section">
+              <h2>Challenge</h2>
+              <p>With over 30 customers on the platform, assessors needed to scale their workload rapidly. This put the assessor experience under pressure in two ways:</p>
+              <div className="challenge-image-row">
+                <img src="/img/Scarlet/phase3_challenge_1.jpg" alt="Phase 3 challenge - Complexity" className="challenge-image-placeholder" />
+                <div>
+                  <p><strong>Complexity</strong></p>
+                  <p>Regulatory requirements are filled with exceptions and nuanced edge cases. Translating this into a web interface meant the platform itself had to absorb that complexity — representing it accurately without oversimplifying, while still remaining usable for assessors working under time pressure.</p>
+                </div>
+              </div>
+              <div className="challenge-image-row">
+                <img src="/img/Scarlet/phase3_challenge_2.jpg" alt="Phase 3 challenge - Diverse working styles" className="challenge-image-placeholder" />
+                <div>
+                  <p><strong>Diverse working styles</strong></p>
+                  <p>With 20 assessors, each had their own way of working. Building a one-size-fits-all interface wasn't an option — the UI had to be flexible enough to accommodate different workflows while remaining as efficient as possible.</p>
+                </div>
+              </div>
+            </section>
+
+            <section id="phase-3-approach" className="content-section">
+              <Phase3ApproachGallery />
+              <h2>Approach</h2>
+              <p>Given the time pressure, we prioritised rapid iteration with tight feedback loops. Vibe-coded prototypes became a key part — rather than working with placeholder content, we were able to load actual regulatory documents directly into prototypes. This meant <span style={{ color: '#ffffff' }}>assessors could give feedback grounded in real work rather than hypothetical prototypes, making each iteration significantly more accurate and actionable.</span></p>
+            </section>
+
+            <section id="phase-3-outcome" className="content-section">
+              <figure className="media-figure">
+                <video src="/img/Scarlet/phase3_outcome.mp4" className="timeline-image" autoPlay muted loop playsInline aria-label="Phase 3 outcome" />
+                <figcaption className="media-caption">Platform for assessors that is information-dense with granular controls</figcaption>
+              </figure>
+              <h2>Outcome</h2>
+              <p>We delivered a flexible, information-dense assessor interface designed to minimise friction and maximise control:</p>
+              <ul>
+                <li><strong>Granular section controls:</strong> Assessors could independently control each section on both sides of the platform, with up to five options per section, allowing each person to configure the interface to match their workflow.</li>
+                <li><strong>Maximum information density:</strong> Rather than progressive disclosure, assessors wanted everything visible at once. The interface was designed to surface as much relevant information as possible with the fewest clicks, keeping the right content within quick reach at all times.</li>
               </ul>
             </section>
           </div>
 
-          <div className="section-with-image">
-            <section id="key-design" className="content-section">
-              <h2>Design process</h2>
-              <div className="key-design-grid">
-                <div id="key-submission-playground" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                </div>
-                  <h3 className="pain-point-title">Clear distinction between submission and exploration</h3>
-                  <p className="pain-point-description">
-                    Kept the submission flow broad and flexible with accepting any evidence type, which was clearly separated from a "playground" space with <strong>an AI coverage checker.</strong> This checked customers' submission readiness based on requirements, and gave us a better understanding of their documentation model
-                  </p>
-                </div>
-                <div id="key-customer-feedback" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_2.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Customer feedback through real touchpoints</h3>
-                  <p className="pain-point-description">
-                    Collated feedback through natural customer interactions, <strong>vibe coding prototypes like the Scarlet Calculator</strong> that were used during sales calls to uncover customer needs and pain points. This tool allowed prospects to estimate certification timelines based on submission readiness.
-                  </p>
-                </div>
-                <div id="key-atomic-evaluation" className="pain-point-card">
-                <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Atomic, scalable regulatory evaluation with contextual agent support</h3>
-                  <p className="pain-point-description">
-                  Structured assessment into requirement-level actions, enabling review of core and supporting requirements individually or in bulk, while layering in <strong>assessor agents</strong> that provide guidance tailored to each evaluator’s context.
-                  </p>
-                </div>
-               
-                <div id="key-vibe-prototypes" className="pain-point-card">
-                  <div className="grid-image image-full about-mobile-image">
-                      <img src="/img/Scarlet/DD_4.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
-                  </div>
-                  <h3 className="pain-point-title">Vibe-coded prototypes for admin workflows</h3>
-                  <p className="pain-point-description">
-                    With limited engineering bandwidth available for non-customer-facing work, we <strong>vibe-coded lightweight prototypes</strong> (e.g., an automated PDF certificate generator) to deliver small, high-impact wins and reduce manual admin effort.
-                  </p>
-                </div>
-              </div>
+          <div id="phase-4" className="phase-block section-with-image">
+            <h2 className="phase-heading">Phase 4</h2>
+            <section id="phase-4-challenge" className="content-section">
+              <img src="/img/Scarlet/phase4_challenge.jpg" alt="Phase 4 challenge" className="timeline-image" />
+              <h2>Challenge</h2>
+              <p>With customer and assessor workflows successfully migrated to the web, administrators were still using GitHub. We received repeated audit findings from IGJ (Inspectie Gezondheidszorg en Jeugd), supervisory authority auditing Scarlet, that using GitHub was becoming unscalable.</p>
+              <p>There were three main challenges:</p>
+              <ul>
+                <li><strong>Regulatory nuance:</strong> Administrative processes have numerous exceptions and edge cases, each requiring a precise level of granularity to be recorded accurately.</li>
+                <li><strong>Audit trail requirements:</strong> Every action and decision had to be fully logged and traceable, placing strict demands on how data was structured.</li>
+                <li><strong>Data model tension:</strong> The system had to be flexible enough for edge cases, scalable as the platform grew, and rigid enough to guarantee a complete audit trail — all at once.</li>
+              </ul>
+            </section>
+
+            <section id="phase-4-approach" className="content-section">
+              <img src="/img/Scarlet/phase4_approach.jpg" alt="Phase 4 approach" className="timeline-image" />
+              <h2>Approach</h2>
+              <p>Given the complexity, <span style={{ color: '#ffffff' }}>we prioritised early and continuous collaboration between designers, engineers, product, and the technical operations team.</span> Rather than working in silos, the four came together regularly to align on regulatory needs, engineering constraints, product roadmap, and usability — finding solutions that satisfied all at once.</p>
+            </section>
+
+            <section id="phase-4-outcome" className="content-section">
+              <figure className="media-figure">
+                <video src="/img/Scarlet/phase4_outcome.mp4" className="timeline-image" autoPlay muted loop playsInline aria-label="Phase 4 outcome" />
+                <figcaption className="media-caption">Competence management system in the web</figcaption>
+              </figure>
+              <h2>Outcome</h2>
+              <p>The result was <span style={{ color: '#ffffff' }}>a competence management system that brought complex regulatory administration fully into the web</span> — making processes that once lived in GitHub or offline systems accessible, traceable, and auditable in one place.</p>
+              <p>When IGJ conducted their audit, the response was notable: no other notified body had managed to centralise their regulatory processes in a web platform to this extent. What started as a response to audit findings became a genuine differentiator for Scarlet.</p>
             </section>
           </div>
         </div>
       </div>
+      </div>
+      )}
     </div>
   );
 };

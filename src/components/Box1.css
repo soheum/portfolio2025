@@ -10,7 +10,7 @@
 .text {
   font-size: 20px;
   font-weight: 300;
-  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  font-family: 'Geist', sans-serif;
   line-height: 1;
   cursor: pointer;
   position: relative;
@@ -76,7 +76,7 @@
   opacity: 1;
   font-size: 16px;
   font-weight: 300;
-  font-family: 'Manrope', 'Geist', Arial, sans-serif;
+  font-family: 'Geist', sans-serif;
   line-height: 1;
 }
 
