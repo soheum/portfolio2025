@@ -17,7 +17,7 @@
   color: #8d8d8d;
   font-size: 14px;
   font-weight: 300;
-  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  font-family: 'Geist', sans-serif;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -40,7 +40,7 @@
   font-size: 16px;
   color: #ffffff;
   font-weight: 300;
-  font-family: 'Manrope', 'Geist', 'Arial', sans-serif;
+  font-family: 'Geist', sans-serif;
 }
 
 .value.bump {

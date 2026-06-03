@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Box2.css';
 
 interface Box2Props {
@@ -8,6 +9,7 @@ interface Box2Props {
 }
 
 const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false }) => {
+  const navigate = useNavigate();
   // Calculate fade-in opacity based on scroll progress
   // Start fading in at progress 0.3, fully visible at progress 0.7
   const fadeOpacity = Math.min(1, Math.max(0, (progress - 0.3) / 0.4));
@@ -20,11 +22,13 @@ const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false 
   const isSecondView = progress >= 0.5;
 
   return (
-    <div 
+    <div
       className={`box2-container ${isSecondView ? 'second-view' : ''} ${isHovered ? 'hovered' : ''}`}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
-      style={{ 
+      onClick={() => navigate('/project')}
+      style={{
+        cursor: 'pointer',
         opacity: fadeOpacity,
         transform: `translate(${translateX}px, ${translateY}px)`,
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
