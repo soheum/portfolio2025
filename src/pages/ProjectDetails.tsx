@@ -4,8 +4,6 @@ import Lottie from 'lottie-react';
 import fileUploaderAnimation from '../file-uploader-empty-state.json';
 import './ProjectDetails.css';
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.';
 
 const PHASE_SUBSECTIONS = [
   { id: 'challenge', label: 'Challenge' },
