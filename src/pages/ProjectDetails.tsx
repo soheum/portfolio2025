@@ -85,6 +85,7 @@ const HERO_CAROUSEL_IMAGES = [
   '/img/Scarlet/hero_carousel_1.jpg',
   '/img/Scarlet/hero_carousel_2.jpg',
   'lottie',
+  '/img/Scarlet/hero_carousel_3.jpg',
 ];
 
 const HeroCarousel: React.FC = () => {
@@ -609,11 +610,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </div>
               </div>
               <div className="challenge-image-row">
-                <div className="challenge-image-wrapper">
-                  <div className="challenge-image-bar" />
-                  <div className="challenge-image-bar-shadow" />
-                  <img src="/img/Scarlet/phase2_challenge_2.jpg" alt="Phase 2 challenge 2" className="challenge-image-placeholder" />
-                </div>
+                <img src="/img/Scarlet/phase2_challenge_2.jpg" alt="Phase 2 challenge 2" className="challenge-image-placeholder" />
                 <div>
                   <p><strong>Strict impartiality rules with AI</strong></p>
                   <p>While repetitive documentation tasks were an obvious area where AI could add value and reduce friction for customers, Scarlet had to maintain strict impartiality as a regulatory body. We must avoid offering any implicit or explicit gap analysis before formal assessment, limiting how far AI support could go.</p>
