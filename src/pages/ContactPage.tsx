@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SkyTimeline from '../components/SkyTimeline';
+import { fetchLondonSunTimes, formatLondonTime } from '../utils/londonSky';
 import './HomePage.css';
 
 const NAV_ITEMS = [
@@ -8,45 +10,64 @@ const NAV_ITEMS = [
   { label: 'Contact', path: '/contact' },
 ];
 
-function formatLondonTime(date = new Date()): string {
-  return new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/London',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  })
-    .format(date)
-    .toLowerCase();
-}
-
 const ContactPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [londonTime, setLondonTime] = useState(() => formatLondonTime());
+  const [now, setNow] = useState(() => new Date());
+  const [sunrise, setSunrise] = useState<Date | null>(null);
+  const [sunset, setSunset] = useState<Date | null>(null);
 
   useEffect(() => {
-    const update = () => setLondonTime(formatLondonTime());
+    const update = () => setNow(new Date());
     update();
 
     const interval = window.setInterval(update, 60_000);
     return () => window.clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSunTimes = async () => {
+      try {
+        const times = await fetchLondonSunTimes();
+        if (!cancelled) {
+          setSunrise(times.sunrise);
+          setSunset(times.sunset);
+        }
+      } catch {
+        if (!cancelled) {
+          setSunrise(null);
+          setSunset(null);
+        }
+      }
+    };
+
+    loadSunTimes();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="home-page">
       <div className="home-content">
-        <h1 className="home-title__name">It is {londonTime} here in London.</h1>
-        <p className="home-bullet" style={{ margin: 5 }}>
-          If you want to chat more, send me an email at:{' '}
-          <a href="mailto:sohheum@gmail.com" style={{ color: '#a3a3a3', textDecoration: 'none' }}>
+        <h1 className="home-title__name">It is {formatLondonTime(now)} here in London.</h1>
+        <p className="home-bullet" style={{ margin: 0 }}>
+          If you want to chat more, send me an email at{' '}
+          <a href="mailto:sohheum@gmail.com" style={{ color: '#ffffff', textDecoration: 'none' }}>
             sohheum@gmail.com
           </a>
         </p>
-          or connect with me on {' '}
-          <a href="https://www.linkedin.com/in/so-heum-hwang/" style={{ color: '#a3a3a3', textDecoration: 'none' }}>
-            LinkedIn:
-          </a>
+        <p className="home-bullet" style={{ margin: 0 }}>
+          or connect with me on{' '}
+        <a href="https://www.linkedin.com/in/so-heum-hwang/" style={{ color: '#ffffff', textDecoration: 'none' }}>
+          LinkedIn
+        </a>
+        </p>
       </div>
+
+      <SkyTimeline now={now} sunrise={sunrise} sunset={sunset} />
 
       <nav className="home-nav">
         {NAV_ITEMS.map(({ label, path }) => (
