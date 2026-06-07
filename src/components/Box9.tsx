@@ -9,13 +9,34 @@ interface Box9Props {
   progress: number;
   onHoverChange?: (isHovered: boolean) => void;
   isHovered?: boolean;
+  /** Auto-plays the hover animation (for hero previews). */
+  preview?: boolean;
 }
 
-const Box9: React.FC<Box9Props> = ({ progress, onHoverChange, isHovered: isExternallyHovered = false }) => {
+const Box9: React.FC<Box9Props> = ({
+  progress,
+  onHoverChange,
+  isHovered: isExternallyHovered = false,
+  preview = false,
+}) => {
   const [isHoveredInternal, setIsHoveredInternal] = useState(false);
-  const isHovered = isHoveredInternal || isExternallyHovered;
+  const [previewActive, setPreviewActive] = useState(false);
+  const isHovered = preview ? previewActive : isHoveredInternal || isExternallyHovered;
   const [budgetPercentage, setBudgetPercentage] = useState(0);
   const animationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!preview) return;
+
+    const frame = requestAnimationFrame(() => {
+      setPreviewActive(true);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      setPreviewActive(false);
+    };
+  }, [preview]);
 
   // Calculate fade-in opacity based on scroll progress
   const fadeOpacity = Math.min(1, Math.max(0, (progress - 0.3) / 0.4));
@@ -105,14 +126,16 @@ const Box9: React.FC<Box9Props> = ({ progress, onHoverChange, isHovered: isExter
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
       onMouseEnter={() => {
+        if (preview) return;
         setIsHoveredInternal(true);
         onHoverChange?.(true);
       }}
       onMouseLeave={() => {
+        if (preview) return;
         setIsHoveredInternal(false);
         onHoverChange?.(false);
       }}
-      onClick={handleClick}
+      onClick={preview ? undefined : handleClick}
     >
       <div className="budget-percentage-counter">
         {budgetPercentage}%

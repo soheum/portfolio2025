@@ -82,10 +82,11 @@ const CoverageCheckerDemo: React.FC = () => {
 };
 
 const HERO_CAROUSEL_IMAGES = [
+  '/img/Scarlet/hero_carousel_0.jpg',
+  '/img/Scarlet/hero_carousel_3.jpg',
+  'lottie',
   '/img/Scarlet/hero_carousel_1.jpg',
   '/img/Scarlet/hero_carousel_2.jpg',
-  'lottie',
-  '/img/Scarlet/hero_carousel_3.jpg',
 ];
 
 const HeroCarousel: React.FC = () => {
