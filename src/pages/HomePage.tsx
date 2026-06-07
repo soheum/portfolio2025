@@ -118,14 +118,15 @@ const HomePage: React.FC = () => {
         </h1>
 
         <ul className={`home-bullets home-bullets--animated ${step >= 4 ? 'home-bullets--visible' : ''}`}>
-          {BULLET_POINTS.map(({ index, text, path, externalHref }) => {
+          {BULLET_POINTS.map(({ index, text, path, externalHref, images }) => {
             const isLink = Boolean(path || externalHref);
+            const hasHoverImages = SHOW_BULLET_HOVER_IMAGES && images.some(Boolean);
             return (
             <li
               key={index}
               className={`home-bullet${isLink ? ' home-bullet--link' : ''}`}
-              onMouseEnter={SHOW_BULLET_HOVER_IMAGES ? () => setHoveredBullet(index) : undefined}
-              onMouseLeave={SHOW_BULLET_HOVER_IMAGES ? () => setHoveredBullet(null) : undefined}
+              onMouseEnter={hasHoverImages ? () => setHoveredBullet(index) : undefined}
+              onMouseLeave={hasHoverImages ? () => setHoveredBullet(null) : undefined}
               onClick={isLink ? () => handleBulletClick(path, externalHref) : undefined}
               role={isLink ? 'link' : undefined}
               tabIndex={isLink ? 0 : undefined}
