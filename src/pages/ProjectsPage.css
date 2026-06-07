@@ -1,0 +1,23 @@
+.projects-bullet__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.projects-bullet--linked {
+  cursor: pointer;
+}
+
+.projects-bullet--linked:hover .projects-bullet__title {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.projects-bullet__title {
+  color: #ffffff;
+}
+
+.projects-bullet__subtitle {
+  color: #555555;
+  line-height: 1.4;
+}

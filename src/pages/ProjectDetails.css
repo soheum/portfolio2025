@@ -383,6 +383,7 @@
 
 .back-button {
   width: 100%;
+  padding: 0px;
   background: none;
   border: none;
   color: #949494;
@@ -451,7 +452,7 @@
   border: none;
   text-align: left;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   font-family: 'Geist', sans-serif;
   cursor: pointer;
   color: #767676;
@@ -527,7 +528,17 @@
 }
 
 .hero-header .subtitle {
+  margin-top: 0;
   margin-bottom: 0;
+}
+
+.hero-header .subtitle-highlight {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.project-landing .hero-content p.hero-meta-explanation {
+  margin-top: 0;
 }
 
 
@@ -544,7 +555,7 @@
 .text-content .subtitle,
 .project-landing .subtitle {
   font-size: 2.5em;
-  font-weight: 300;
+  font-weight: 400;
   width: 100%;
   font-family: 'Geist', sans-serif;
   color: #767676;
@@ -645,7 +656,7 @@
 
 .text-content p {
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   font-family: 'Geist', sans-serif;
   line-height: 1.6em;
   color: #a3a3a3;
@@ -673,7 +684,7 @@
 
 .text-content li {
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   font-family: 'Geist', sans-serif;
   line-height: 1.6em;
   color: #a3a3a3;
