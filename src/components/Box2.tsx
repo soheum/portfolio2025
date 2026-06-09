@@ -6,9 +6,16 @@ interface Box2Props {
   progress: number;
   onHoverChange?: (isHovered: boolean) => void;
   isHovered?: boolean;
+  /** Disables navigation when embedded in previews (e.g. Projects playground). */
+  disableNavigation?: boolean;
 }
 
-const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false }) => {
+const Box2: React.FC<Box2Props> = ({
+  progress,
+  onHoverChange,
+  isHovered = false,
+  disableNavigation = false,
+}) => {
   const navigate = useNavigate();
   // Calculate fade-in opacity based on scroll progress
   // Start fading in at progress 0.3, fully visible at progress 0.7
@@ -26,9 +33,9 @@ const Box2: React.FC<Box2Props> = ({ progress, onHoverChange, isHovered = false 
       className={`box2-container ${isSecondView ? 'second-view' : ''} ${isHovered ? 'hovered' : ''}`}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
-      onClick={() => navigate('/project')}
+      onClick={disableNavigation ? undefined : () => navigate('/project')}
       style={{
-        cursor: 'pointer',
+        cursor: disableNavigation ? 'default' : 'pointer',
         opacity: fadeOpacity,
         transform: `translate(${translateX}px, ${translateY}px)`,
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
