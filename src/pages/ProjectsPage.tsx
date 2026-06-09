@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Box5 from '../components/Box5';
 import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
+import GraphCard from '../components/GraphCard';
 import './HomePage.css';
 import './ProjectsPage.css';
 
@@ -10,7 +12,9 @@ const NAV_ITEMS = [
   { label: 'Contact', path: '/contact' },
 ];
 
-type ProjectImage = string | 'box9';
+type ProjectImage = string | 'box9' | 'box5' | 'graph';
+
+const INTERACTIVE_SLOTS = new Set<ProjectImage>(['box5', 'graph']);
 
 const PROJECTS: {
   index: number;
@@ -19,6 +23,7 @@ const PROJECTS: {
   path?: string | null;
   externalHref?: string;
   images?: [ProjectImage, ProjectImage, ProjectImage];
+  openOnClick?: boolean;
 }[] = [
   {
     index: 1,
@@ -46,20 +51,42 @@ const PROJECTS: {
     subtitle: '(Coming soon) Translating analogue sincerity into digital experiences.',
     path: null,
   },
+  {
+    index: 5,
+    title: 'Playground - UI experiments',
+    subtitle: 'Personal sketchbook of micro interactions inspired by everyday life',
+    path: null,
+    openOnClick: true,
+    images: ['/img/Grid/Landing_playground.gif', 'box5', 'graph'],
+  },
 ];
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [activeProject, setActiveProject] = useState<number | null>(null);
 
-  const handleProjectClick = (path?: string | null, externalHref?: string) => {
+  const shownProjectIndex = hoveredProject ?? activeProject;
+
+  const handleProjectClick = (
+    index: number,
+    path?: string | null,
+    externalHref?: string,
+    openOnClick?: boolean,
+  ) => {
     if (path) {
+      setActiveProject(null);
       navigate(path);
       return;
     }
     if (externalHref) {
+      setActiveProject(null);
       window.open(externalHref, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (openOnClick) {
+      setActiveProject((prev) => (prev === index ? null : index));
     }
   };
 
@@ -71,16 +98,28 @@ const ProjectsPage: React.FC = () => {
         </h1>
 
         <ul className="home-bullets">
-          {PROJECTS.map(({ index, title, subtitle, path, externalHref, images }) => {
-            const isLinked = Boolean(path || externalHref);
-            const hasHoverImages = Boolean(images);
+          {PROJECTS.map(({ index, title, subtitle, path, externalHref, images, openOnClick }) => {
+            const isClickable = Boolean(path || externalHref || openOnClick);
+            const hasHoverPreview = Boolean(images && !openOnClick);
+            const isActive = activeProject === index;
             return (
             <li
               key={index}
-              className={`home-bullet projects-bullet ${isLinked ? 'projects-bullet--linked' : ''}`}
-              onMouseEnter={hasHoverImages ? () => setHoveredProject(index) : undefined}
-              onMouseLeave={hasHoverImages ? () => setHoveredProject(null) : undefined}
-              onClick={() => handleProjectClick(path, externalHref)}
+              className={`home-bullet projects-bullet${isClickable ? ' projects-bullet--linked' : ''}${isActive ? ' projects-bullet--active' : ''}`}
+              onMouseEnter={!openOnClick ? () => {
+                setActiveProject(null);
+                if (hasHoverPreview) setHoveredProject(index);
+              } : undefined}
+              onMouseLeave={hasHoverPreview ? () => setHoveredProject(null) : undefined}
+              onClick={() => handleProjectClick(index, path, externalHref, openOnClick)}
+              role={isClickable ? 'button' : undefined}
+              tabIndex={isClickable ? 0 : undefined}
+              onKeyDown={isClickable ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleProjectClick(index, path, externalHref, openOnClick);
+                }
+              } : undefined}
             >
               <span className="home-bullet__index">[{index}]</span>
               <div className="projects-bullet__content">
@@ -93,12 +132,19 @@ const ProjectsPage: React.FC = () => {
         </ul>
       </div>
 
-      {hoveredProject !== null && (() => {
-        const project = PROJECTS.find((p) => p.index === hoveredProject);
+      {shownProjectIndex !== null && (() => {
+        const project = PROJECTS.find((p) => p.index === shownProjectIndex);
         if (!project?.images) return null;
 
+        const isInteractive = project.images.some((src) => INTERACTIVE_SLOTS.has(src));
+        const isClickOpen = project.index === activeProject;
+
         return (
-          <div className="bullet-image-stack">
+          <div
+            className={`bullet-image-stack${isInteractive ? ' bullet-image-stack--interactive' : ''}`}
+            onMouseEnter={!isClickOpen ? () => setHoveredProject(project.index) : undefined}
+            onMouseLeave={!isClickOpen ? () => setHoveredProject(null) : undefined}
+          >
             {project.images.map((src, i) => (
               <div
                 key={i}
@@ -108,6 +154,14 @@ const ProjectsPage: React.FC = () => {
                 {src === 'box9' ? (
                   <div className="bullet-image-stack__box9">
                     <Box9 progress={1} preview />
+                  </div>
+                ) : src === 'box5' ? (
+                  <div className="bullet-image-stack__box5">
+                    <Box5 progress={1} isHovered />
+                  </div>
+                ) : src === 'graph' ? (
+                  <div className="bullet-image-stack__graph">
+                    <GraphCard />
                   </div>
                 ) : src && (src.endsWith('.mp4')
                   ? <video src={src} autoPlay muted loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

@@ -8,7 +8,8 @@
   cursor: pointer;
 }
 
-.projects-bullet--linked:hover .projects-bullet__title {
+.projects-bullet--linked:hover .projects-bullet__title,
+.projects-bullet--active .projects-bullet__title {
   font-weight: 500;
   letter-spacing: -0.02em;
 }
