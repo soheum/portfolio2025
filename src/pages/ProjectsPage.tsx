@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Box5 from '../components/Box5';
-import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
-import GraphCard from '../components/GraphCard';
+import ProjectPreviewStack, { ProjectPreview } from '../components/ProjectPreviewStack';
+import { BOX9_PROJECT_URL } from '../components/Box9';
 import './HomePage.css';
 import './ProjectsPage.css';
 
@@ -12,81 +11,73 @@ const NAV_ITEMS = [
   { label: 'Contact', path: '/contact' },
 ];
 
-type ProjectImage = string | 'box9' | 'box5' | 'graph';
-
-const INTERACTIVE_SLOTS = new Set<ProjectImage>(['box5', 'graph']);
-
 const PROJECTS: {
   index: number;
   title: string;
   subtitle: string;
   path?: string | null;
   externalHref?: string;
-  images?: [ProjectImage, ProjectImage, ProjectImage];
-  openOnClick?: boolean;
+  preview: ProjectPreview;
 }[] = [
   {
     index: 1,
     title: '0 → 1 product development at Scarlet',
     subtitle: 'Simplifying complex regulatory concepts into a usable flow',
     path: '/project',
-    images: ['/img/Scarlet/Landing_1.jpg', '/img/Scarlet/Landing_2.jpg', '/img/Scarlet/Landing_3.jpg'],
+    preview: { type: 'video', src: '/img/Grid/Landing_scarlet.mp4' },
   },
   {
     index: 2,
     title: 'Digital business building at McKinsey & Company',
     subtitle: 'Launching a financial wellbeing service in Norway',
     externalHref: BOX9_PROJECT_URL,
-    images: ['/img/Grid/Box9_8.jpg', 'box9', '/img/Grid/Box9_10_1.jpg'],
+    preview: { type: 'image', src: '/img/Grid/Landing_Kan.jpg' },
   },
   {
     index: 3,
     title: 'Trust and autonomy in self-driving cars',
     subtitle: "Master's thesis in collaboration with Volvo Cars",
     externalHref: 'https://www.umu.se/en/umea-institute-of-design/education/student-work/masters-programme-in-interaction-design/2022/soh-heum-hwang/',
+    preview: { type: 'video', src: '/img/Grid/Landing_Fido.mp4' },
   },
   {
     index: 4,
     title: 'Collaboration with Korean stationery brand, Greetings Folks',
     subtitle: '(Coming soon) Translating analogue sincerity into digital experiences.',
     path: null,
+    preview: { type: 'image', src: '/img/Grid/Landing_GF.jpg' },
+    // preview: { type: 'envelope' },
   },
   {
     index: 5,
     title: 'Playground - UI experiments',
     subtitle: 'Personal sketchbook of micro interactions inspired by everyday life',
     path: null,
-    openOnClick: true,
-    images: ['/img/Grid/Landing_playground.gif', 'box5', 'graph'],
+    preview: { type: 'image', src: '/img/Grid/Landing_playground_2.gif' },
   },
 ];
+
+const PREVIEW_ITEMS = PROJECTS.map(({ index, preview }) => ({ index, preview }));
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-  const [activeProject, setActiveProject] = useState<number | null>(null);
+  const bulletsRef = useRef<HTMLUListElement>(null);
+  const previewStackRef = useRef<HTMLDivElement>(null);
 
-  const shownProjectIndex = hoveredProject ?? activeProject;
+  const clearHoverUnlessEnteringPreview = (related: EventTarget | null) => {
+    if (related instanceof Node && previewStackRef.current?.contains(related)) return;
+    setHoveredProject(null);
+  };
 
-  const handleProjectClick = (
-    index: number,
-    path?: string | null,
-    externalHref?: string,
-    openOnClick?: boolean,
-  ) => {
+  const handleProjectClick = (path?: string | null, externalHref?: string) => {
     if (path) {
-      setActiveProject(null);
       navigate(path);
       return;
     }
     if (externalHref) {
-      setActiveProject(null);
       window.open(externalHref, '_blank', 'noopener,noreferrer');
-      return;
-    }
-    if (openOnClick) {
-      setActiveProject((prev) => (prev === index ? null : index));
     }
   };
 
@@ -97,27 +88,25 @@ const ProjectsPage: React.FC = () => {
           <span className="home-title__name">My projects</span>
         </h1>
 
-        <ul className="home-bullets">
-          {PROJECTS.map(({ index, title, subtitle, path, externalHref, images, openOnClick }) => {
-            const isClickable = Boolean(path || externalHref || openOnClick);
-            const hasHoverPreview = Boolean(images && !openOnClick);
-            const isActive = activeProject === index;
+        <ul
+          className="home-bullets"
+          ref={bulletsRef}
+          onMouseLeave={(e) => clearHoverUnlessEnteringPreview(e.relatedTarget)}
+        >
+          {PROJECTS.map(({ index, title, subtitle, path, externalHref }) => {
+            const isLinked = Boolean(path || externalHref);
             return (
             <li
               key={index}
-              className={`home-bullet projects-bullet${isClickable ? ' projects-bullet--linked' : ''}${isActive ? ' projects-bullet--active' : ''}`}
-              onMouseEnter={!openOnClick ? () => {
-                setActiveProject(null);
-                if (hasHoverPreview) setHoveredProject(index);
-              } : undefined}
-              onMouseLeave={hasHoverPreview ? () => setHoveredProject(null) : undefined}
-              onClick={() => handleProjectClick(index, path, externalHref, openOnClick)}
-              role={isClickable ? 'button' : undefined}
-              tabIndex={isClickable ? 0 : undefined}
-              onKeyDown={isClickable ? (e) => {
+              className={`home-bullet projects-bullet${isLinked ? ' projects-bullet--linked' : ''}${hoveredProject === index ? ' projects-bullet--active' : ''}`}
+              onMouseEnter={() => setHoveredProject(index)}
+              onClick={isLinked ? () => handleProjectClick(path, externalHref) : undefined}
+              role={isLinked ? 'link' : undefined}
+              tabIndex={isLinked ? 0 : undefined}
+              onKeyDown={isLinked ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleProjectClick(index, path, externalHref, openOnClick);
+                  handleProjectClick(path, externalHref);
                 }
               } : undefined}
             >
@@ -132,46 +121,15 @@ const ProjectsPage: React.FC = () => {
         </ul>
       </div>
 
-      {shownProjectIndex !== null && (() => {
-        const project = PROJECTS.find((p) => p.index === shownProjectIndex);
-        if (!project?.images) return null;
-
-        const isInteractive = project.images.some((src) => INTERACTIVE_SLOTS.has(src));
-        const isClickOpen = project.index === activeProject;
-
-        return (
-          <div
-            className={`bullet-image-stack${isInteractive ? ' bullet-image-stack--interactive' : ''}`}
-            onMouseEnter={!isClickOpen ? () => setHoveredProject(project.index) : undefined}
-            onMouseLeave={!isClickOpen ? () => setHoveredProject(null) : undefined}
-          >
-            {project.images.map((src, i) => (
-              <div
-                key={i}
-                className="bullet-image-stack__item"
-                style={{ zIndex: i + 1 }}
-              >
-                {src === 'box9' ? (
-                  <div className="bullet-image-stack__box9">
-                    <Box9 progress={1} preview />
-                  </div>
-                ) : src === 'box5' ? (
-                  <div className="bullet-image-stack__box5">
-                    <Box5 progress={1} isHovered />
-                  </div>
-                ) : src === 'graph' ? (
-                  <div className="bullet-image-stack__graph">
-                    <GraphCard />
-                  </div>
-                ) : src && (src.endsWith('.mp4')
-                  ? <video src={src} autoPlay muted loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                )}
-              </div>
-            ))}
-          </div>
-        );
-      })()}
+      <ProjectPreviewStack
+        ref={previewStackRef}
+        items={PREVIEW_ITEMS}
+        hoveredIndex={hoveredProject}
+        onHoverEnd={(related) => {
+          if (related instanceof Node && bulletsRef.current?.contains(related)) return;
+          setHoveredProject(null);
+        }}
+      />
 
       <nav className="home-nav">
         {NAV_ITEMS.map(({ label, path }) => (
