@@ -1,0 +1,100 @@
+.project-preview-stack {
+  --slot-size: calc(100vh / 3);
+  position: fixed;
+  right: 15vw;
+  top: 0;
+  width: var(--slot-size);
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: auto;
+  z-index: 0;
+}
+
+.project-preview-stack__track {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(var(--track-offset, 0) * var(--slot-size) * -1));
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.project-preview-stack__item {
+  flex: 0 0 var(--slot-size);
+  width: var(--slot-size);
+  height: var(--slot-size);
+  overflow: hidden;
+  background: #1a1a1a;
+  transition: opacity 0.35s ease;
+}
+
+.project-preview-stack__item img,
+.project-preview-stack__item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-preview-stack__placeholder {
+  width: 100%;
+  height: 100%;
+  background: #000000;
+}
+
+.project-preview-stack--focused .project-preview-stack__item:not(.project-preview-stack__item--focused) {
+  opacity: 0.5;
+}
+
+.project-preview-stack__item--focused {
+  opacity: 1;
+}
+
+.envelope-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+}
+
+.envelope-preview .envelope-preview__back,
+.envelope-preview .envelope-preview__front {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.envelope-preview .envelope-preview__back {
+  z-index: 1;
+}
+
+.envelope-preview .envelope-preview__front {
+  z-index: 3;
+}
+
+.envelope-preview .envelope-preview__card {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 2;
+  width: 99%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  transform: translateX(-50%) translateY(42%);
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.envelope-preview .envelope-preview__card--up {
+  transform: translateX(-50%) translateY(-40%);
+}
+
+@media (max-width: 1100px) {
+  .project-preview-stack {
+    display: none;
+  }
+}
