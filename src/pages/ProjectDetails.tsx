@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Lottie from 'lottie-react';
-import fileUploaderAnimation from '../file-uploader-empty-state.json';
 import './ProjectDetails.css';
 
 
@@ -81,86 +79,19 @@ const CoverageCheckerDemo: React.FC = () => {
   );
 };
 
-const HERO_CAROUSEL_IMAGES = [
-  '/img/Scarlet/hero_carousel_0.jpg',
-  '/img/Scarlet/hero_carousel_3.jpg',
-  'lottie',
-  '/img/Scarlet/hero_carousel_1.jpg',
-  '/img/Scarlet/hero_carousel_2.jpg',
-];
-
-const HeroCarousel: React.FC = () => {
-  const [index, setIndex] = useState(0);
-  const distRef = useRef(0);
-  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
-  const THRESHOLD = 80;
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX, clientY } = e;
-    if (lastPosRef.current) {
-      const dx = clientX - lastPosRef.current.x;
-      const dy = clientY - lastPosRef.current.y;
-      distRef.current += Math.sqrt(dx * dx + dy * dy);
-      if (distRef.current >= THRESHOLD) {
-        distRef.current = 0;
-        setIndex((prev) => (prev + 1) % HERO_CAROUSEL_IMAGES.length);
-      }
-    }
-    lastPosRef.current = { x: clientX, y: clientY };
-  };
-
-  const handleMouseLeave = () => {
-    lastPosRef.current = null;
-    distRef.current = 0;
-  };
-
-  return (
-    <div
-      className="hero-image-grid hero-carousel"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {HERO_CAROUSEL_IMAGES.map((src, i) =>
-        src === 'lottie' ? (
-          <div
-            key={i}
-            className={`hero-carousel__img hero-carousel__lottie ${i === index ? 'hero-carousel__img--visible' : ''}`}
-          >
-            <div className="hero-carousel__lottie-box">
-              <div style={{ width: '30%' }}>
-                <Lottie animationData={fileUploaderAnimation} loop={true} style={{ width: '100%' }} />
-              </div>
-              <p className="hero-carousel__lottie-text">Drag and drop your files here</p>
-            <div className="hero-carousel__lottie-buttons">
-              <button className="hero-carousel__lottie-btn">
-                <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22 13H25C25.2652 13 25.5196 13.1054 25.7071 13.2929C25.8946 13.4804 26 13.7348 26 14V26C26 26.2652 25.8946 26.5196 25.7071 26.7071C25.5196 26.8946 25.2652 27 25 27H7C6.73478 27 6.48043 26.8946 6.29289 26.7071C6.10536 26.5196 6 26.2652 6 26V14C6 13.7348 6.10536 13.4804 6.29289 13.2929C6.48043 13.1054 6.73478 13 7 13H10" stroke="#1c1c1c"/>
-                  <path d="M11 8L16 3L21 8" stroke="#1c1c1c" strokeLinejoin="round"/>
-                  <path d="M16 3V17" stroke="#1c1c1c" strokeLinejoin="round"/>
-                </svg>
-                Choose file
-              </button>
-              <button className="hero-carousel__lottie-btn">
-                <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M28 11V25.1112C28 25.347 27.9064 25.573 27.7397 25.7397C27.573 25.9064 27.347 26 27.1112 26H5C4.73478 26 4.48043 25.8946 4.29289 25.7071C4.10536 25.5196 4 25.2652 4 25V8C4 7.73478 4.10536 7.48043 4.29289 7.29289C4.48043 7.10536 4.73478 7 5 7H11.6663C11.8826 7 12.0932 7.07018 12.2662 7.2L16 10H27C27.2652 10 27.5196 10.1054 27.7071 10.2929C27.8946 10.4804 28 10.7348 28 11Z" stroke="#1c1c1c" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                Choose folder
-              </button>
-            </div>
-            </div>
-          </div>
-        ) : (
-          <img
-            key={i}
-            src={src}
-            alt={`Scarlet platform ${i + 1}`}
-            className={`hero-carousel__img ${i === index ? 'hero-carousel__img--visible' : ''}`}
-          />
-        )
-      )}
-    </div>
-  );
-};
+const HeroCarousel: React.FC = () => (
+  <div className="hero-image-grid hero-carousel">
+    <video
+      src="/img/Grid/Landing_main.mp4"
+      className="hero-carousel__video"
+      autoPlay
+      muted
+      loop
+      playsInline
+      aria-label="Scarlet platform overview"
+    />
+  </div>
+);
 
 
 const Phase3ApproachGallery: React.FC = () => (
@@ -426,55 +357,50 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
         {/* <button type="button" className="project-landing-back" onClick={handleBack}>
           Previous
         </button> */}
+        <div className="project-landing-hero">
+          <HeroCarousel />
+        </div>
         <div className="project-landing-inner">
-          <div className="hero-header">
-            {/* <img src="/logo/scarlet_logo.svg" alt="Scarlet" className="hero-logo" /> */}
-            <div className="subtitle-container">
-              <p className="subtitle">From fragmented Git-based workflows to</p>
-              <p className="subtitle subtitle-highlight">
-                {Array.from('a scalable, end-to-end regulatory platform').map((char, index) => (
-                  <span
-                    key={index}
-                    className="subtitle-highlight-char"
-                    style={{ ['--char-index' as string]: index } as React.CSSProperties}
-                  >
-                    {char}
-                  </span>
-                ))}
-              </p>
-            </div>
+          <div className="project-landing-col project-landing-col--headline">
+            <h1 className="project-landing-headline">
+              From fragmented Git-based workflows to a scalable, end-to-end regulatory platform
+            </h1>
+            <a
+              href="https://www.scarlet.cc/"
+              className="project-landing-link-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit Scarlet website"
+            >
+              <img src="/img/ArrowUpRight.svg" alt="" className="project-landing-link-btn__icon" />
+            </a>
           </div>
-          <div className="hero-body">
-            <div className="hero-content text-content">
-              <div className="hero-meta-field">
-                <p>Company</p>
-                <p className="hero-meta-explanation">Scarlet</p>
-              </div>
-              <div className="hero-meta-field">
-                <p>Duration</p>
-                <p className="hero-meta-explanation">Mar 25 - present</p>
-              </div>
-              <div className="hero-meta-field">
-                <p>Role</p>
-                <p className="hero-meta-explanation">Senior Product Designer</p>
-              </div>
-              <div className="hero-meta-field">
-                <p>Team</p>
-                <p className="hero-meta-explanation">1 Design Lead, 1 PM, 8 engineers</p>
-              </div>
-              <div className="hero-meta-field">
-                <p>Responsibilities</p>
-                <p className="hero-meta-explanation">
-                  0 → 1 product design and development
-                  <br />
-                  Founding design work at an early stage startup
-                  <br />
-                  Defining core UX & design direction with 10+ product team.
-                </p>
-              </div>
+          <div className="project-landing-col project-landing-col--body">
+            <p>
+              0 → 1 product design and development at Scarlet, Notified Body specialised in software
+              and AI medical devices.
+            </p>
+            <p>
+              Founding design work at an early stage startup, defining core user experience and design
+              direction with 10+ product team.
+            </p>
+          </div>
+          <div className="project-landing-col project-landing-col--meta">
+            <div className="hero-meta-field">
+              <p>Company</p>
+              <p className="hero-meta-explanation">Scarlet</p>
             </div>
-            <div className="hero-image" aria-hidden="true">
-              <HeroCarousel />
+            <div className="hero-meta-field">
+              <p>Duration</p>
+              <p className="hero-meta-explanation">Mar 25 - present</p>
+            </div>
+            <div className="hero-meta-field">
+              <p>Role</p>
+              <p className="hero-meta-explanation">Senior Product Designer</p>
+            </div>
+            <div className="hero-meta-field">
+              <p>Team</p>
+              <p className="hero-meta-explanation">1 Design Lead, 1 PM, 8 engineers</p>
             </div>
           </div>
         </div>
