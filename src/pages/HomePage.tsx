@@ -50,7 +50,7 @@ const BULLET_POINTS: {
   {
     index: 1,
     text: <>Senior product designer based in London, accelerating medical devices to market at <span style={{ color: '#ffffff', fontWeight: 400 }}>Scarlet</span></>,
-    images: ['/img/Grid/Landing_scarlet_3.jpg', '/img/Grid/Landing_scarlet_2.jpg', '/img/Grid/Landing_scarlet_1.jpg'],
+    images: ['/img/Grid/Landing_scarlet_2.jpg', '/img/Grid/Landing_0.mp4', '/img/Grid/Landing_scarlet_1.jpg'],
     path: '/project',
   },
   {
