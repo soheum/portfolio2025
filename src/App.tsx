@@ -6,6 +6,7 @@ import ContactPage from './pages/ContactPage';
 import ProjectsPage from './pages/ProjectsPage';
 import Kan from './pages/Kan';
 import About2 from './pages/About2';
+import SiteLayout from './components/SiteLayout';
 
 function App() {
   const location = useLocation();
@@ -27,14 +28,16 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/project" element={<ProjectDetails />} />
-      <Route path="/projects" element={<ProjectsPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/kan" element={<Kan />} />
-      <Route path="/about2" element={<About2 />} />
-    </Routes>
+    <SiteLayout>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/project" element={<ProjectDetails />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/kan" element={<Kan />} />
+        <Route path="/about2" element={<About2 />} />
+      </Routes>
+    </SiteLayout>
   );
 }
 

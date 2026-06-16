@@ -103,7 +103,18 @@ const HeroCarousel: React.FC = () => (
 
 const Phase3ApproachGallery: React.FC = () => (
   <div className="phase3-gallery">
-    <img src="/img/Scarlet/phase3_approach.jpg" alt="Phase 3 approach" className="phase3-gallery__base" />
+    <figure className="media-figure">
+      <video
+        src="/img/Scarlet/phase3_challenge.mp4"
+        className="phase3-gallery__base timeline-image"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label="Phase 3 approach"
+      />
+      <figcaption className="media-caption">Vibe coded prototypes that allowed rapid iteration</figcaption>
+    </figure>
   </div>
 );
 
@@ -1247,7 +1258,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 <h2 ref={phase4ChallengeHeadingRef} className="content-block__heading content-block__heading--stack-1">
                   <span className="content-block__heading-label">Phase 04</span>
                   Challenge
-                  <span className="content-block__heading-subtitle">Scaling admin workflows <br/>with strict traceability</span>
+                  <span className="content-block__heading-subtitle">Translating admin <br/>workflows to the web</span>
                 </h2>
                 <div className="content-block__body content-section">
                   <p>With customer and assessor workflows successfully migrated to the web, administrators were still using GitHub. We received repeated audit findings from IGJ (Inspectie Gezondheidszorg en Jeugd), supervisory authority auditing Scarlet, that using GitHub was becoming unscalable.</p>
@@ -1276,7 +1287,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               <section id="phase-4-outcome" className="content-block__segment">
                 <h2 ref={phase4OutcomeHeadingRef} className="content-block__heading content-block__heading--stack-3">
                   Outcome
-                  <span className="content-block__heading-subtitle">Competence management system <br/>in the web</span>
+                  <span className="content-block__heading-subtitle">Competence management system in the web</span>
                 </h2>
                 <div className="content-block__body content-section">
                   <p>The result was <span style={{ color: '#ffffff' }}>a competence management system that brought complex regulatory administration fully into the web</span> — making processes that once lived in GitHub or offline systems accessible, traceable, and auditable in one place.</p>
