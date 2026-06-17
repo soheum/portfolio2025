@@ -2,33 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
 import Logo3D from '../components/Logo3D';
+import TypedText from '../components/TypedText';
 import './HomePage.css';
-
-interface TypedTextProps {
-  text: string;
-  charDelay?: number;
-  startDelay?: number;
-  pauseAfterIndex?: number;
-  pauseDuration?: number;
-  className?: string;
-}
-
-const TypedText: React.FC<TypedTextProps> = ({ text, charDelay = 40, startDelay = 0, pauseAfterIndex, pauseDuration = 0, className }) => (
-  <span className={className}>
-    {Array.from(text).map((char, i) => {
-      const extra = pauseAfterIndex !== undefined && i > pauseAfterIndex ? pauseDuration : 0;
-      return (
-        <span
-          key={i}
-          className="typed-char"
-          style={{ animationDelay: `${startDelay + i * charDelay + extra}ms` } as React.CSSProperties}
-        >
-          {char}
-        </span>
-      );
-    })}
-  </span>
-);
 
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
