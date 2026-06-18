@@ -48,6 +48,7 @@ const BULLET_POINTS: {
     index: 5,
     text: 'A visual storyteller, curating thoughtfully designed spaces through photography and text',
     images: ['', '', ''],
+    externalHref: 'https://www.instagram.com/iso_heum/',
   },
 ];
 

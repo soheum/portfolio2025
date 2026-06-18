@@ -21,4 +21,15 @@
 .projects-bullet__subtitle {
   color: #555555;
   line-height: 1.4;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.25s ease;
+}
+
+.projects-bullet:hover .projects-bullet__subtitle,
+.projects-bullet--active .projects-bullet__subtitle,
+.projects-bullet:focus-within .projects-bullet__subtitle {
+  opacity: 1;
+  max-height: 5em;
 }

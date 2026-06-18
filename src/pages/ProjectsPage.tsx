@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 const PROJECTS: {
   index: number;
   title: string;
-  subtitle: string;
+  subtitle: string | React.ReactNode;
   path?: string | null;
   externalHref?: string;
   preview: ProjectPreview;
@@ -22,7 +22,13 @@ const PROJECTS: {
   {
     index: 1,
     title: '0 → 1 product development at Scarlet',
-    subtitle: 'Simplifying complex regulatory concepts into a usable flow',
+    subtitle: (
+      <>
+        From fragmented Git-based workflows to a
+        <br />
+        scalable, end-to-end regulatory platform
+      </>
+    ),
     path: '/project',
     preview: { type: 'video', src: '/img/Grid/Landing_scarlet.mp4' },
   },
