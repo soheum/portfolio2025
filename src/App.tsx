@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import ProjectDetails from './pages/ProjectDetails';
 import ContactPage from './pages/ContactPage';
 import ProjectsPage from './pages/ProjectsPage';
+import PlaygroundPage from './pages/PlaygroundPage';
 import Kan from './pages/Kan';
 import About2 from './pages/About2';
 import SiteLayout from './components/SiteLayout';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/project" element={<ProjectDetails />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/playground" element={<PlaygroundPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/kan" element={<Kan />} />
         <Route path="/about2" element={<About2 />} />

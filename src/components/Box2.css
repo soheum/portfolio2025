@@ -1,13 +1,11 @@
 .box2-container {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   position: relative;
-  padding-right: 12px;
-  padding-left: 12px;
-  padding-bottom: 30px;
+  padding: 12px;
   cursor: pointer;
 }
 
@@ -27,55 +25,6 @@
   background-position: 0 0, 0 100%, 0 0, 100% 0;
   background-repeat: no-repeat;
 }
-
-/* Scarlet logo: upper-left, visible on hover */
-.box2-container .box2-scarlet-logo {
-  position: absolute;
-  top: 32px;
-  left: 12px;
-  height: 22px;
-  width: auto;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.box2-container:hover .box2-scarlet-logo,
-.box2-container.hovered .box2-scarlet-logo {
-  opacity: 1;
-}
-
-/* Scoped to Box2 only so Box9 can use yellow; this one stays pink */
-/* Arrow always visible (was opacity: 0, shown only on hover) */
-.box2-container .arrow-icon-wrapper {
-  position: absolute;
-  top: 20px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  background-color: #ff3737 !important;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.arrow-icon {
-  width: 16px;
-  height: 16px;
-  filter: invert(1) brightness(0);
-  transition: filter 0.3s ease;
-}
-
-.box2-container:hover .arrow-icon,
-.box2-container.hovered .arrow-icon {
-  filter: none;
-}
-
-/* Arrow is always visible; no hover needed */
 
 .file-stack {
   position: relative;

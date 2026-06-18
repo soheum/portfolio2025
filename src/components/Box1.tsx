@@ -97,7 +97,40 @@ const Box1: React.FC<Box1Props> = ({ progress }) => {
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
     >
-    
+      <span
+        ref={textRef}
+        className={`text${isBadgeVisible ? ' text-clicked' : ''}`}
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleClick();
+          }
+        }}
+      >
+        click me
+      </span>
+      <span
+        ref={badgeRef}
+        className={`badge${isBadgeVisible ? ' is-visible' : ''}`}
+        aria-label={`${count} clicks`}
+      >
+        <svg className="ring" viewBox="0 0 32 32" aria-hidden="true">
+          <circle className="ring-track" cx="16" cy="16" r="16" />
+          <circle
+            ref={ringProgressRef}
+            className="ring-progress"
+            cx="16"
+            cy="16"
+            r="16"
+          />
+        </svg>
+        <span ref={badgeNumRef} className="badge-num">
+          {count}
+        </span>
+      </span>
     </div>
   );
 };
