@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProjectPreviewStack, { ProjectPreview } from '../components/ProjectPreviewStack';
 import { BOX9_PROJECT_URL } from '../components/Box9';
+import type { ProjectIndexNavState } from '../utils/projectNavState';
 import './HomePage.css';
 import './ProjectsPage.css';
 
@@ -71,14 +72,27 @@ const ProjectsPage: React.FC = () => {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const bulletsRef = useRef<HTMLUListElement>(null);
   const previewStackRef = useRef<HTMLDivElement>(null);
+  const scarletIndexRef = useRef<HTMLSpanElement>(null);
 
   const clearHoverUnlessEnteringPreview = (related: EventTarget | null) => {
     if (related instanceof Node && previewStackRef.current?.contains(related)) return;
     setHoveredProject(null);
   };
 
-  const handleProjectClick = (path?: string | null, externalHref?: string) => {
+  const handleProjectClick = (
+    path?: string | null,
+    externalHref?: string,
+    index?: number,
+  ) => {
     if (path) {
+      if (path === '/project' && index === 1 && scarletIndexRef.current) {
+        const rect = scarletIndexRef.current.getBoundingClientRect();
+        const state: ProjectIndexNavState = {
+          indexRect: { top: rect.top, left: rect.left },
+        };
+        navigate(path, { state });
+        return;
+      }
       navigate(path);
       return;
     }
@@ -88,7 +102,7 @@ const ProjectsPage: React.FC = () => {
   };
 
   return (
-    <div className="home-page">
+    <div className="home-page home-page--top-aligned">
       <div className="home-content">
         <h1 className="home-title">
           <span className="home-title__name">My projects</span>
@@ -106,17 +120,20 @@ const ProjectsPage: React.FC = () => {
               key={index}
               className={`home-bullet projects-bullet${isLinked ? ' projects-bullet--linked' : ''}${hoveredProject === index ? ' projects-bullet--active' : ''}`}
               onMouseEnter={() => setHoveredProject(index)}
-              onClick={isLinked ? () => handleProjectClick(path, externalHref) : undefined}
+              onClick={isLinked ? () => handleProjectClick(path, externalHref, index) : undefined}
               role={isLinked ? 'link' : undefined}
               tabIndex={isLinked ? 0 : undefined}
               onKeyDown={isLinked ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleProjectClick(path, externalHref);
+                  handleProjectClick(path, externalHref, index);
                 }
               } : undefined}
             >
-              <span className="home-bullet__index">[{index}]</span>
+              <span
+                ref={index === 1 ? scarletIndexRef : undefined}
+                className="home-bullet__index"
+              >[{index}]</span>
               <div className="projects-bullet__content">
                 <span className="projects-bullet__title">{title}</span>
                 <span className="projects-bullet__subtitle">{subtitle}</span>

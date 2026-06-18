@@ -1,6 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import TypewriterText from '../components/TypewriterText';
+import {
+  PROJECT_INDEX_HOLD_MS,
+  PROJECT_INDEX_MOVE_MS,
+  type ProjectIndexNavState,
+} from '../utils/projectNavState';
 import './ProjectDetails.css';
+
+const LANDING_HEADLINE = '0 → 1 product design and development at Scarlet';
+
+type LandingIntroPhase = 'index-hold' | 'index-move' | 'typing';
 
 function getHeadingExpandedHeight(heading: HTMLHeadingElement): number {
   const wasCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
@@ -86,12 +96,12 @@ const CoverageCheckerDemo: React.FC = () => {
   );
 };
 
-const HeroCarousel: React.FC = () => (
+const HeroCarousel: React.FC<{ autoPlay?: boolean }> = ({ autoPlay = false }) => (
   <div className="hero-image-grid hero-carousel">
     <video
-      src="/img/Grid/Landing_main.mp4"
+      src="/img/Grid/Landing_scarlet_0.mp4"
       className="hero-carousel__video"
-      autoPlay
+      autoPlay={autoPlay}
       muted
       loop
       playsInline
@@ -253,6 +263,13 @@ const PromptCopyDemo: React.FC = () => {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const navState = location.state as ProjectIndexNavState | null;
+  const hasIndexTransition = Boolean(navState?.indexRect);
+  const indexAnchorRef = useRef<HTMLSpanElement>(null);
+  const indexHoldTimerRef = useRef<number | null>(null);
+  const indexMoveTimerRef = useRef<number | null>(null);
+  const indexMoveFinishedRef = useRef(false);
   const [activeSection, setActiveSection] = useState('about');
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -280,6 +297,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const [phase3HeadingsReleased, setPhase3HeadingsReleased] = useState(false);
   const [phase4HeadingsReleased, setPhase4HeadingsReleased] = useState(false);
   const [hasPassedLanding, setHasPassedLanding] = useState(false);
+  const [landingTypingComplete, setLandingTypingComplete] = useState(false);
+  const [introPhase, setIntroPhase] = useState<LandingIntroPhase>(() =>
+    hasIndexTransition ? 'index-hold' : 'typing'
+  );
+  const [floatingIndexTop, setFloatingIndexTop] = useState<number | null>(
+    hasIndexTransition ? navState?.indexRect?.top ?? null : null
+  );
+  const [floatingIndexLeft, setFloatingIndexLeft] = useState<number | null>(
+    hasIndexTransition ? navState?.indexRect?.left ?? null : null
+  );
+  const [indexMoveTargetTop, setIndexMoveTargetTop] = useState<number | null>(null);
+  const [showAnchoredIndex, setShowAnchoredIndex] = useState(!hasIndexTransition);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
@@ -298,6 +327,57 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const handleBack = () => {
     navigate('/');
   };
+
+  const handleLandingTypingComplete = useCallback(() => {
+    setLandingTypingComplete(true);
+  }, []);
+
+  const clearIndexTimers = useCallback(() => {
+    if (indexHoldTimerRef.current !== null) {
+      window.clearTimeout(indexHoldTimerRef.current);
+      indexHoldTimerRef.current = null;
+    }
+    if (indexMoveTimerRef.current !== null) {
+      window.clearTimeout(indexMoveTimerRef.current);
+      indexMoveTimerRef.current = null;
+    }
+  }, []);
+
+  const finishIndexMove = useCallback(() => {
+    if (indexMoveFinishedRef.current) return;
+    indexMoveFinishedRef.current = true;
+    clearIndexTimers();
+    setFloatingIndexTop(null);
+    setFloatingIndexLeft(null);
+    setIndexMoveTargetTop(null);
+    setShowAnchoredIndex(true);
+    setIntroPhase('typing');
+  }, [clearIndexTimers]);
+
+  useLayoutEffect(() => {
+    if (!hasIndexTransition) return;
+
+    const anchor = indexAnchorRef.current;
+    if (!anchor) {
+      finishIndexMove();
+      return;
+    }
+
+    const destTop = anchor.getBoundingClientRect().top;
+    setIndexMoveTargetTop(destTop);
+
+    indexHoldTimerRef.current = window.setTimeout(() => {
+      requestAnimationFrame(() => {
+        setIntroPhase('index-move');
+        indexMoveTimerRef.current = window.setTimeout(
+          finishIndexMove,
+          PROJECT_INDEX_MOVE_MS + 50
+        );
+      });
+    }, PROJECT_INDEX_HOLD_MS);
+
+    return clearIndexTimers;
+  }, [hasIndexTransition, finishIndexMove, clearIndexTimers]);
 
   // Reveal side nav after the landing section scrolls out of view
   useEffect(() => {
@@ -904,78 +984,104 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     <div
       className={`project-details-page ${hasPassedLanding ? 'project-details-page--past-landing' : ''} ${className ?? ''}`.trim()}
     >
-      <section ref={landingRef} className="project-landing" id="project-landing" aria-label="Project introduction">
-        {/* <button type="button" className="project-landing-back" onClick={handleBack}>
-          Previous
-        </button> */}
-        <div className="project-landing-hero">
-          <HeroCarousel />
-        </div>
-        <div className="project-landing-inner">
-          <div className="project-landing-col project-landing-col--headline">
-            <h1 className="project-landing-headline">
-              From fragmented Git-based workflows to a scalable, end-to-end regulatory platform
-            </h1>
-            <a
-              href="https://www.scarlet.cc/"
-              className="project-landing-link-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Visit Scarlet website"
-            >
-              <img src="/img/ArrowUpRight.svg" alt="" className="project-landing-link-btn__icon" />
-            </a>
+      {floatingIndexTop !== null && floatingIndexLeft !== null && (
+        <span
+          className={`project-landing-index-float${introPhase === 'index-move' ? ' project-landing-index-float--moving' : ''}`}
+          style={{
+            top:
+              introPhase === 'index-move' && indexMoveTargetTop !== null
+                ? indexMoveTargetTop
+                : floatingIndexTop,
+            left: floatingIndexLeft,
+          }}
+          onTransitionEnd={(event) => {
+            if (event.propertyName === 'top' && introPhase === 'index-move') {
+              finishIndexMove();
+            }
+          }}
+          aria-hidden="true"
+        >
+          [1]
+        </span>
+      )}
+      <section
+        ref={landingRef}
+        className={`project-landing${landingTypingComplete ? ' project-landing--revealed' : ''}`}
+        id="project-landing"
+        aria-label="Project introduction"
+      >
+        <div className="project-landing-shell">
+          <div className="project-landing-inner">
+            <div className="project-landing-inner__main">
+              <div className="project-landing-intro">
+                <div className="project-landing-intro__head">
+                  <span
+                    ref={indexAnchorRef}
+                    className={`project-landing-index${showAnchoredIndex ? '' : ' project-landing-index--hidden'}`}
+                  >
+                    [1]
+                  </span>
+                  <h1
+                    className={`project-landing-headline${
+                      introPhase !== 'typing' && !landingTypingComplete
+                        ? ' project-landing-headline--reserve-space'
+                        : ''
+                    }`}
+                  >
+                    <span className="project-landing-headline__sizer" aria-hidden="true">
+                      {LANDING_HEADLINE}
+                    </span>
+                    <TypewriterText
+                      text={LANDING_HEADLINE}
+                      charDelay={28}
+                      startDelay={200}
+                      active={introPhase === 'typing'}
+                      onComplete={handleLandingTypingComplete}
+                    />
+                  </h1>
+                </div>
+                <div className="project-landing-col project-landing-col--body project-landing-reveal">
+                  <p>
+                    From fragmented Git-based workflows
+                    <br />
+                    to a scalable, end-to-end regulatory platform
+                  </p>
+                  <p>
+                    Founding design work at an early stage startup, Scarlet, <br/>Notified Body specialised in software
+                    and AI medical devices.
+                  </p>
+                </div>
+              </div>
+              <div className="project-landing-footer-meta project-landing-reveal">
+                <p>March 2025 – present</p>
+                <p>with 1 Design Lead, 1 PM, 8 engineers</p>
+              </div>
+            </div>
+            {!isUnlocked && (
+              <div className="project-landing-inner__lock project-landing-reveal">
+                <form className="project-details-lock-form" onSubmit={handlePasswordSubmit}>
+                  <p className="project-details-lock-label">Email sohheum@gmail.com for access</p>
+                  <div className="project-details-lock-row">
+                    <input
+                      className={`project-details-lock-input ${passwordError ? 'project-details-lock-input--error' : ''}`}
+                      type="password"
+                      value={password}
+                      onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
+                      placeholder="Enter password"
+                      autoFocus={landingTypingComplete}
+                    />
+                    <button className="project-details-lock-btn" type="submit">Unlock</button>
+                  </div>
+                  {passwordError && <p className="project-details-lock-error">Incorrect password</p>}
+                </form>
+              </div>
+            )}
           </div>
-          <div className="project-landing-col project-landing-col--body">
-            <p>
-              0 → 1 product design and development at Scarlet, Notified Body specialised in software
-              and AI medical devices.
-            </p>
-            <p>
-              Founding design work at an early stage startup, defining core user experience and design
-              direction with 10+ product team.
-            </p>
-          </div>
-          <div className="project-landing-col project-landing-col--meta">
-            <div className="hero-meta-field">
-              <p>Company</p>
-              <p className="hero-meta-explanation">Scarlet</p>
-            </div>
-            <div className="hero-meta-field">
-              <p>Duration</p>
-              <p className="hero-meta-explanation">Mar 25 - present</p>
-            </div>
-            <div className="hero-meta-field">
-              <p>Role</p>
-              <p className="hero-meta-explanation">Senior Product Designer</p>
-            </div>
-            <div className="hero-meta-field">
-              <p>Team</p>
-              <p className="hero-meta-explanation">1 Design Lead, 1 PM, 8 engineers</p>
-            </div>
+          <div className="project-landing-media project-landing-reveal">
+            {landingTypingComplete && <HeroCarousel autoPlay />}
           </div>
         </div>
       </section>
-
-      {!isUnlocked && (
-        <div className="project-details-lock-overlay">
-          <form className="project-details-lock-form" onSubmit={handlePasswordSubmit}>
-            <p className="project-details-lock-label">Email sohheum@gmail.com for access</p>
-            <div className="project-details-lock-row">
-              <input
-                className={`project-details-lock-input ${passwordError ? 'project-details-lock-input--error' : ''}`}
-                type="password"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
-                placeholder="Enter password"
-                autoFocus
-              />
-              <button className="project-details-lock-btn" type="submit">Unlock</button>
-            </div>
-            {passwordError && <p className="project-details-lock-error">Incorrect password</p>}
-          </form>
-        </div>
-      )}
 
       {isUnlocked && (
       <div className="project-details-container">
