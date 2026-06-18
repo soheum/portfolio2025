@@ -9,6 +9,7 @@ import './HomePage.css';
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
   { label: 'Projects', path: '/projects' },
+  { label: 'Playground', path: '/playground' },
   { label: 'Contact', path: '/contact' },
 ];
 

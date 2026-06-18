@@ -41,21 +41,7 @@ const Box2: React.FC<Box2Props> = ({
         transition: 'opacity 0.2s ease-out, transform 0.2s ease-out'
       }}
     >
-      <>
-        <img
-          src="/logo/scarlet_logo.svg"
-          alt="Scarlet"
-          className="box2-scarlet-logo"
-        />
-        <div className="arrow-icon-wrapper">
-          <img 
-            src="/img/ArrowUpRight.svg" 
-            alt="Arrow Up Right" 
-            className="arrow-icon"
-          />
-        </div>
-
-        <div className="file-stack">
+      <div className="file-stack">
           {/* Back file - rotates -9.81 degrees */}
           <div className="file-component file-back-2">
             <img 
@@ -85,8 +71,7 @@ const Box2: React.FC<Box2Props> = ({
             />
             <span className="file-name">Submission Report.pdf</span>
           </div>
-        </div>
-      </>
+      </div>
     </div>
   );
 };

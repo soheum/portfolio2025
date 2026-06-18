@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import SiteFooter from './SiteFooter';
 
-const LANDING_PATHS = new Set(['/', '/projects', '/contact']);
+const LANDING_PATHS = new Set(['/', '/projects', '/playground', '/contact']);
 
 interface SiteLayoutProps {
   children: React.ReactNode;

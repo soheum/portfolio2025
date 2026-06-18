@@ -9,6 +9,7 @@ import './ProjectsPage.css';
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
   { label: 'Projects', path: '/projects' },
+  { label: 'Playground', path: '/playground' },
   { label: 'Contact', path: '/contact' },
 ];
 
@@ -54,13 +55,6 @@ const PROJECTS: {
     path: null,
     preview: { type: 'image', src: '/img/Grid/Landing_GF.jpg' },
     // preview: { type: 'envelope' },
-  },
-  {
-    index: 5,
-    title: 'Playground - UI experiments',
-    subtitle: 'Personal sketchbook of micro interactions inspired by everyday life',
-    path: null,
-    preview: { type: 'image', src: '/img/Grid/Landing_playground_2.gif' },
   },
 ];
 
