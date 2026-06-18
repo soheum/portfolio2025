@@ -6,7 +6,7 @@
   --project-page-gutter: 24px;
   --gradient-radius: 420px;
   --gradient-depth: 70%;
-  --gradient-inner: #191919;
+  --gradient-inner: #1e1e1e;
   position: relative;
   background-color: #000000;
   background: radial-gradient(
@@ -30,6 +30,7 @@
   row-gap: 48px;
   align-content: start;
   box-sizing: border-box;
+  min-height: auto;
 }
 
 .site-footer .project-landing-col--headline {

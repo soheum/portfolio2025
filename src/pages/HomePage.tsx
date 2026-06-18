@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
 import Logo3D from '../components/Logo3D';
 import TypedText from '../components/TypedText';
+import type { ProjectIndexNavState } from '../utils/projectNavState';
 import './HomePage.css';
 
 const NAV_ITEMS = [
@@ -59,6 +60,7 @@ const HomePage: React.FC = () => {
   const location = useLocation();
   const [step, setStep] = useState(hasAnimatedOnce ? 4 : 0);
   const [hoveredBullet, setHoveredBullet] = useState<number | null>(null);
+  const scarletIndexRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (hasAnimatedOnce) return;
@@ -66,8 +68,16 @@ const HomePage: React.FC = () => {
     return () => { clearTimeout(t1); };
   }, []);
 
-  const handleBulletClick = (path?: string, externalHref?: string) => {
+  const handleBulletClick = (path?: string, externalHref?: string, index?: number) => {
     if (path) {
+      if (path === '/project' && index === 1 && scarletIndexRef.current) {
+        const rect = scarletIndexRef.current.getBoundingClientRect();
+        const state: ProjectIndexNavState = {
+          indexRect: { top: rect.top, left: rect.left },
+        };
+        navigate(path, { state });
+        return;
+      }
       navigate(path);
       return;
     }
@@ -103,17 +113,31 @@ const HomePage: React.FC = () => {
               className={`home-bullet${isLink ? ' home-bullet--link' : ''}`}
               onMouseEnter={hasHoverImages ? () => setHoveredBullet(index) : undefined}
               onMouseLeave={hasHoverImages ? () => setHoveredBullet(null) : undefined}
-              onClick={isLink ? () => handleBulletClick(path, externalHref) : undefined}
+              onClick={isLink ? () => handleBulletClick(path, externalHref, index) : undefined}
               role={isLink ? 'link' : undefined}
               tabIndex={isLink ? 0 : undefined}
               onKeyDown={isLink ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleBulletClick(path, externalHref);
+                  handleBulletClick(path, externalHref, index);
                 }
               } : undefined}
             >
-              <span className="home-bullet__index">[{index}]</span><span>{text}</span>
+              <span
+                ref={index === 1 ? scarletIndexRef : undefined}
+                className={`home-bullet__index${index === 1 && path ? ' home-bullet__index--link' : ''}`}
+                onClick={
+                  index === 1 && path
+                    ? (event) => {
+                        event.stopPropagation();
+                        handleBulletClick(path, externalHref, index);
+                      }
+                    : undefined
+                }
+              >
+                [{index}]
+              </span>
+              <span>{text}</span>
             </li>
             );
           })}
