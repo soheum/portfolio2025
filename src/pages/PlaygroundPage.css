@@ -103,6 +103,11 @@
   opacity: 1 !important;
 }
 
+.playground-card--box2 .box2-container::before,
+.playground-card--box5 .box5-container::before {
+  display: none;
+}
+
 .playground-card--box1 .text {
   color: #838080;
   outline: none;
