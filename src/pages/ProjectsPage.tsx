@@ -52,7 +52,7 @@ const PROJECTS: {
   {
     index: 4,
     title: 'Sincerity in digital communication, shaped by analogue aesthetics',
-    subtitle: '(Coming soon) Collaboration with Korean stationery brand, Greetings Folks',
+    subtitle: '(Coming soon) Collaboration with Korean stationery brand, GREETINGS FOLKs',
     path: null,
     preview: { type: 'video', src: '/img/Grid/Landing_GF.mp4' },
     // preview: { type: 'envelope' },
