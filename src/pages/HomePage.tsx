@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box9, { BOX9_PROJECT_URL } from '../components/Box9';
 import Logo3D from '../components/Logo3D';
@@ -60,12 +60,26 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [step, setStep] = useState(hasAnimatedOnce ? 4 : 0);
+  const [isIntroComplete, setIsIntroComplete] = useState(hasAnimatedOnce);
   const [hoveredBullet, setHoveredBullet] = useState<number | null>(null);
   const scarletIndexRef = useRef<HTMLSpanElement>(null);
+  const introLinesCompletedRef = useRef(0);
+
+  const handleTypedLineComplete = useCallback(() => {
+    introLinesCompletedRef.current += 1;
+    if (introLinesCompletedRef.current >= 2) {
+      setIsIntroComplete(true);
+      hasAnimatedOnce = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isIntroComplete) setHoveredBullet(null);
+  }, [isIntroComplete]);
 
   useEffect(() => {
     if (hasAnimatedOnce) return;
-    const t1 = setTimeout(() => { setStep(4); hasAnimatedOnce = true; }, 0);
+    const t1 = setTimeout(() => { setStep(4); }, 0);
     return () => { clearTimeout(t1); };
   }, []);
 
@@ -95,29 +109,30 @@ const HomePage: React.FC = () => {
             className="home-title__name"
             style={{ opacity: step >= 4 ? 1 : 0 }}
           >
-            {step >= 4 && <TypedText text="Soheum Hwang" charDelay={50} pauseAfterIndex={1} pauseDuration={1000} />}
+            {step >= 4 && <TypedText text="Soheum Hwang" charDelay={50} pauseAfterIndex={1} pauseDuration={1000} onComplete={handleTypedLineComplete} />}
           </span>
           {step >= 4 && (
             <span className="home-title__name--pronunciation home-title__pronunciation">
-              <TypedText text="/so? hmmm.../" charDelay={35} pauseAfterIndex={3} pauseDuration={1000} />
+              <TypedText text="/so? hmmm.../" charDelay={35} pauseAfterIndex={3} pauseDuration={1000} onComplete={handleTypedLineComplete} />
             </span>
           )}
         </h1>
 
-        <ul className={`home-bullets home-bullets--animated ${step >= 4 ? 'home-bullets--visible' : ''}`}>
+        <ul className={`home-bullets home-bullets--animated ${step >= 4 ? 'home-bullets--visible' : ''}${isIntroComplete ? ' home-bullets--interactive' : ''}`}>
           {BULLET_POINTS.map(({ index, text, path, externalHref, images }) => {
             const isLink = Boolean(path || externalHref);
             const hasHoverImages = SHOW_BULLET_HOVER_IMAGES && images.some(Boolean);
+            const canInteract = isIntroComplete;
             return (
             <li
               key={index}
               className={`home-bullet${isLink ? ' home-bullet--link' : ''}`}
-              onMouseEnter={hasHoverImages ? () => setHoveredBullet(index) : undefined}
-              onMouseLeave={hasHoverImages ? () => setHoveredBullet(null) : undefined}
-              onClick={isLink ? () => handleBulletClick(path, externalHref, index) : undefined}
-              role={isLink ? 'link' : undefined}
-              tabIndex={isLink ? 0 : undefined}
-              onKeyDown={isLink ? (e) => {
+              onMouseEnter={canInteract && hasHoverImages ? () => setHoveredBullet(index) : undefined}
+              onMouseLeave={canInteract && hasHoverImages ? () => setHoveredBullet(null) : undefined}
+              onClick={canInteract && isLink ? () => handleBulletClick(path, externalHref, index) : undefined}
+              role={canInteract && isLink ? 'link' : undefined}
+              tabIndex={canInteract && isLink ? 0 : undefined}
+              onKeyDown={canInteract && isLink ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   handleBulletClick(path, externalHref, index);
@@ -128,7 +143,7 @@ const HomePage: React.FC = () => {
                 ref={index === 1 ? scarletIndexRef : undefined}
                 className={`home-bullet__index${index === 1 && path ? ' home-bullet__index--link' : ''}`}
                 onClick={
-                  index === 1 && path
+                  canInteract && index === 1 && path
                     ? (event) => {
                         event.stopPropagation();
                         handleBulletClick(path, externalHref, index);
@@ -145,7 +160,7 @@ const HomePage: React.FC = () => {
         </ul>
       </div>
 
-      {SHOW_BULLET_HOVER_IMAGES && hoveredBullet !== null && (() => {
+      {SHOW_BULLET_HOVER_IMAGES && isIntroComplete && hoveredBullet !== null && (() => {
         const bullet = BULLET_POINTS.find(b => b.index === hoveredBullet);
         return (
           <div className="bullet-image-stack">
