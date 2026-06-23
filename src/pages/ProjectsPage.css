@@ -4,6 +4,64 @@
   gap: 2px;
 }
 
+.projects-title {
+  position: relative;
+  display: inline-block;
+}
+
+.projects-title__sizer {
+  visibility: hidden;
+}
+
+.projects-title__typewriter {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.projects-title__typewriter .typewriter-text__cursor {
+  display: none;
+}
+
+.projects-reveal {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+/* Opacity only — transform on an ancestor breaks position:fixed on the preview stack */
+.projects-preview-reveal {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.home-page--revealed .projects-reveal {
+  visibility: visible;
+  pointer-events: auto;
+  animation: projectsReveal 0.8s ease forwards;
+}
+
+.home-page--revealed .projects-preview-reveal {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@keyframes projectsReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .projects-bullet--linked {
   cursor: pointer;
 }
@@ -22,14 +80,17 @@
   color: #555555;
   line-height: 1.4;
   opacity: 0;
+  visibility: hidden;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 0.2s ease, max-height 0.25s ease;
+  pointer-events: none;
+  transition: opacity 0.2s ease, max-height 0.25s ease, visibility 0.2s ease;
 }
 
 .projects-bullet:hover .projects-bullet__subtitle,
-.projects-bullet--active .projects-bullet__subtitle,
-.projects-bullet:focus-within .projects-bullet__subtitle {
+.projects-bullet:focus-visible .projects-bullet__subtitle {
   opacity: 1;
+  visibility: visible;
   max-height: 5em;
+  pointer-events: auto;
 }

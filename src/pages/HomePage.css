@@ -34,6 +34,14 @@
   transform: translateY(0);
 }
 
+.home-bullets--animated:not(.home-bullets--interactive) {
+  pointer-events: none;
+}
+
+.home-bullets--interactive .home-bullet--link {
+  pointer-events: auto;
+}
+
 .home-nav--animated {
   opacity: 0;
   transition: opacity 0.6s ease 2s;

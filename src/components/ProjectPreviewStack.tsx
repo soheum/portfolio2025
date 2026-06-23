@@ -16,6 +16,7 @@ type ProjectPreviewStackProps = {
   items: ProjectPreviewItem[];
   hoveredIndex: number | null;
   onHoverEnd: (relatedTarget: EventTarget | null) => void;
+  className?: string;
 };
 
 function isGifPreview(preview: ProjectPreview): boolean {
@@ -140,13 +141,14 @@ const ProjectPreviewStack = forwardRef<HTMLDivElement, ProjectPreviewStackProps>
   items,
   hoveredIndex,
   onHoverEnd,
+  className,
 }, ref) => {
   const trackOffset = hoveredIndex !== null ? hoveredIndex - 1 : 0;
 
   return (
     <div
       ref={ref}
-      className={`project-preview-stack${hoveredIndex !== null ? ' project-preview-stack--focused' : ''}`}
+      className={`project-preview-stack${hoveredIndex !== null ? ' project-preview-stack--focused' : ''}${className ? ` ${className}` : ''}`}
       onMouseLeave={(e) => onHoverEnd(e.relatedTarget)}
     >
       <div

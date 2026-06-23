@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProjectPreviewStack, { ProjectPreview } from '../components/ProjectPreviewStack';
+import TypewriterText from '../components/TypewriterText';
 import { BOX9_PROJECT_URL } from '../components/Box9';
 import type { ProjectIndexNavState } from '../utils/projectNavState';
 import './HomePage.css';
@@ -50,28 +51,50 @@ const PROJECTS: {
   },
   {
     index: 4,
-    title: 'Collaboration with Korean stationery brand, Greetings Folks',
-    subtitle: '(Coming soon) Translating analogue sincerity into digital experiences.',
+    title: 'Sincerity in digital communication, shaped by analogue aesthetics',
+    subtitle: '(Coming soon) Collaboration with Korean stationery brand, Greetings Folks',
     path: null,
-    preview: { type: 'image', src: '/img/Grid/Landing_GF.jpg' },
+    preview: { type: 'video', src: '/img/Grid/Landing_GF.mp4' },
     // preview: { type: 'envelope' },
+  },
+  {
+    index: 5,
+    title: 'Exploring sustainability through play',
+    subtitle: 'Cross collaboration with sound design, physical design and UX',
+    externalHref: 'https://designawards.core77.com/Interaction/95544/JOUL-exploring-sustainability-through-play',
+    preview: { type: 'video', src: '/img/Grid/Landing_joul.mp4' },
   },
 ];
 
 const PREVIEW_ITEMS = PROJECTS.map(({ index, preview }) => ({ index, preview }));
+const LANDING_TITLE = 'My projects';
+const REVEAL_PAUSE_MS = 500;
 
 const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [typingComplete, setTypingComplete] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const bulletsRef = useRef<HTMLUListElement>(null);
   const previewStackRef = useRef<HTMLDivElement>(null);
   const scarletIndexRef = useRef<HTMLSpanElement>(null);
+  const revealDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (revealDelayRef.current) clearTimeout(revealDelayRef.current);
+  }, []);
 
   const clearHoverUnlessEnteringPreview = (related: EventTarget | null) => {
     if (related instanceof Node && previewStackRef.current?.contains(related)) return;
     setHoveredProject(null);
   };
+
+  const handleTypingComplete = useCallback(() => {
+    revealDelayRef.current = setTimeout(() => {
+      setTypingComplete(true);
+      revealDelayRef.current = null;
+    }, REVEAL_PAUSE_MS);
+  }, []);
 
   const handleProjectClick = (
     path?: string | null,
@@ -96,14 +119,23 @@ const ProjectsPage: React.FC = () => {
   };
 
   return (
-    <div className="home-page home-page--top-aligned">
+    <div className={`home-page home-page--top-aligned${typingComplete ? ' home-page--revealed' : ''}`}>
       <div className="home-content">
         <h1 className="home-title">
-          <span className="home-title__name">My projects</span>
+          <span className="home-title__name projects-title">
+            <span className="projects-title__sizer" aria-hidden="true">{LANDING_TITLE}</span>
+            <TypewriterText
+              className="projects-title__typewriter"
+              text={LANDING_TITLE}
+              charDelay={50}
+              startDelay={200}
+              onComplete={handleTypingComplete}
+            />
+          </span>
         </h1>
 
         <ul
-          className="home-bullets"
+          className="home-bullets projects-reveal"
           ref={bulletsRef}
           onMouseLeave={(e) => clearHoverUnlessEnteringPreview(e.relatedTarget)}
         >
@@ -114,6 +146,10 @@ const ProjectsPage: React.FC = () => {
               key={index}
               className={`home-bullet projects-bullet${isLinked ? ' projects-bullet--linked' : ''}${hoveredProject === index ? ' projects-bullet--active' : ''}`}
               onMouseEnter={() => setHoveredProject(index)}
+              onMouseLeave={(e) => {
+                if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+                (e.currentTarget as HTMLLIElement).blur();
+              }}
               onClick={isLinked ? () => handleProjectClick(path, externalHref, index) : undefined}
               role={isLinked ? 'link' : undefined}
               tabIndex={isLinked ? 0 : undefined}
@@ -140,6 +176,7 @@ const ProjectsPage: React.FC = () => {
 
       <ProjectPreviewStack
         ref={previewStackRef}
+        className="projects-preview-reveal"
         items={PREVIEW_ITEMS}
         hoveredIndex={hoveredProject}
         onHoverEnd={(related) => {
@@ -148,7 +185,7 @@ const ProjectsPage: React.FC = () => {
         }}
       />
 
-      <nav className="home-nav">
+      <nav className="home-nav projects-reveal">
         {NAV_ITEMS.map(({ label, path }) => (
           <button
             key={path}

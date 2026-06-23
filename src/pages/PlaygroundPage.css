@@ -5,6 +5,50 @@
   height: auto;
 }
 
+.playground-title {
+  position: relative;
+  display: inline-block;
+}
+
+.playground-title__sizer {
+  visibility: hidden;
+}
+
+.playground-title__typewriter {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.playground-title__typewriter .typewriter-text__cursor {
+  display: none;
+}
+
+.playground-reveal {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+.home-page--revealed .playground-reveal {
+  visibility: visible;
+  pointer-events: auto;
+  animation: playgroundReveal 0.8s ease forwards;
+}
+
+@keyframes playgroundReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .playground-content {
   display: flex;
   flex-direction: column;
@@ -28,15 +72,12 @@
 }
 
 .playground-card {
-  --playground-rotation: 0deg;
   position: relative;
   width: 100%;
   height: 100%;
   background: #050505;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
-  transform: rotate(var(--playground-rotation));
-  transform-origin: center;
   transition: border-color 0.25s ease;
   filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.38));
 }
@@ -44,30 +85,6 @@
 .playground-card:hover,
 .playground-card:focus-within {
   border-color: rgba(255, 255, 255, 0.18);
-}
-
-.playground-card--box1 {
-  --playground-rotation: -4deg;
-}
-
-.playground-card--box2 {
-  --playground-rotation: 2.5deg;
-}
-
-.playground-card--box5 {
-  --playground-rotation: -1.75deg;
-}
-
-.playground-card--graph {
-  --playground-rotation: 3.5deg;
-}
-
-.playground-card--gif1 {
-  --playground-rotation: -2.25deg;
-}
-
-.playground-card--gif2 {
-  --playground-rotation: 1.5deg;
 }
 
 .playground-card__media {
