@@ -99,7 +99,7 @@ const CoverageCheckerDemo: React.FC = () => {
 const HeroCarousel: React.FC<{ autoPlay?: boolean }> = ({ autoPlay = false }) => (
   <div className="hero-image-grid hero-carousel">
     <video
-      src="/img/Grid/Landing_scarlet_0.mp4"
+      src="/img/Scarlet/Scarlet_video.mp4"
       className="hero-carousel__video"
       autoPlay={autoPlay}
       muted
