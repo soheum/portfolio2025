@@ -1,0 +1,601 @@
+@font-face {
+  font-family: 'Aeonik Pro';
+  src: url('./fonts/AeonikPro-Regular.woff2') format('woff2'), url('./fonts/AeonikPro-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  src: url('./fonts/AeonikPro-Light.woff2') format('woff2'), url('./fonts/AeonikPro-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  src: url('./fonts/AeonikPro-Medium.woff2') format('woff2'), url('./fonts/AeonikPro-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  src: url('./fonts/AeonikPro-Bold.woff2') format('woff2'), url('./fonts/AeonikPro-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik Fono';
+  src: url('./fonts/AeonikFono-Regular.woff2') format('woff2'), url('./fonts/AeonikFono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik Fono';
+  src: url('./fonts/AeonikFono-Medium.woff2') format('woff2'), url('./fonts/AeonikFono-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply the font to everything */
+* {
+  font-family: 'Geist', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Grid background - fixed position, sits behind all content */
+.grid-background {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  
+  /* Card dimensions (scaled) */
+  --card-width: 600px;
+  /* Card scale based on scroll progress */
+  /* First view: 600px (scale 1.0), Second view: 300px (scale 0.5) */
+  /* First scroll: scale 1.0 to 0.5 (600px to 300px) */
+  --card-scale: calc(1 - var(--scroll-progress, 0) * 0.5);
+  --card-scaled-width: calc(var(--card-width) * var(--card-scale));
+  --card-scaled-height: calc(var(--card-width) * var(--card-scale));
+  
+  /* Grid size scales with scroll progress */
+  /* First view: 300px, Second view: 300px */
+  /* Grid size stays at 300px */
+  --grid-size: 250px;
+  
+  /* Opacity for transitioning between first and second view */
+  --first-opacity: calc(1 - var(--scroll-progress, 0));
+  --second-opacity: var(--scroll-progress, 0);
+  
+  /* Solid line color - hex #ffffff with opacity for solid lines */
+  /* First view lines */
+  --line-color-first: rgba(255, 255, 255, calc(0.15 * var(--first-opacity)));
+  /* Second view lines */
+  --line-color-second: rgba(255, 255, 255, calc(0.15 * var(--second-opacity)));
+  
+  background-image:
+    /* FIRST VIEW - Vertical lines (solid) */
+    /* Far left vertical line */
+    linear-gradient(to right, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* One more to the left of left line */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Left side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Right side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    
+    /* FIRST VIEW - Horizontal lines (solid) */
+    /* Top of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+    /* Bottom of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-first) 0, var(--line-color-first) 1px, transparent 1px),
+
+    /* SECOND VIEW - Vertical lines (solid) */
+    /* Second from left */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Left side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Right side of CenterCard */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* One more to the right of right line */
+    linear-gradient(to right, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    
+    /* SECOND VIEW - Horizontal lines (solid) */
+    /* Top of screen */
+    linear-gradient(to bottom, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Top of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Additional top line aligned with CenterCard top */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Bottom of CenterCard */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Additional bottom line aligned with CenterCard bottom */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px),
+    /* Bottom of screen */
+    linear-gradient(to bottom, transparent 0, var(--line-color-second) 0, var(--line-color-second) 1px, transparent 1px);
+  
+  background-size:
+    /* FIRST VIEW - Vertical */
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    /* FIRST VIEW - Horizontal */
+    100% 1px,
+    100% 1px,
+    /* SECOND VIEW - Vertical */
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    /* SECOND VIEW - Horizontal */
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px,
+    100% 1px;
+  
+  background-position:
+    /* FIRST VIEW - Vertical (progress 0) */
+    0% 0,
+    calc(50% - var(--card-scaled-width) / 2 - var(--grid-size)) 0,
+    calc(50% - var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2) 0,
+    /* FIRST VIEW - Horizontal */
+    0 calc(50% - var(--card-scaled-height) / 2),
+    0 calc(50% + var(--card-scaled-height) / 2),
+    /* SECOND VIEW - Vertical (progress 1) */
+    calc(50% - var(--card-scaled-width) * 1 - var(--card-scaled-width) / 2) 0,
+    calc(50% - var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2) 0,
+    calc(50% + var(--card-scaled-width) / 2 + var(--card-scaled-width)) 0,
+    /* SECOND VIEW - Horizontal */
+    0 0,
+    0 calc(50% - var(--card-scaled-height) / 2),
+    0 calc(50% - var(--card-scaled-height) / 2 -  var(--card-scaled-height) ), /* Additional top line at CenterCard top */
+    0 calc(50% + var(--card-scaled-height) / 2 + var(--card-scaled-height) ),
+    0 calc(50% + var(--card-scaled-height) / 2), /* Additional bottom line at CenterCard bottom */
+    0 100%;
+  
+  background-repeat: no-repeat;
+}
+
+/* Hide CSS grid background - SVG handles all lines now */
+.grid-background {
+  opacity: 0;
+  display: none;
+}
+
+/* SVG Grid Lines - Loading Animation */
+.grid-lines-svg-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Keep the animated lines visible - don't fade out */
+.grid-lines-svg-loading.fade-out {
+  opacity: 1; /* Stay visible instead of fading out */
+}
+
+/* SVG Grid Lines - Static Grid (hidden permanently) */
+.grid-lines-svg-static {
+  display: none; /* Never show static grid lines */
+}
+
+.grid-lines-svg-static.visible {
+  display: none; /* Keep hidden even when visible class is applied */
+}
+
+/* SVG Grid Lines Animation */
+.grid-lines-svg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* Fade out SVG overlay after loading completes */
+.grid-lines-svg.fade-out {
+  animation: fadeOutSvg 0.5s ease-out forwards;
+}
+
+@keyframes fadeOutSvg {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Line drawing animation */
+.grid-line-horizontal {
+  animation: drawLineHorizontal 1.2s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+}
+
+.grid-line-vertical {
+  animation: drawLineVertical 0.3s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+}
+
+@keyframes drawLineHorizontal {
+  from {
+    stroke-dashoffset: var(--line-length, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawLineVertical {
+  from {
+    stroke-dashoffset: var(--line-length, 1000);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Center card wrapper - centered with fixed size */
+.center-card-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  --scale: 1;
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+  z-index: 2;
+}
+
+/* Hide CenterCard during loading animation */
+.center-card-wrapper.loading {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Show CenterCard with fade-in after loading completes */
+.center-card-wrapper.loaded {
+  opacity: 0;
+  visibility: visible;
+  animation: fadeInCenterCard 0.6s ease-out forwards;
+  animation-delay: 0s; /* Appears immediately after line animation */
+}
+
+/* Fade-in animation for CenterCard */
+@keyframes fadeInCenterCard {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* App root container - ensures content sits above grid */
+.app-root {
+  position: relative;
+  z-index: 1;
+  width: max(100vw, var(--canvas-width, 100vw));
+  height: max(100vh, var(--canvas-height, 100vh));
+}
+
+/* Scroll container for oversized home canvas with drag-to-scroll */
+.home-scroll-shell {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  cursor: grab;
+}
+
+.home-scroll-shell.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* Pinned section - stays fixed in viewport during scroll */
+.pinned-section {
+  position: absolute;
+  inset: 0;
+}
+
+/* Pinned content - stays in view while scrolling */
+.pinned-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Grid content overlay - aligns with exact grid boxes in second view */
+.grid-content-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4; /* Below grid lines (z-index: 5), below center card (z-index: 2, but center-card-wrapper is fixed) */
+  display: grid;
+  pointer-events: none;
+
+  /* Variables set from JavaScript to match SVG line calculations */
+  --card-scaled-width: 250px;
+  --card-scaled-height: 250px;
+  --grid-size: 300px;
+  --second-opacity: var(--scroll-progress, 0);
+
+  /* Grid structure: 6x6 tracks of 250, with center card occupying 2x2 tracks */
+  grid-template-columns: repeat(6, var(--card-scaled-width));
+  grid-template-rows: repeat(6, var(--card-scaled-height));
+  gap: 0;
+
+  /* Always visible - individual boxes control their own visibility */
+  opacity: 1;
+  visibility: visible;
+}
+
+.grid-cell {
+  position: relative; /* Needed for absolute positioning of fill layer */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto; /* Allow interaction with content */
+  opacity: 0; /* Hidden by default */
+}
+
+/* Grid cell reveal animation */
+.grid-cell--reveal {
+  animation: fadeInBox 0.6s ease-out forwards;
+}
+
+@keyframes fadeInBox {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Grid cell content - centered within each cell */
+.grid-cell-content {
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  width: var(--card-scaled-width, 250px);
+  height: var(--card-scaled-height, 250px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  /* Add your content styles here */
+}
+
+/* Grid cell image fill layer - Box2 and Box9 hover effects */
+/* These layers appear ON TOP of everything (including CenterCard) when hovering */
+/* Each cell has two fill layers: one for Box2 hover, one for Box9 hover */
+/* Images are set per-cell via inline style in HomePage.tsx */
+.grid-cell-image-fill {
+  /* Position and size to match 250x250 card */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--card-scaled-width, 250px);
+  height: var(--card-scaled-height, 250px);
+  transform: translate(-50%, -50%);
+  
+  /* Place it on top of all content (CenterCard is z-index: 2, grid lines are z-index: 5-6) */
+  z-index: 10;
+  
+  /* Background image is set per-cell via inline style */
+  background-size: cover; /* Image covers the entire cell */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat;
+  
+  /* Hidden by default */
+  opacity: 0;
+  
+  /* Smooth fade-in transition when shown */
+  transition: opacity 0.3s ease;
+  
+  /* Don't interfere with mouse events */
+  pointer-events: none;
+}
+
+/* Center card fill layers - cover the CenterCard area on hover */
+/* Separate layers for Box2 and Box9 hover effects */
+.center-card-fill-layer {
+  /* Position it over the center card */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  /* Match the center card dimensions */
+  width: var(--center-card-width, 500px);
+  height: var(--center-card-height, 500px);
+  
+  /* Place it on top of the center card */
+  z-index: 10;
+  
+  /* Background image is set per-cell via inline style */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Hidden by default */
+  opacity: 0;
+  
+  /* Smooth fade-in transition when shown */
+  transition: opacity 0.3s ease;
+  
+  /* Don't interfere with mouse events */
+  pointer-events: none;
+}
+
+/* BOX5 HOVER EFFECT - hide grid lines, hide other boxes (no fill images, only text hint) */
+.app-root:has(.box5-container:hover) .grid-lines-svg-static,
+.app-root.box5-hovered .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box5-container:hover) .grid-lines-svg-loading,
+.app-root.box5-hovered .grid-lines-svg-loading {
+  opacity: 0;
+}
+
+/* Hide Box2, Box9, and other grid cells when Box5 is hovered */
+.app-root:has(.box5-container:hover) .grid-cell:not(.grid-cell--box5) .grid-cell-content,
+.app-root.box5-hovered .grid-cell:not(.grid-cell--box5) .grid-cell-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Box5 CenterCard text: CSS-only hide using grid cell hover (works with WebGL Canvas).
+   The grid cell receives :hover when the pointer is over it, including over the Canvas.
+   Box2/Box9 use .box5-container:hover because their DOM propagates events; Box5's Canvas blocks
+   container hover, so we use .grid-cell--box5:hover instead. */
+.app-root:has(.grid-cell--box5:hover) .center-card__text .center-card__text-line:not(:nth-child(4)),
+.app-root:has(.grid-cell--box5:hover) .center-card__text .center-card__text-line:not(:nth-child(4)) * {
+  color: #000000 !important;
+}
+.app-root:has(.grid-cell--box5:hover) .center-card__name,
+.app-root:has(.grid-cell--box5:hover) .center-card__name * {
+  color: #000000 !important;
+}
+
+/* BOX9 HOVER EFFECT */
+/* Show Box9 fill on all cells EXCEPT the Box9 cell itself (direct hover or CenterCard line hover) */
+.grid-content-overlay:has(.box9-container:hover) .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9,
+.app-root.box9-hovered .grid-cell:not(.grid-cell--box9) .grid-cell-image-fill--box9 {
+  opacity: 1;
+}
+
+/* Show the center card Box9 fill when Box9 is hovered */
+.grid-content-overlay:has(.box9-container:hover) .center-card-fill-layer--box9,
+.app-root.box9-hovered .center-card-fill-layer--box9 {
+  opacity: 1;
+}
+
+/* Hide grid lines when Box9 is hovered */
+.app-root:has(.box9-container:hover) .grid-lines-svg-static,
+.app-root.box9-hovered .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box9-container:hover) .grid-lines-svg-loading,
+.app-root.box9-hovered .grid-lines-svg-loading {
+  opacity: 0;
+}
+
+/* BOX2 HOVER EFFECT */
+/* Show Box2 fill on all cells EXCEPT the Box2 cell itself (direct hover or CenterCard line hover) */
+.grid-content-overlay:has(.box2-container:hover) .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2,
+.app-root.box2-hovered .grid-cell:not(.grid-cell--box2) .grid-cell-image-fill--box2 {
+  opacity: 1;
+}
+
+/* Show the center card Box2 fill when Box2 is hovered */
+.grid-content-overlay:has(.box2-container:hover) .center-card-fill-layer--box2,
+.app-root.box2-hovered .center-card-fill-layer--box2 {
+  opacity: 1;
+}
+
+/* Hide grid lines when Box2 is hovered */
+.app-root:has(.box2-container:hover) .grid-lines-svg-static,
+.app-root.box2-hovered .grid-lines-svg-static {
+  opacity: 0;
+}
+
+.app-root:has(.box2-container:hover) .grid-lines-svg-loading,
+.app-root.box2-hovered .grid-lines-svg-loading {
+  opacity: 0;
+}
+
+/* Sticky links - fixed to viewport lower-right, stays visible during drag */
+.home-sticky-links {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  display: flex;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.home-sticky-links--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.home-sticky-links--visible > * {
+  pointer-events: auto;
+}
+
+.home-sticky-links > * {
+  pointer-events: auto;
+}
+
+.home-sticky-link {
+  position: relative;
+  font-size: 0.9rem;
+  border-color: #585858;
+  border-width: 0.25px;
+  border-style: solid;
+  color: #a3a3a3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+}
+
+/* Rectangular outward feather: semi-transparent white on each side fading outward (same as Box2/5/9) */
+.home-sticky-link::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to top, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+  background-size: 100% 24px, 100% 24px, 24px 100%, 24px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+
+.home-sticky-link:hover {
+  color: #ffffff;
+}

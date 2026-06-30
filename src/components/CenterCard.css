@@ -1,0 +1,227 @@
+.center-card {
+  width: 500px;
+  height: 500px;
+  background: #000000;
+  opacity: 1;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  /* Scale is now handled by the wrapper, so no transform needed here */
+  /* Sync name/text/typed reveal to line start */
+  --reveal-duration: var(--center-reveal-duration, 1.8s);
+  --reveal-delay: var(--center-reveal-delay, 0s);
+}
+
+.center-card__name {
+  font-size: 1.5rem;   /* 24px at 16px base */
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem; /* 12px at 16px base */
+  color: var(--center-name-color, #fff);
+  font-weight: 400;
+  transition: font-size 0.1s ease-out, letter-spacing 0.1s ease-out, opacity 0.1s ease-out, max-height 0.1s ease-out;
+  /* Set from JS (--center-name-opacity, --center-name-max-height) to avoid postcss-calc parse errors */
+  opacity: var(--center-name-opacity, 1);
+  max-height: var(--center-name-max-height, 6.25rem); /* 100px at 16px base */
+  overflow: hidden;
+  pointer-events: auto;
+  display: flex;
+  align-items: baseline;
+}
+
+.center-card__name-text {
+  display: inline;
+}
+
+.center-card__name-link {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.center-card__reveal {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  will-change: opacity, transform, filter;
+}
+
+.center-card--hidden .center-card__reveal {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+.center-card--reveal .center-card__reveal--name {
+  animation: premiumReveal var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay);
+}
+
+.center-card--reveal .center-card__reveal--text {
+  animation: premiumReveal var(--reveal-duration) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--reveal-delay);
+}
+
+@keyframes premiumReveal {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.center-card__text {
+  font-size: 0.9rem;  /* 18px at 16px base */
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--center-text-color, #A3A3A3);
+  margin: 0;
+  transition: color 0.1s ease-out;
+  display: block;
+}
+
+.center-card__text-line {
+  display: block;
+}
+
+.center-card__text-line + .center-card__text-line {
+  margin-top: 0.5rem;
+}
+
+.center-card__text-line--muted,
+.center-card__text-line--muted * {
+  color: var(--center-text-muted-color, #000000) !important;
+}
+
+.center-card__text-highlight {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.center-card__text-previously {
+  font-style: italic;
+}
+
+/* [1], [2], [x] labels – distinct style */
+.center-card__text-label {
+  display: inline;
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5b5a5a;
+  margin-right: 0.25em;
+}
+
+.center-card__typed {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  vertical-align: baseline;
+}
+
+.center-card--reveal .center-card__typed {
+  animation: typeIn var(--reveal-duration) steps(var(--type-characters, 20), end)
+    var(--reveal-delay) forwards;
+}
+
+@keyframes typeIn {
+  from {
+    width: 0;
+  }
+  to {
+    width: calc(var(--type-characters, 20) * 1ch);
+  }
+}
+
+.center-card__footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+/* Row: left = LinkedIn/CV/Email, right = About me */
+.center-card__footer-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.center-card__links {
+  margin: 0;
+  font-size: 1rem;
+  transition: opacity 0.1s ease-out, max-height 0.1s ease-out;
+  /* Set from JS (--center-links-opacity, --center-links-max-height) to avoid postcss-calc parse errors */
+  opacity: var(--center-links-opacity, 0);
+  max-height: var(--center-links-max-height, 0);
+  overflow: hidden;
+}
+
+/* Footer paragraph variant: keep in footer, but style like center-card__text */
+.center-card__footer-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  letter-spacing: 0;
+  color: var(--center-text-color, #ffffff);
+  white-space: normal;
+}
+
+.center-card__link--about {
+  flex-shrink: 0;
+  font-size: 1rem;
+  /* Same opacity/max-height as .center-card__links so it reveals with the other links */
+  opacity: var(--center-links-opacity, 0);
+  max-height: var(--center-links-max-height, 0);
+  overflow: hidden;
+}
+
+.center-card__scroll-hint {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  color: #969696;
+  opacity: 0.8;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  --scroll-hint-chars: 11;
+}
+
+.center-card--reveal .center-card__scroll-hint {
+  opacity: 0;
+  animation:
+    scrollHintReveal 0.6s ease-out forwards,
+    scrollHintType 2.8s steps(var(--scroll-hint-chars), end) infinite;
+  animation-delay:
+    calc(var(--center-reveal-delay, 0s) + var(--reveal-duration, 0.5s) + 0.2s),
+    calc(var(--center-reveal-delay, 0s) + var(--reveal-duration, 0.5s) + 0.3s);
+}
+
+@keyframes scrollHintReveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes scrollHintType {
+  from {
+    width: 0;
+  }
+  28.6% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+  100% {
+    width: calc(var(--scroll-hint-chars) * 1ch);
+  }
+}
+
+.center-card__link {
+  color: #fff;
+  text-decoration: none;
+}

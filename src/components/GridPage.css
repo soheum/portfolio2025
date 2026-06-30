@@ -1,0 +1,132 @@
+/* Grid Page Container */
+.grid-page {
+  min-height: 100vh;
+  background-color: #0a0a0a; /* Near-black background */
+  padding: 2rem;
+  padding-bottom: 4rem; /* Extra padding for scrollable content */
+  overflow-x: hidden;
+}
+
+/* Grid Container */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  --scroll-offset: 0px;
+}
+
+/* Tile Base Styles */
+.tile {
+  background-color: #151515; /* Slightly lighter black */
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: transform 0.15s ease-out, background-color 0.2s ease;
+  transform: translateY(calc(var(--scroll-offset, 0px) * var(--parallax-depth, 0)));
+  transform-origin: center center;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  will-change: transform;
+}
+
+.tile:hover {
+  transform: translateY(calc(var(--scroll-offset, 0px) * var(--parallax-depth, 0))) scale(1.02);
+  background-color: #1a1a1a;
+}
+
+/* Intro Card - Spans 2 columns and 2 rows */
+.intro-card {
+  grid-column: span 2;
+  grid-row: span 2;
+  min-height: 400px;
+}
+
+.intro-name {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.2;
+}
+
+.intro-bio {
+  color: #999999;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin: 0;
+  font-weight: 300;
+}
+
+.tile-label {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .intro-card {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 768px) {
+  .grid-page {
+    padding: 1rem;
+  }
+  
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .intro-card {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: auto;
+  }
+  
+  .intro-name {
+    font-size: 2rem;
+  }
+  
+  .intro-bio {
+    font-size: 1rem;
+  }
+  
+  .tile {
+    min-height: 150px;
+    padding: 1.5rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 375px) {
+  .grid-page {
+    padding: 0.75rem;
+  }
+  
+  .grid-container {
+    gap: 0.5rem;
+  }
+  
+  .tile {
+    padding: 1rem;
+    min-height: 120px;
+  }
+  
+  .intro-name {
+    font-size: 1.75rem;
+  }
+}

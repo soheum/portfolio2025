@@ -1,0 +1,157 @@
+.playground-page {
+  justify-content: flex-start;
+  overflow: auto;
+  min-height: 100vh;
+  height: auto;
+}
+
+.playground-title {
+  position: relative;
+  display: inline-block;
+}
+
+.playground-title__sizer {
+  visibility: hidden;
+}
+
+.playground-title__typewriter {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.playground-title__typewriter .typewriter-text__cursor {
+  display: none;
+}
+
+.playground-reveal {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+.home-page--revealed .playground-reveal {
+  visibility: visible;
+  pointer-events: auto;
+  animation: playgroundReveal 0.8s ease forwards;
+}
+
+@keyframes playgroundReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.playground-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.playground-stage {
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: var(--site-content-padding-bottom);
+  padding-top: var(--site-content-padding-top);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 280px));
+  grid-auto-rows: minmax(150px, 220px);
+  justify-content: center;
+  align-content: center;
+  gap: clamp(18px, 3vw, 36px);
+  box-sizing: border-box;
+}
+
+.playground-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  transition: border-color 0.25s ease;
+  filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.38));
+}
+
+.playground-card:hover,
+.playground-card:focus-within {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.playground-card__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.playground-card--box1 .box1-container,
+.playground-card--box2 .box2-container,
+.playground-card--box5 .box5-container,
+.playground-card--graph .card {
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.playground-card--box2 .box2-container::before,
+.playground-card--box5 .box5-container::before {
+  display: none;
+}
+
+.playground-card--box1 .text {
+  color: #838080;
+  outline: none;
+}
+
+.playground-card--box1 .text:focus-visible {
+  color: #ffffff;
+}
+
+.playground-card--graph .card {
+  background: #050505;
+}
+
+@media (max-width: 960px) {
+  .playground-stage {
+    grid-template-columns: repeat(2, minmax(160px, 280px));
+  }
+}
+
+@media (max-width: 640px) {
+  .playground-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .playground-stage {
+    height: auto;
+    min-height: calc(100vh - 160px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 140px;
+  }
+
+  .playground-card {
+    position: relative;
+    inset: auto;
+    width: min(100%, 360px);
+    height: 260px;
+    margin: 0 auto;
+  }
+
+  .playground-card--box5 {
+    height: 320px;
+  }
+}

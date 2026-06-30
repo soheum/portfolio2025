@@ -1,0 +1,25 @@
+:root {
+  --site-page-padding-top: 64px;
+  --site-page-padding-bottom: 48px;
+  --site-content-max-width: 72rem;
+  --site-content-padding-top: 3%;
+  --site-content-padding-bottom: 5%;
+  /* Optical alignment: project [1] → projects "My projects" */
+  --project-landing-index-nudge-x: 0px;
+  --project-landing-index-nudge-y: 1px;
+  --project-index-move-duration: 700ms;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
