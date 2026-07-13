@@ -40,6 +40,7 @@ const BULLET_POINTS: {
     index: 3,
     text: <>Previously a public sector product designer at the <span style={{ color: '#ffffff', fontWeight: 400 }}>Bank of England</span>, transforming regulatory data collection processes</>,
     images: ['/img/Grid/3_Landing_1.jpg', '/img/Grid/3_Landing_2.jpg', '/img/Grid/3_Landing_3.jpg'],
+    path: '/project/boe',
   },
   {
     index: 4,
@@ -63,6 +64,7 @@ const HomePage: React.FC = () => {
   const [isIntroComplete, setIsIntroComplete] = useState(hasAnimatedOnce);
   const [hoveredBullet, setHoveredBullet] = useState<number | null>(null);
   const scarletIndexRef = useRef<HTMLSpanElement>(null);
+  const boeIndexRef = useRef<HTMLSpanElement>(null);
   const introLinesCompletedRef = useRef(0);
 
   const handleTypedLineComplete = useCallback(() => {
@@ -87,6 +89,14 @@ const HomePage: React.FC = () => {
     if (path) {
       if (path === '/project' && index === 1 && scarletIndexRef.current) {
         const rect = scarletIndexRef.current.getBoundingClientRect();
+        const state: ProjectIndexNavState = {
+          indexRect: { top: rect.top, left: rect.left },
+        };
+        navigate(path, { state });
+        return;
+      }
+      if (path === '/project/boe' && index === 3 && boeIndexRef.current) {
+        const rect = boeIndexRef.current.getBoundingClientRect();
         const state: ProjectIndexNavState = {
           indexRect: { top: rect.top, left: rect.left },
         };
@@ -140,10 +150,12 @@ const HomePage: React.FC = () => {
               } : undefined}
             >
               <span
-                ref={index === 1 ? scarletIndexRef : undefined}
-                className={`home-bullet__index${index === 1 && path ? ' home-bullet__index--link' : ''}`}
+                ref={
+                  index === 1 ? scarletIndexRef : index === 3 ? boeIndexRef : undefined
+                }
+                className={`home-bullet__index${(index === 1 || index === 3) && path ? ' home-bullet__index--link' : ''}`}
                 onClick={
-                  canInteract && index === 1 && path
+                  canInteract && (index === 1 || index === 3) && path
                     ? (event) => {
                         event.stopPropagation();
                         handleBulletClick(path, externalHref, index);
