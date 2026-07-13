@@ -71,6 +71,7 @@ const GreetingsProject: React.FC = () => {
     hasIndexTransition ? navState?.indexRect?.left ?? null : null
   );
   const [indexMoveTargetTop, setIndexMoveTargetTop] = useState<number | null>(null);
+  const [indexMoveTargetLeft, setIndexMoveTargetLeft] = useState<number | null>(null);
   const [showAnchoredIndex, setShowAnchoredIndex] = useState(!hasIndexTransition);
 
   const handleLandingTypingComplete = useCallback(() => {
@@ -95,6 +96,7 @@ const GreetingsProject: React.FC = () => {
     setFloatingIndexTop(null);
     setFloatingIndexLeft(null);
     setIndexMoveTargetTop(null);
+    setIndexMoveTargetLeft(null);
     setShowAnchoredIndex(true);
     setIntroPhase('typing');
   }, [clearIndexTimers]);
@@ -108,8 +110,9 @@ const GreetingsProject: React.FC = () => {
       return;
     }
 
-    const destTop = anchor.getBoundingClientRect().top;
-    setIndexMoveTargetTop(destTop);
+    const destRect = anchor.getBoundingClientRect();
+    setIndexMoveTargetTop(destRect.top);
+    setIndexMoveTargetLeft(destRect.left);
 
     indexHoldTimerRef.current = window.setTimeout(() => {
       requestAnimationFrame(() => {
@@ -134,10 +137,16 @@ const GreetingsProject: React.FC = () => {
               introPhase === 'index-move' && indexMoveTargetTop !== null
                 ? indexMoveTargetTop
                 : floatingIndexTop,
-            left: floatingIndexLeft,
+            left:
+              introPhase === 'index-move' && indexMoveTargetLeft !== null
+                ? indexMoveTargetLeft
+                : floatingIndexLeft,
           }}
           onTransitionEnd={(event) => {
-            if (event.propertyName === 'top' && introPhase === 'index-move') {
+            if (
+              (event.propertyName === 'top' || event.propertyName === 'left') &&
+              introPhase === 'index-move'
+            ) {
               finishIndexMove();
             }
           }}

@@ -1,6 +1,13 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --site-page-padding-top: 64px;
   --site-page-padding-bottom: 48px;
+  --site-page-gutter: 24px;
   --site-content-max-width: 72rem;
   --site-content-padding-top: 3%;
   --site-content-padding-bottom: 5%;
@@ -10,8 +17,15 @@
   --project-index-move-duration: 700ms;
 }
 
+html {
+  overflow-x: clip;
+  background-color: #000000;
+}
+
 body {
   margin: 0;
+  overflow-x: clip;
+  background-color: #000000;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

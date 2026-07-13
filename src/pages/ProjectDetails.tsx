@@ -110,6 +110,159 @@ const HeroCarousel: React.FC<{ autoPlay?: boolean }> = ({ autoPlay = false }) =>
   </div>
 );
 
+const GROWTH_CURVE_START = { x: 80, y: 311.431 };
+const GROWTH_CURVE_END = { x: 837.5, y: 2.5 };
+const GROWTH_VIEWBOX_X = GROWTH_CURVE_START.x;
+const GROWTH_VIEWBOX_WIDTH = GROWTH_CURVE_END.x - GROWTH_CURVE_START.x;
+const GROWTH_VIEWBOX_HEIGHT = 324;
+
+const GROWTH_PHASES = [
+  { id: 'phase-1', label: 'Phase 1', x: GROWTH_CURVE_START.x, y: GROWTH_CURVE_START.y },
+  { id: 'phase-2', label: 'Phase 2', x: 332.5, y: 260.4 },
+  { id: 'phase-3', label: 'Phase 3', x: 585, y: 166.8 },
+  { id: 'phase-4', label: 'Phase 4', x: GROWTH_CURVE_END.x, y: GROWTH_CURVE_END.y, active: true },
+] as const;
+
+// Design curve truncated so it starts at Phase 1 (not before)
+const GROWTH_CURVE_PATH =
+  'M80 311.431C404.129 264.754 636.465 170.891 837.5 2.5';
+const GROWTH_AREA_PATH = `${GROWTH_CURVE_PATH} L ${GROWTH_CURVE_END.x} ${GROWTH_VIEWBOX_HEIGHT} L ${GROWTH_CURVE_START.x} ${GROWTH_VIEWBOX_HEIGHT} Z`;
+const GROWTH_CURVE_LENGTH = 1000;
+
+const GrowthTimeline: React.FC = () => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={rootRef}
+      className={`growth-timeline${isVisible ? ' growth-timeline--visible' : ''}`}
+      role="img"
+      aria-label="User growth timeline from 50 users on GitHub to 500 users on Scarlet Web across four phases"
+    >
+      <div className="growth-timeline__chart">
+        <div className="growth-timeline__callout growth-timeline__callout--start">
+          <span className="growth-timeline__stat">50 users</span>
+          <span className="growth-timeline__stat-sub">from 10 customer workspaces in Github</span>
+        </div>
+        <div className="growth-timeline__callout growth-timeline__callout--end">
+          <span className="growth-timeline__stat">500 users</span>
+          <span className="growth-timeline__stat-sub">from 142 customer workspaces in Scarlet Web</span>
+        </div>
+
+        <svg
+          className="growth-timeline__svg"
+          viewBox={`${GROWTH_VIEWBOX_X} 0 ${GROWTH_VIEWBOX_WIDTH} ${GROWTH_VIEWBOX_HEIGHT}`}
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient
+              id="growth-curve-stroke"
+              x1={GROWTH_CURVE_START.x}
+              y1="162"
+              x2={GROWTH_CURVE_END.x}
+              y2="162"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stopColor="#E9B7F7" />
+              <stop offset="0.442308" stopColor="#BCC9F8" />
+              <stop offset="1" stopColor="#BEF5F9" />
+            </linearGradient>
+            <linearGradient id="growth-curve-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#8B8B9A" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#8B8B9A" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="growth-marker-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#E9B7F7" />
+              <stop offset="1" stopColor="#BEF5F9" />
+            </linearGradient>
+          </defs>
+
+          <path className="growth-timeline__area" d={GROWTH_AREA_PATH} fill="url(#growth-curve-fill)" />
+
+          {GROWTH_PHASES.map((phase, index) => (
+            <line
+              key={`guide-${phase.id}`}
+              className={`growth-timeline__guide${'active' in phase && phase.active ? ' growth-timeline__guide--active' : ''}`}
+              x1={phase.x}
+              y1={phase.y}
+              x2={phase.x}
+              y2={GROWTH_VIEWBOX_HEIGHT}
+              style={{ transitionDelay: isVisible ? `${0.2 + index * 0.18}s` : '0s' }}
+            />
+          ))}
+
+          <path
+            className="growth-timeline__curve"
+            d={GROWTH_CURVE_PATH}
+            fill="none"
+            stroke="url(#growth-curve-stroke)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            pathLength={GROWTH_CURVE_LENGTH}
+            style={{
+              strokeDasharray: GROWTH_CURVE_LENGTH,
+              strokeDashoffset: isVisible ? 0 : GROWTH_CURVE_LENGTH,
+            }}
+          />
+
+          <g transform={`translate(${GROWTH_CURVE_END.x} ${GROWTH_CURVE_END.y})`}>
+            <g className="growth-timeline__marker">
+              <rect
+                x={-7}
+                y={-14}
+                width="18"
+                height="18"
+                
+                fill="url(#growth-marker-fill)"
+                transform="rotate(45)"
+              />
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div className="growth-timeline__phases" aria-hidden="true">
+        {GROWTH_PHASES.map((phase, index) => {
+          const isFirst = index === 0;
+          const isLast = index === GROWTH_PHASES.length - 1;
+          return (
+            <span
+              key={phase.id}
+              className={`growth-timeline__phase${'active' in phase && phase.active ? ' growth-timeline__phase--active' : ''}${isFirst ? ' growth-timeline__phase--start' : ''}${isLast ? ' growth-timeline__phase--end' : ''}`}
+              style={{
+                left: `${((phase.x - GROWTH_VIEWBOX_X) / GROWTH_VIEWBOX_WIDTH) * 100}%`,
+                transitionDelay: isVisible ? `${0.25 + index * 0.18}s` : '0s',
+              }}
+            >
+              {phase.label}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 
 const Phase3ApproachGallery: React.FC = () => (
   <div className="phase3-gallery">
@@ -274,6 +427,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const landingRef = useRef<HTMLElement | null>(null);
+  const contentRevealRef = useRef<HTMLDivElement | null>(null);
   const stickyStackRef = useRef<HTMLDivElement | null>(null);
   const challengeHeadingRef = useRef<HTMLHeadingElement | null>(null);
   const approachHeadingRef = useRef<HTMLHeadingElement | null>(null);
@@ -308,6 +462,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     hasIndexTransition ? navState?.indexRect?.left ?? null : null
   );
   const [indexMoveTargetTop, setIndexMoveTargetTop] = useState<number | null>(null);
+  const [indexMoveTargetLeft, setIndexMoveTargetLeft] = useState<number | null>(null);
   const [showAnchoredIndex, setShowAnchoredIndex] = useState(!hasIndexTransition);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState('');
@@ -350,6 +505,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     setFloatingIndexTop(null);
     setFloatingIndexLeft(null);
     setIndexMoveTargetTop(null);
+    setIndexMoveTargetLeft(null);
     setShowAnchoredIndex(true);
     setIntroPhase('typing');
   }, [clearIndexTimers]);
@@ -363,8 +519,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       return;
     }
 
-    const destTop = anchor.getBoundingClientRect().top;
-    setIndexMoveTargetTop(destTop);
+    const destRect = anchor.getBoundingClientRect();
+    setIndexMoveTargetTop(destRect.top);
+    setIndexMoveTargetLeft(destRect.left);
 
     indexHoldTimerRef.current = window.setTimeout(() => {
       requestAnimationFrame(() => {
@@ -379,21 +536,57 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     return clearIndexTimers;
   }, [hasIndexTransition, finishIndexMove, clearIndexTimers]);
 
-  // Reveal side nav after the landing section scrolls out of view
+  // Reveal nav + text-content once unlocked content reaches mid-viewport
   useEffect(() => {
-    const landing = landingRef.current;
-    if (!landing) return;
+    if (!isUnlocked) {
+      setHasPassedLanding(false);
+      return;
+    }
 
-    const landingObserver = new IntersectionObserver(
+    const content = contentRevealRef.current;
+    if (!content) return;
+
+    const contentObserver = new IntersectionObserver(
       ([entry]) => {
-        setHasPassedLanding(!entry.isIntersecting);
+        setHasPassedLanding(entry.isIntersecting);
       },
-      { threshold: 0, rootMargin: '0px 0px -40% 0px' }
+      // Shrink the root to the top half of the viewport so this fires
+      // as soon as the content top reaches ~50vh (not when it sticks to the top)
+      { threshold: 0, rootMargin: '0px 0px -50% 0px' }
     );
 
-    landingObserver.observe(landing);
-    return () => landingObserver.disconnect();
-  }, []);
+    contentObserver.observe(content);
+    return () => contentObserver.disconnect();
+  }, [isUnlocked]);
+
+  // Fade in media, headings, and body text as each enters the viewport
+  useEffect(() => {
+    if (!isUnlocked) return;
+
+    const root = contentRevealRef.current;
+    if (!root) return;
+
+    const targets = root.querySelectorAll<HTMLElement>(
+      '.content-block__media, .content-block__heading, .content-block__body, .phase-block__pair-media'
+    );
+    if (targets.length === 0) return;
+
+    targets.forEach((el) => el.classList.add('project-reveal'));
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('project-reveal--visible');
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+    );
+
+    targets.forEach((el) => revealObserver.observe(el));
+    return () => revealObserver.disconnect();
+  }, [isUnlocked]);
 
   // Measure sticky headings and collapse subtitles once the next title stacks in
   useEffect(() => {
@@ -992,10 +1185,16 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               introPhase === 'index-move' && indexMoveTargetTop !== null
                 ? indexMoveTargetTop
                 : floatingIndexTop,
-            left: floatingIndexLeft,
+            left:
+              introPhase === 'index-move' && indexMoveTargetLeft !== null
+                ? indexMoveTargetLeft
+                : floatingIndexLeft,
           }}
           onTransitionEnd={(event) => {
-            if (event.propertyName === 'top' && introPhase === 'index-move') {
+            if (
+              (event.propertyName === 'top' || event.propertyName === 'left') &&
+              introPhase === 'index-move'
+            ) {
               finishIndexMove();
             }
           }}
@@ -1084,7 +1283,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       </section>
 
       {isUnlocked && (
-      <div className="project-details-container">
+      <div ref={contentRevealRef} className="project-details-container">
       <div className="project-grid" id="project-grid">
         {/* Cols 1–2: nav · Cols 3–10: content */}
         <nav className={`side-navigation hidden xl:block ${hasPassedLanding ? 'side-navigation--visible' : ''}`}>
@@ -1125,11 +1324,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
         <div className="text-content">
           <article id="context" className="content-block content-block--headline-split">
             <div className="content-block__media">
-              <img
-                src="/img/Scarlet/timeline.jpg"
-                alt="User growth timeline from 50 users on GitHub to 500 users on Scarlet Web"
-                className="timeline-image"
-              />
+              <GrowthTimeline />
             </div>
             <h2 className="content-block__heading">Scaling from <br/> 50 to 500 uesrs, <br/> from Github to Web</h2>
             <div className="content-block__body content-section">

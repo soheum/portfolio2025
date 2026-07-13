@@ -74,11 +74,10 @@
   height: 100%;
   max-width: var(--site-content-max-width);
   margin: 0 auto;
-  /* display: flex;
-  flex-direction: column;
-  gap: 32px; */
   padding-top: var(--site-content-padding-top);
   padding-bottom: var(--site-content-padding-bottom);
+  padding-inline: var(--site-page-gutter);
+  box-sizing: border-box;
   justify-content: space-between;
 }
 
@@ -184,6 +183,7 @@
   width: 100%;
   max-width: var(--site-content-max-width);
   margin: 0 auto;
+  padding-inline: var(--site-page-gutter);
   display: flex;
   gap: 24px;
   align-items: center;
@@ -311,4 +311,14 @@
 .bullet-image-stack__logo3d canvas,
 #logo-3d canvas {
   display: block;
+}
+
+@media (max-width: 780px) {
+  :root {
+    --site-page-gutter: 20px;
+  }
+
+  .home-bullets {
+    width: 100%;
+  }
 }
