@@ -12,13 +12,97 @@ const LANDING_HEADLINE = '0 → 1 product design and development at Scarlet';
 
 type LandingIntroPhase = 'index-hold' | 'index-move' | 'typing';
 
-function getHeadingExpandedHeight(heading: HTMLHeadingElement): number {
-  const wasCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
-  if (wasCollapsed) heading.classList.remove('content-block__heading--subtitle-collapsed');
+function getHeadingStackHeight(heading: HTMLHeadingElement, showSubtitle: boolean): number {
+  const wasActive = heading.classList.contains('content-block__heading--subtitle-active');
+  if (showSubtitle !== wasActive) {
+    heading.classList.toggle('content-block__heading--subtitle-active', showSubtitle);
+  }
   const height = heading.offsetHeight;
-  if (wasCollapsed) heading.classList.add('content-block__heading--subtitle-collapsed');
+  if (showSubtitle !== wasActive) {
+    heading.classList.toggle('content-block__heading--subtitle-active', wasActive);
+  }
   return height;
 }
+
+function syncStickyStackHeights(
+  stack: HTMLDivElement,
+  challengeHeading: HTMLHeadingElement,
+  approachHeading: HTMLHeadingElement,
+  challengeId: string,
+  approachId: string,
+  activeSubsectionId: string
+) {
+  const stack1Height = `${getHeadingStackHeight(challengeHeading, activeSubsectionId === challengeId)}px`;
+  const stack2Height = `${getHeadingStackHeight(approachHeading, activeSubsectionId === approachId)}px`;
+
+  if (stack.style.getPropertyValue('--sticky-stack-1-height') !== stack1Height) {
+    stack.style.setProperty('--sticky-stack-1-height', stack1Height);
+  }
+  if (stack.style.getPropertyValue('--sticky-stack-2-height') !== stack2Height) {
+    stack.style.setProperty('--sticky-stack-2-height', stack2Height);
+  }
+}
+
+const STICKY_HEADING_TOP = 48;
+
+function getStickyStackActiveSubsection(
+  challengeHeading: HTMLHeadingElement,
+  approachHeading: HTMLHeadingElement,
+  outcomeHeading: HTMLHeadingElement,
+  challengeId: string,
+  approachId: string,
+  outcomeId: string,
+  headingsReleased = false
+): string {
+  const approachTop = approachHeading.getBoundingClientRect().top;
+  const outcomeTop = outcomeHeading.getBoundingClientRect().top;
+
+  if (headingsReleased) {
+    let active = challengeId;
+    if (approachTop <= STICKY_HEADING_TOP + 4) active = approachId;
+    if (outcomeTop <= STICKY_HEADING_TOP + 4) active = outcomeId;
+    return active;
+  }
+
+  // Match sticky stack positions: measure with subtitle so thresholds align
+  // with where headings actually pin once the previous section has stacked.
+  const challengeStackHeight = getHeadingStackHeight(challengeHeading, true);
+  const approachStackHeight = getHeadingStackHeight(approachHeading, true);
+
+  if (outcomeTop <= STICKY_HEADING_TOP + challengeStackHeight + approachStackHeight + 2) {
+    return outcomeId;
+  }
+  if (approachTop <= STICKY_HEADING_TOP + challengeStackHeight + 2) {
+    return approachId;
+  }
+  return challengeId;
+}
+
+function setsEqual(a: Set<string>, b: Set<string>) {
+  if (a.size !== b.size) return false;
+  return Array.from(a).every((value) => b.has(value));
+}
+
+function isPhaseBlockInViewport(phaseBlock: HTMLElement): boolean {
+  const rect = phaseBlock.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  return rect.top < viewportHeight * 0.9 && rect.bottom > viewportHeight * 0.1;
+}
+
+const HeadingSubtitle: React.FC<{ text: string; active: boolean }> = ({ text, active }) => (
+  <span className="content-block__heading-subtitle">
+    <span className="content-block__heading-subtitle__sizer" aria-hidden="true">
+      {text}
+    </span>
+    <TypewriterText
+      className="content-block__heading-subtitle__typewriter"
+      text={text}
+      active={active}
+      charDelay={24}
+      startDelay={100}
+    />
+  </span>
+);
 
 
 const PHASE_SUBSECTIONS = [
@@ -425,6 +509,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
   const indexMoveFinishedRef = useRef(false);
   const [activeSection, setActiveSection] = useState('about');
   const [activeSubsection, setActiveSubsection] = useState<string | null>(null);
+  const [subtitleActiveIds, setSubtitleActiveIds] = useState<Set<string>>(() => new Set());
   const observerRef = useRef<IntersectionObserver | null>(null);
   const landingRef = useRef<HTMLElement | null>(null);
   const contentRevealRef = useRef<HTMLDivElement | null>(null);
@@ -478,6 +563,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       setPassword('');
     }
   };
+
+  const isSubtitleActive = (subsectionId: string) => subtitleActiveIds.has(subsectionId);
 
   const handleBack = () => {
     navigate('/');
@@ -588,66 +675,110 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     return () => revealObserver.disconnect();
   }, [isUnlocked]);
 
-  // Measure sticky headings and collapse subtitles once the next title stacks in
+  // Track which subsection subtitle is active in each sticky stack (scroll-based)
   useEffect(() => {
     if (!isUnlocked) return;
 
-    const stack = stickyStackRef.current;
-    const challengeHeading = challengeHeadingRef.current;
-    const approachHeading = approachHeadingRef.current;
-    const outcomeHeading = outcomeHeadingRef.current;
-    if (!stack || !challengeHeading || !approachHeading || !outcomeHeading) return;
-
-    const stickyTop = 48;
-    let challengeExpandedHeight = 0;
-    let approachExpandedHeight = 0;
-
-    const refreshExpandedHeights = () => {
-      challengeExpandedHeight = getHeadingExpandedHeight(challengeHeading);
-      approachExpandedHeight = getHeadingExpandedHeight(approachHeading);
+    type StackConfig = {
+      stack: HTMLDivElement;
+      challengeHeading: HTMLHeadingElement;
+      approachHeading: HTMLHeadingElement;
+      outcomeHeading: HTMLHeadingElement;
+      challengeId: string;
+      approachId: string;
+      outcomeId: string;
+      headingsReleased?: boolean;
     };
 
-    const measureStackHeights = () => {
-      const stack1Height = `${challengeHeading.offsetHeight}px`;
-      const stack2Height = `${approachHeading.offsetHeight}px`;
+    const getStacks = (): StackConfig[] => {
+      const stacks: StackConfig[] = [];
+      const addStack = (
+        stack: HTMLDivElement | null,
+        challengeHeading: HTMLHeadingElement | null,
+        approachHeading: HTMLHeadingElement | null,
+        outcomeHeading: HTMLHeadingElement | null,
+        phase: number,
+        headingsReleased = false
+      ) => {
+        if (!stack || !challengeHeading || !approachHeading || !outcomeHeading) return;
+        stacks.push({
+          stack,
+          challengeHeading,
+          approachHeading,
+          outcomeHeading,
+          challengeId: `phase-${phase}-challenge`,
+          approachId: `phase-${phase}-approach`,
+          outcomeId: `phase-${phase}-outcome`,
+          headingsReleased,
+        });
+      };
 
-      if (stack.style.getPropertyValue('--sticky-stack-1-height') !== stack1Height) {
-        stack.style.setProperty('--sticky-stack-1-height', stack1Height);
-      }
-      if (stack.style.getPropertyValue('--sticky-stack-2-height') !== stack2Height) {
-        stack.style.setProperty('--sticky-stack-2-height', stack2Height);
-      }
-    };
-
-    const setSubtitleCollapsed = (heading: HTMLHeadingElement, collapsed: boolean) => {
-      const isCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
-      if (collapsed === isCollapsed) return;
-      heading.classList.toggle('content-block__heading--subtitle-collapsed', collapsed);
-    };
-
-    const updateSubtitleCollapse = () => {
-      if (headingsReleased) {
-        setSubtitleCollapsed(challengeHeading, false);
-        setSubtitleCollapsed(approachHeading, false);
-        return;
-      }
-
-      const approachTop = approachHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        challengeHeading,
-        approachTop <= stickyTop + challengeExpandedHeight + 2
+      addStack(
+        stickyStackRef.current,
+        challengeHeadingRef.current,
+        approachHeadingRef.current,
+        outcomeHeadingRef.current,
+        1,
+        headingsReleased
+      );
+      addStack(
+        phase2StickyStackRef.current,
+        phase2ChallengeHeadingRef.current,
+        phase2ApproachHeadingRef.current,
+        phase2OutcomeHeadingRef.current,
+        2
+      );
+      addStack(
+        phase3StickyStackRef.current,
+        phase3ChallengeHeadingRef.current,
+        phase3ApproachHeadingRef.current,
+        phase3OutcomeHeadingRef.current,
+        3,
+        phase3HeadingsReleased
+      );
+      addStack(
+        phase4StickyStackRef.current,
+        phase4ChallengeHeadingRef.current,
+        phase4ApproachHeadingRef.current,
+        phase4OutcomeHeadingRef.current,
+        4,
+        phase4HeadingsReleased
       );
 
-      const outcomeTop = outcomeHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        approachHeading,
-        outcomeTop <= stickyTop + challengeExpandedHeight + approachExpandedHeight + 2
-      );
+      return stacks;
     };
 
-    const syncStack = () => {
-      updateSubtitleCollapse();
-      measureStackHeights();
+    const syncStacks = () => {
+      const stacks = getStacks();
+      const nextActiveIds = new Set<string>();
+
+      stacks.forEach((config) => {
+        const phaseBlock = config.stack.closest('.phase-block');
+        if (!(phaseBlock instanceof HTMLElement) || !isPhaseBlockInViewport(phaseBlock)) {
+          return;
+        }
+
+        const activeId = getStickyStackActiveSubsection(
+          config.challengeHeading,
+          config.approachHeading,
+          config.outcomeHeading,
+          config.challengeId,
+          config.approachId,
+          config.outcomeId,
+          config.headingsReleased
+        );
+        nextActiveIds.add(activeId);
+        syncStickyStackHeights(
+          config.stack,
+          config.challengeHeading,
+          config.approachHeading,
+          config.challengeId,
+          config.approachId,
+          activeId
+        );
+      });
+
+      setSubtitleActiveIds((prev) => (setsEqual(prev, nextActiveIds) ? prev : nextActiveIds));
     };
 
     let syncRafId = 0;
@@ -655,226 +786,27 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       if (syncRafId) return;
       syncRafId = window.requestAnimationFrame(() => {
         syncRafId = 0;
-        syncStack();
+        syncStacks();
       });
     };
 
-    let measureRafId = 0;
-    const scheduleMeasure = () => {
-      if (measureRafId) return;
-      measureRafId = window.requestAnimationFrame(() => {
-        measureRafId = 0;
-        refreshExpandedHeights();
-        measureStackHeights();
-      });
-    };
-
-    refreshExpandedHeights();
-    syncStack();
-    const resizeObserver = new ResizeObserver(scheduleMeasure);
-    resizeObserver.observe(challengeHeading);
-    resizeObserver.observe(approachHeading);
-    window.addEventListener('resize', scheduleSync);
+    syncStacks();
+    const resizeObserver = new ResizeObserver(scheduleSync);
+    getStacks().forEach((config) => {
+      resizeObserver.observe(config.challengeHeading);
+      resizeObserver.observe(config.approachHeading);
+      resizeObserver.observe(config.outcomeHeading);
+    });
     window.addEventListener('scroll', scheduleSync, { passive: true });
+    window.addEventListener('resize', scheduleSync);
 
     return () => {
       if (syncRafId) window.cancelAnimationFrame(syncRafId);
-      if (measureRafId) window.cancelAnimationFrame(measureRafId);
       resizeObserver.disconnect();
-      window.removeEventListener('resize', scheduleSync);
       window.removeEventListener('scroll', scheduleSync);
-    };
-  }, [isUnlocked, headingsReleased]);
-
-  // Phase 2 sticky stack heading heights and subtitle collapse
-  useEffect(() => {
-    if (!isUnlocked) return;
-
-    const stack = phase2StickyStackRef.current;
-    const challengeHeading = phase2ChallengeHeadingRef.current;
-    const approachHeading = phase2ApproachHeadingRef.current;
-    const outcomeHeading = phase2OutcomeHeadingRef.current;
-    if (!stack || !challengeHeading || !approachHeading || !outcomeHeading) return;
-
-    const stickyTop = 48;
-    let challengeExpandedHeight = 0;
-    let approachExpandedHeight = 0;
-
-    const refreshExpandedHeights = () => {
-      challengeExpandedHeight = getHeadingExpandedHeight(challengeHeading);
-      approachExpandedHeight = getHeadingExpandedHeight(approachHeading);
-    };
-
-    const measureStackHeights = () => {
-      const stack1Height = `${challengeHeading.offsetHeight}px`;
-      const stack2Height = `${approachHeading.offsetHeight}px`;
-
-      if (stack.style.getPropertyValue('--sticky-stack-1-height') !== stack1Height) {
-        stack.style.setProperty('--sticky-stack-1-height', stack1Height);
-      }
-      if (stack.style.getPropertyValue('--sticky-stack-2-height') !== stack2Height) {
-        stack.style.setProperty('--sticky-stack-2-height', stack2Height);
-      }
-    };
-
-    const setSubtitleCollapsed = (heading: HTMLHeadingElement, collapsed: boolean) => {
-      const isCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
-      if (collapsed === isCollapsed) return;
-      heading.classList.toggle('content-block__heading--subtitle-collapsed', collapsed);
-    };
-
-    const updateSubtitleCollapse = () => {
-      const approachTop = approachHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        challengeHeading,
-        approachTop <= stickyTop + challengeExpandedHeight + 2
-      );
-
-      const outcomeTop = outcomeHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        approachHeading,
-        outcomeTop <= stickyTop + challengeExpandedHeight + approachExpandedHeight + 2
-      );
-    };
-
-    const syncStack = () => {
-      updateSubtitleCollapse();
-      measureStackHeights();
-    };
-
-    let syncRafId = 0;
-    const scheduleSync = () => {
-      if (syncRafId) return;
-      syncRafId = window.requestAnimationFrame(() => {
-        syncRafId = 0;
-        syncStack();
-      });
-    };
-
-    let measureRafId = 0;
-    const scheduleMeasure = () => {
-      if (measureRafId) return;
-      measureRafId = window.requestAnimationFrame(() => {
-        measureRafId = 0;
-        refreshExpandedHeights();
-        measureStackHeights();
-      });
-    };
-
-    refreshExpandedHeights();
-    syncStack();
-    const resizeObserver = new ResizeObserver(scheduleMeasure);
-    resizeObserver.observe(challengeHeading);
-    resizeObserver.observe(approachHeading);
-    window.addEventListener('resize', scheduleSync);
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-
-    return () => {
-      if (syncRafId) window.cancelAnimationFrame(syncRafId);
-      if (measureRafId) window.cancelAnimationFrame(measureRafId);
-      resizeObserver.disconnect();
       window.removeEventListener('resize', scheduleSync);
-      window.removeEventListener('scroll', scheduleSync);
     };
-  }, [isUnlocked]);
-
-  // Phase 3 sticky stack heading heights and subtitle collapse
-  useEffect(() => {
-    if (!isUnlocked) return;
-
-    const stack = phase3StickyStackRef.current;
-    const challengeHeading = phase3ChallengeHeadingRef.current;
-    const approachHeading = phase3ApproachHeadingRef.current;
-    const outcomeHeading = phase3OutcomeHeadingRef.current;
-    if (!stack || !challengeHeading || !approachHeading || !outcomeHeading) return;
-
-    const stickyTop = 48;
-    let challengeExpandedHeight = 0;
-    let approachExpandedHeight = 0;
-
-    const refreshExpandedHeights = () => {
-      challengeExpandedHeight = getHeadingExpandedHeight(challengeHeading);
-      approachExpandedHeight = getHeadingExpandedHeight(approachHeading);
-    };
-
-    const measureStackHeights = () => {
-      const stack1Height = `${challengeHeading.offsetHeight}px`;
-      const stack2Height = `${approachHeading.offsetHeight}px`;
-
-      if (stack.style.getPropertyValue('--sticky-stack-1-height') !== stack1Height) {
-        stack.style.setProperty('--sticky-stack-1-height', stack1Height);
-      }
-      if (stack.style.getPropertyValue('--sticky-stack-2-height') !== stack2Height) {
-        stack.style.setProperty('--sticky-stack-2-height', stack2Height);
-      }
-    };
-
-    const setSubtitleCollapsed = (heading: HTMLHeadingElement, collapsed: boolean) => {
-      const isCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
-      if (collapsed === isCollapsed) return;
-      heading.classList.toggle('content-block__heading--subtitle-collapsed', collapsed);
-    };
-
-    const updateSubtitleCollapse = () => {
-      if (phase3HeadingsReleased) {
-        setSubtitleCollapsed(challengeHeading, false);
-        setSubtitleCollapsed(approachHeading, false);
-        return;
-      }
-
-      const approachTop = approachHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        challengeHeading,
-        approachTop <= stickyTop + challengeExpandedHeight + 2
-      );
-
-      const outcomeTop = outcomeHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        approachHeading,
-        outcomeTop <= stickyTop + challengeExpandedHeight + approachExpandedHeight + 2
-      );
-    };
-
-    const syncStack = () => {
-      updateSubtitleCollapse();
-      measureStackHeights();
-    };
-
-    let syncRafId = 0;
-    const scheduleSync = () => {
-      if (syncRafId) return;
-      syncRafId = window.requestAnimationFrame(() => {
-        syncRafId = 0;
-        syncStack();
-      });
-    };
-
-    let measureRafId = 0;
-    const scheduleMeasure = () => {
-      if (measureRafId) return;
-      measureRafId = window.requestAnimationFrame(() => {
-        measureRafId = 0;
-        refreshExpandedHeights();
-        measureStackHeights();
-      });
-    };
-
-    refreshExpandedHeights();
-    syncStack();
-    const resizeObserver = new ResizeObserver(scheduleMeasure);
-    resizeObserver.observe(challengeHeading);
-    resizeObserver.observe(approachHeading);
-    window.addEventListener('resize', scheduleSync);
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-
-    return () => {
-      if (syncRafId) window.cancelAnimationFrame(syncRafId);
-      if (measureRafId) window.cancelAnimationFrame(measureRafId);
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', scheduleSync);
-      window.removeEventListener('scroll', scheduleSync);
-    };
-  }, [isUnlocked, phase3HeadingsReleased]);
+  }, [isUnlocked, headingsReleased, phase3HeadingsReleased, phase4HeadingsReleased]);
 
   // Release Phase 3 sticky headings when the Outcome video reaches the heading row
   useEffect(() => {
@@ -886,12 +818,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     if (!media || !challengeHeading || !approachHeading) return;
 
     const getReleaseLine = () => {
-      const stickyTop = 48;
       const releaseLeadPx = 120;
       return (
-        stickyTop +
-        getHeadingExpandedHeight(challengeHeading) +
-        getHeadingExpandedHeight(approachHeading) +
+        STICKY_HEADING_TOP +
+        getHeadingStackHeight(challengeHeading, subtitleActiveIds.has('phase-3-challenge')) +
+        getHeadingStackHeight(approachHeading, subtitleActiveIds.has('phase-3-approach')) +
         releaseLeadPx
       );
     };
@@ -915,105 +846,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       window.removeEventListener('scroll', updateHeadingsReleased);
       window.removeEventListener('resize', updateHeadingsReleased);
     };
-  }, [isUnlocked]);
-
-  // Phase 4 sticky stack heading heights and subtitle collapse
-  useEffect(() => {
-    if (!isUnlocked) return;
-
-    const stack = phase4StickyStackRef.current;
-    const challengeHeading = phase4ChallengeHeadingRef.current;
-    const approachHeading = phase4ApproachHeadingRef.current;
-    const outcomeHeading = phase4OutcomeHeadingRef.current;
-    if (!stack || !challengeHeading || !approachHeading || !outcomeHeading) return;
-
-    const stickyTop = 48;
-    let challengeExpandedHeight = 0;
-    let approachExpandedHeight = 0;
-
-    const refreshExpandedHeights = () => {
-      challengeExpandedHeight = getHeadingExpandedHeight(challengeHeading);
-      approachExpandedHeight = getHeadingExpandedHeight(approachHeading);
-    };
-
-    const measureStackHeights = () => {
-      const stack1Height = `${challengeHeading.offsetHeight}px`;
-      const stack2Height = `${approachHeading.offsetHeight}px`;
-
-      if (stack.style.getPropertyValue('--sticky-stack-1-height') !== stack1Height) {
-        stack.style.setProperty('--sticky-stack-1-height', stack1Height);
-      }
-      if (stack.style.getPropertyValue('--sticky-stack-2-height') !== stack2Height) {
-        stack.style.setProperty('--sticky-stack-2-height', stack2Height);
-      }
-    };
-
-    const setSubtitleCollapsed = (heading: HTMLHeadingElement, collapsed: boolean) => {
-      const isCollapsed = heading.classList.contains('content-block__heading--subtitle-collapsed');
-      if (collapsed === isCollapsed) return;
-      heading.classList.toggle('content-block__heading--subtitle-collapsed', collapsed);
-    };
-
-    const updateSubtitleCollapse = () => {
-      if (phase4HeadingsReleased) {
-        setSubtitleCollapsed(challengeHeading, false);
-        setSubtitleCollapsed(approachHeading, false);
-        return;
-      }
-
-      const approachTop = approachHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        challengeHeading,
-        approachTop <= stickyTop + challengeExpandedHeight + 2
-      );
-
-      const outcomeTop = outcomeHeading.getBoundingClientRect().top;
-      setSubtitleCollapsed(
-        approachHeading,
-        outcomeTop <= stickyTop + challengeExpandedHeight + approachExpandedHeight + 2
-      );
-    };
-
-    const syncStack = () => {
-      updateSubtitleCollapse();
-      measureStackHeights();
-    };
-
-    let syncRafId = 0;
-    const scheduleSync = () => {
-      if (syncRafId) return;
-      syncRafId = window.requestAnimationFrame(() => {
-        syncRafId = 0;
-        syncStack();
-      });
-    };
-
-    let measureRafId = 0;
-    const scheduleMeasure = () => {
-      if (measureRafId) return;
-      measureRafId = window.requestAnimationFrame(() => {
-        measureRafId = 0;
-        refreshExpandedHeights();
-        measureStackHeights();
-      });
-    };
-
-    refreshExpandedHeights();
-    syncStack();
-    const resizeObserver = new ResizeObserver(scheduleMeasure);
-    resizeObserver.observe(challengeHeading);
-    resizeObserver.observe(approachHeading);
-    window.addEventListener('resize', scheduleSync);
-    window.addEventListener('scroll', scheduleSync, { passive: true });
-
-    return () => {
-      if (syncRafId) window.cancelAnimationFrame(syncRafId);
-      if (measureRafId) window.cancelAnimationFrame(measureRafId);
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', scheduleSync);
-      window.removeEventListener('scroll', scheduleSync);
-    };
-  }, [isUnlocked, phase4HeadingsReleased]);
+  }, [isUnlocked, subtitleActiveIds]);
 
   // Release Phase 4 sticky headings when the Outcome video reaches the heading row
   useEffect(() => {
@@ -1025,12 +858,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     if (!media || !challengeHeading || !approachHeading) return;
 
     const getReleaseLine = () => {
-      const stickyTop = 48;
       const releaseLeadPx = 120;
       return (
-        stickyTop +
-        getHeadingExpandedHeight(challengeHeading) +
-        getHeadingExpandedHeight(approachHeading) +
+        STICKY_HEADING_TOP +
+        getHeadingStackHeight(challengeHeading, subtitleActiveIds.has('phase-4-challenge')) +
+        getHeadingStackHeight(approachHeading, subtitleActiveIds.has('phase-4-approach')) +
         releaseLeadPx
       );
     };
@@ -1054,7 +886,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       window.removeEventListener('scroll', updateHeadingsReleased);
       window.removeEventListener('resize', updateHeadingsReleased);
     };
-  }, [isUnlocked]);
+  }, [isUnlocked, subtitleActiveIds]);
 
   // Release sticky headings when the Outcome image reaches the Outcome heading row
   useEffect(() => {
@@ -1068,12 +900,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
     if (!stack || !media || !challengeHeading || !approachHeading || !outcomeHeading) return;
 
     const getReleaseLine = () => {
-      const stickyTop = 48;
       const releaseLeadPx = 120;
       return (
-        stickyTop +
-        challengeHeading.offsetHeight +
-        approachHeading.offsetHeight +
+        STICKY_HEADING_TOP +
+        getHeadingStackHeight(challengeHeading, subtitleActiveIds.has('phase-1-challenge')) +
+        getHeadingStackHeight(approachHeading, subtitleActiveIds.has('phase-1-approach')) +
         releaseLeadPx
       );
     };
@@ -1097,34 +928,66 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       window.removeEventListener('scroll', updateHeadingsReleased);
       window.removeEventListener('resize', updateHeadingsReleased);
     };
-  }, [isUnlocked]);
+  }, [isUnlocked, subtitleActiveIds]);
 
   // Scroll spy: detect which section is in view
   useEffect(() => {
+    if (!isUnlocked) return;
+
+    const viewportTop = window.innerHeight * 0.2;
+    const viewportBottom = window.innerHeight * 0.4;
+
+    const syncNavActiveSection = () => {
+      const subsectionElements = sections.flatMap((section) =>
+        section.subsections
+          ? section.subsections
+              .map((sub) => document.getElementById(sub.id))
+              .filter((el): el is HTMLElement => el !== null)
+          : []
+      );
+
+      const visibleSubsections = subsectionElements
+        .filter((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top < viewportBottom && rect.bottom > viewportTop;
+        })
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+
+      if (visibleSubsections.length > 0) {
+        const id = visibleSubsections[0].id;
+        const phaseSubMatch = id.match(/^(phase-\d+)-(challenge|approach|outcome)$/);
+        if (phaseSubMatch) {
+          setActiveSubsection(id);
+          setActiveSection(phaseSubMatch[1]);
+          return;
+        }
+      }
+
+      const mainSectionElements = sections
+        .map((section) => document.getElementById(section.id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      const visibleMainSection = mainSectionElements
+        .filter((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top < viewportBottom && rect.bottom > viewportTop;
+        })
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+
+      if (visibleMainSection) {
+        setActiveSection(visibleMainSection.id);
+        setActiveSubsection(null);
+      }
+    };
+
     const options = {
       root: null,
       rootMargin: '-20% 0px -60% 0px',
       threshold: 0,
     };
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      const intersecting = entries.filter((e) => e.isIntersecting);
-      if (intersecting.length === 0) return;
-
-      // Pick the topmost element in the viewport among intersecting entries
-      const top = intersecting.reduce((best, e) =>
-        e.boundingClientRect.top < best.boundingClientRect.top ? e : best
-      );
-
-      const id = top.target.id;
-      const phaseSubMatch = id.match(/^(phase-\d+)-(challenge|approach|outcome)$/);
-      if (phaseSubMatch) {
-        setActiveSubsection(id);
-        setActiveSection(phaseSubMatch[1]);
-      } else {
-        setActiveSection(id);
-        setActiveSubsection(null);
-      }
+    observerRef.current = new IntersectionObserver(() => {
+      syncNavActiveSection();
     }, options);
 
     // Observe main sections
@@ -1145,7 +1008,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
       }
     });
 
+    syncNavActiveSection();
+    window.addEventListener('scroll', syncNavActiveSection, { passive: true });
+    window.addEventListener('resize', syncNavActiveSection);
+
     return () => {
+      window.removeEventListener('scroll', syncNavActiveSection);
+      window.removeEventListener('resize', syncNavActiveSection);
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
@@ -1275,6 +1144,21 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </form>
               </div>
             )}
+            <div className="project-landing-inner__external-link project-landing-reveal">
+              <a
+                href="https://www.scarlet.cc/"
+                className="project-landing-link-btn project-landing-link-btn--outline"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit Scarlet website"
+              >
+                <img
+                  src="/img/ArrowUpRight.svg"
+                  alt=""
+                  className="project-landing-link-btn__icon"
+                />
+              </a>
+            </div>
           </div>
           <div className="project-landing-media project-landing-reveal">
             {landingTypingComplete && <HeroCarousel autoPlay />}
@@ -1343,10 +1227,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 <div className="content-block__media">
                   <img src="/img/Scarlet/phase1_challenge.jpg" alt="Phase 1 challenge" className="timeline-image" />
                 </div>
-                <h2 ref={challengeHeadingRef} className="content-block__heading content-block__heading--stack-1">
+                <h2 ref={challengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-1-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                   <span className="content-block__heading-label">Phase 01</span>
                   Challenge
-                  <span className="content-block__heading-subtitle">Difficulty in user research</span>
+                  <HeadingSubtitle text="Difficulty in user research" active={isSubtitleActive('phase-1-challenge')} />
                 </h2>
                 <div className="content-block__body content-section" style={{ marginTop: '0%' }}>
                   <ul>
@@ -1358,9 +1242,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               </section>
 
               <section id="phase-1-approach" className="content-block__segment">
-                <h2 ref={approachHeadingRef} className="content-block__heading content-block__heading--stack-2">
+                <h2 ref={approachHeadingRef} className={`content-block__heading content-block__heading--stack-2${isSubtitleActive('phase-1-approach') ? ' content-block__heading--subtitle-active' : ''}`}>
                   Approach
-                  <span className="content-block__heading-subtitle">New research tools</span>
+                  <HeadingSubtitle text="New research tools" active={isSubtitleActive('phase-1-approach')} />
                 </h2>
                 
                 <div className="content-block__body content-section">
@@ -1379,9 +1263,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               </section>
 
               <section id="phase-1-outcome" className="content-block__segment">
-                <h2 ref={outcomeHeadingRef} className="content-block__heading content-block__heading--stack-3">
+                <h2 ref={outcomeHeadingRef} className={`content-block__heading content-block__heading--stack-3${isSubtitleActive('phase-1-outcome') ? ' content-block__heading--subtitle-active' : ''}`}>
                   Outcome
-                  <span className="content-block__heading-subtitle">MVP launched in 2 weeks</span>
+                  <HeadingSubtitle text="MVP launched in 2 weeks" active={isSubtitleActive('phase-1-outcome')} />
                 </h2>
                 <div className="content-block__body content-section">
                   <p>We launched an MVP: a simple, low-barrier portal that allowed customers to upload regulatory documents regardless of format, shifting complexity away from the user. The main advantage of this approach was accessibility, as customers could submit files directly.</p>
@@ -1411,10 +1295,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               </div>
               <div ref={phase2StickyStackRef} className="phase-block__sticky-stack">
                 <section id="phase-2-challenge" className="content-block__segment">
-                  <h2 ref={phase2ChallengeHeadingRef} className="content-block__heading content-block__heading--stack-1">
+                  <h2 ref={phase2ChallengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-2-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                     <span className="content-block__heading-label">Phase 02</span>
                     Challenge
-                    <span className="content-block__heading-subtitle">Regulatory constraints in AI usage </span>
+                    <HeadingSubtitle text="Regulatory constraints in AI usage" active={isSubtitleActive('phase-2-challenge')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <div className="challenge-image-row">
@@ -1434,9 +1318,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </section>
 
                 <section id="phase-2-approach" className="content-block__segment">
-                  <h2 ref={phase2ApproachHeadingRef} className="content-block__heading content-block__heading--stack-2">
+                  <h2 ref={phase2ApproachHeadingRef} className={`content-block__heading content-block__heading--stack-2${isSubtitleActive('phase-2-approach') ? ' content-block__heading--subtitle-active' : ''}`}>
                     Approach
-                    <span className="content-block__heading-subtitle">Incremental impact in existing flows</span>
+                    <HeadingSubtitle text="Incremental impact in existing flows" active={isSubtitleActive('phase-2-approach')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <p>Rather than building an autonomous agent, we focused on incremental impact grounded in existing workflows.</p>
@@ -1448,9 +1332,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </section>
 
                 <section id="phase-2-outcome" className="content-block__segment">
-                  <h2 ref={phase2OutcomeHeadingRef} className="content-block__heading content-block__heading--stack-3">
+                  <h2 ref={phase2OutcomeHeadingRef} className={`content-block__heading content-block__heading--stack-3${isSubtitleActive('phase-2-outcome') ? ' content-block__heading--subtitle-active' : ''}`}>
                     Outcome
-                    <span className="content-block__heading-subtitle">AI introduced through stages</span>
+                    <HeadingSubtitle text="AI introduced through stages" active={isSubtitleActive('phase-2-outcome')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <div className="outcome-demo-group">
@@ -1489,10 +1373,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 <div className="content-block__media">
                   <img src="/img/Scarlet/phase3_challenge_0.jpg" alt="Phase 3 challenge" className="timeline-image" />
                 </div>
-                <h2 ref={phase3ChallengeHeadingRef} className="content-block__heading content-block__heading--stack-1">
+                <h2 ref={phase3ChallengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-3-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                     <span className="content-block__heading-label">Phase 03</span>
                     Challenge
-                    <span className="content-block__heading-subtitle">Scaling assessor workflows <br/>under complexity</span>
+                    <HeadingSubtitle text={"Scaling assessor workflows\nunder complexity"} active={isSubtitleActive('phase-3-challenge')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <p>With over 30 customers on the platform, assessors needed to scale their workload rapidly. This put the assessor experience under pressure in two ways:</p>
@@ -1513,9 +1397,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </section>
 
                 <section id="phase-3-approach" className="content-block__segment">
-                  <h2 ref={phase3ApproachHeadingRef} className="content-block__heading content-block__heading--stack-2">
+                  <h2 ref={phase3ApproachHeadingRef} className={`content-block__heading content-block__heading--stack-2${isSubtitleActive('phase-3-approach') ? ' content-block__heading--subtitle-active' : ''}`}>
                     Approach
-                    <span className="content-block__heading-subtitle">Rapid iteration <br/>with vibe-coded prototypes</span>
+                    <HeadingSubtitle text={"Rapid iteration\nwith vibe-coded prototypes"} active={isSubtitleActive('phase-3-approach')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <p>Given the time pressure, we prioritised rapid iteration with tight feedback loops. Vibe-coded prototypes became a key part — rather than working with placeholder content, we were able to load actual regulatory documents directly into prototypes. This meant <span style={{ color: '#ffffff' }}>assessors could give feedback grounded in real work rather than hypothetical prototypes, making each iteration significantly more accurate and actionable.</span></p>
@@ -1526,9 +1410,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </section>
 
                 <section id="phase-3-outcome" className="content-block__segment">
-                  <h2 ref={phase3OutcomeHeadingRef} className="content-block__heading content-block__heading--stack-3">
+                  <h2 ref={phase3OutcomeHeadingRef} className={`content-block__heading content-block__heading--stack-3${isSubtitleActive('phase-3-outcome') ? ' content-block__heading--subtitle-active' : ''}`}>
                     Outcome
-                    <span className="content-block__heading-subtitle">Information-dense, <br/>but flexible assessor interface</span>
+                    <HeadingSubtitle text={"Information-dense,\nbut flexible assessor interface"} active={isSubtitleActive('phase-3-outcome')} />
                   </h2>
                   <div className="content-block__body content-section">
                     <p>We delivered a flexible, information-dense assessor interface designed to minimise friction and maximise control:</p>
@@ -1556,10 +1440,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 <div className="content-block__media">
                   <img src="/img/Scarlet/phase4_challenge.jpg" alt="Phase 4 challenge" className="timeline-image" />
                 </div>
-                <h2 ref={phase4ChallengeHeadingRef} className="content-block__heading content-block__heading--stack-1">
+                <h2 ref={phase4ChallengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-4-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                   <span className="content-block__heading-label">Phase 04</span>
                   Challenge
-                  <span className="content-block__heading-subtitle">Translating admin <br/>workflows to the web</span>
+                  <HeadingSubtitle text={"Translating admin\nworkflows to the web"} active={isSubtitleActive('phase-4-challenge')} />
                 </h2>
                 <div className="content-block__body content-section">
                   <p>With customer and assessor workflows successfully migrated to the web, administrators were still using GitHub. We received repeated audit findings from IGJ (Inspectie Gezondheidszorg en Jeugd), supervisory authority auditing Scarlet, that using GitHub was becoming unscalable.</p>
@@ -1573,9 +1457,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               </section>
 
               <section id="phase-4-approach" className="content-block__segment">
-                <h2 ref={phase4ApproachHeadingRef} className="content-block__heading content-block__heading--stack-2">
+                <h2 ref={phase4ApproachHeadingRef} className={`content-block__heading content-block__heading--stack-2${isSubtitleActive('phase-4-approach') ? ' content-block__heading--subtitle-active' : ''}`}>
                   Approach
-                  <span className="content-block__heading-subtitle">Cross-functional collaboration</span>
+                  <HeadingSubtitle text="Cross-functional collaboration" active={isSubtitleActive('phase-4-approach')} />
                 </h2>
                 <div className="content-block__body content-section">
                   <p>Given the complexity, <span style={{ color: '#ffffff' }}>we prioritised early and continuous collaboration between designers, engineers, product, and the technical operations team.</span> Rather than working in silos, the four came together regularly to align on regulatory needs, engineering constraints, product roadmap, and usability — finding solutions that satisfied all at once.</p>
@@ -1586,9 +1470,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
               </section>
 
               <section id="phase-4-outcome" className="content-block__segment">
-                <h2 ref={phase4OutcomeHeadingRef} className="content-block__heading content-block__heading--stack-3">
+                <h2 ref={phase4OutcomeHeadingRef} className={`content-block__heading content-block__heading--stack-3${isSubtitleActive('phase-4-outcome') ? ' content-block__heading--subtitle-active' : ''}`}>
                   Outcome
-                  <span className="content-block__heading-subtitle">Competence management system in the web</span>
+                  <HeadingSubtitle text="Competence management system in the web" active={isSubtitleActive('phase-4-outcome')} />
                 </h2>
                 <div className="content-block__body content-section">
                   <p>The result was <span style={{ color: '#ffffff' }}>a competence management system that brought complex regulatory administration fully into the web</span> — making processes that once lived in GitHub or offline systems accessible, traceable, and auditable in one place.</p>
