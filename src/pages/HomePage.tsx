@@ -39,7 +39,7 @@ const BULLET_POINTS: {
   {
     index: 3,
     text: <>Previously a public sector product designer at the <span style={{ color: '#ffffff', fontWeight: 400 }}>Bank of England</span>, transforming regulatory data collection processes</>,
-    images: ['/img/Grid/3_Landing_1.jpg', '/img/Grid/3_Landing_2.jpg', '/img/Grid/3_Landing_3.jpg'],
+    images: ['/img/Grid/3_Landing_2.jpg', '/img/Grid/3_Landing_2.mp4', '/img/Grid/3_Landing_3.jpg'],
     path: '/project/boe',
   },
   {
