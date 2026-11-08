@@ -175,7 +175,7 @@ const WAVY_DISTORT = 0.3;
 const WAVY_SPEED = 6;
 const BW_TINT = '#555555'; // darkens the bw image (lower = darker)
 
-const toBwUrl = (url: string) => url.replace(/\.(jpg|jpeg|png)$/i, '-bw.$1');
+const toBwUrl = (url: string) => url.replace(/\.(jpg|jpeg|png|webp)$/i, '-bw.$1');
 
 const RectRing: React.FC<RectRingProps> = ({
   count,

@@ -12,10 +12,10 @@ const LANDING_HEADLINE =
   'Building digital sincerity: Collaboration with GREETINGS FOLKs';
 
 const GF_IMAGES = [
-  '/img/GF/GF_1.jpg',
-  '/img/GF/GF_2.jpg',
-  '/img/GF/GF_3.png',
-  '/img/GF/GF_4.png',
+  '/img/GF/GF_1.webp',
+  '/img/GF/GF_2.webp',
+  '/img/GF/GF_3.webp',
+  '/img/GF/GF_4.webp',
 ] as const;
 
 const GF_SLIDE_INTERVAL_MS = 1500;

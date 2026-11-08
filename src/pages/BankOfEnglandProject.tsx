@@ -187,7 +187,7 @@ const BankOfEnglandProject: React.FC = () => {
             {landingTypingComplete && (
               <div className="hero-image-grid hero-carousel">
                 <img
-                  src="/img/BoE/landing_1.jpg"
+                  src="/img/BoE/landing_1.webp"
                   alt="Residential mortgage business process map"
                   className="hero-carousel__video"
                 />

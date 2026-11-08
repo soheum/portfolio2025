@@ -157,8 +157,11 @@
 }
 
 .home-bullet--link:hover {
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  color: #c4c4c4;
+}
+
+.home-bullet--link:hover .home-bullet__index {
+  color: #767676;
 }
 
 .home-bullet__index {

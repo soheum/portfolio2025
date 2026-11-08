@@ -25,7 +25,7 @@ export const FOOTER_SOCIAL_LINKS: FooterLink[] = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/so-heum-hwang/', external: true },
   { label: 'Instagram', href: 'https://www.instagram.com/iso_heum/', external: true },
   { label: 'Threads', href: 'https://www.threads.com/@sohmnm', external: true },
-  { label: 'CV', href: '/files/CV_0609.pdf', external: true },
+  { label: 'CV', href: '/files/CV.pdf', external: true },
 ];
 
 export const FOOTER_NAV_LINKS: FooterLink[] = [

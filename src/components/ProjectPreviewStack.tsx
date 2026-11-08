@@ -98,17 +98,17 @@ const EnvelopePreview: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => (
   <div className="envelope-preview">
     <img
       className="envelope-preview__back"
-      src="/img/Grid/envelop_back.png"
+      src="/img/Grid/envelop_back.webp"
       alt=""
     />
     <img
       className={`envelope-preview__card${isPlaying ? ' envelope-preview__card--up' : ''}`}
-      src="/img/Grid/envelop.png"
+      src="/img/Grid/envelop.webp"
       alt=""
     />
     <img
       className="envelope-preview__front"
-      src="/img/Grid/envelop_front.png"
+      src="/img/Grid/envelop_front.webp"
       alt=""
     />
   </div>
