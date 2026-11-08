@@ -27,7 +27,7 @@ const BULLET_POINTS: {
   {
     index: 1,
     text: <>Senior product designer at <span style={{ color: '#ffffff', fontWeight: 400 }}>Heidi Health</span>, designing an AI care partner that works alongside clinicians</>,
-    images: ['', '', ''],
+    images: ['/img/Grid/Landing_heidi_1.webp', '/img/Grid/Landing_heidi_2.webp', '/img/Grid/Landing_heidi_3.webp'],
   },
   {
     index: 2,
