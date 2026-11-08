@@ -142,7 +142,7 @@ const Box9: React.FC<Box9Props> = ({
       </div>
 
       <img
-        src="/logo/mck_logo.png"
+        src="/logo/mck_logo.webp"
         alt="McKinsey & Company"
         className="box9-mck-logo"
       />

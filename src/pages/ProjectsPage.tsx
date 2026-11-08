@@ -40,7 +40,7 @@ const PROJECTS: {
     title: 'Digital business building at McKinsey & Company',
     subtitle: 'Launching a financial wellbeing service in Norway',
     externalHref: BOX9_PROJECT_URL,
-    preview: { type: 'image', src: '/img/Grid/Landing_Kan.jpg' },
+    preview: { type: 'image', src: '/img/Grid/Landing_Kan.webp' },
   },
   {
     index: 3,

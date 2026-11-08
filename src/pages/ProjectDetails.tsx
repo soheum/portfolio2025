@@ -1225,7 +1225,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             >
               <section id="phase-1-challenge" className="content-block__segment">
                 <div className="content-block__media">
-                  <img src="/img/Scarlet/phase1_challenge.jpg" alt="Phase 1 challenge" className="timeline-image" />
+                  <img src="/img/Scarlet/phase1_challenge.webp" alt="Phase 1 challenge" className="timeline-image" />
                 </div>
                 <h2 ref={challengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-1-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                   <span className="content-block__heading-label">Phase 01</span>
@@ -1273,7 +1273,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                 </div>
                 <div ref={outcomeMediaRef} className="content-block__media">
                   <figure className="media-figure">
-                    <img src="/img/Scarlet/phase1_outcome.jpg" alt="Phase 1 outcome" className="timeline-image" />
+                    <img src="/img/Scarlet/phase1_outcome.webp" alt="Phase 1 outcome" className="timeline-image" />
                     <figcaption className="media-caption">MVP version launched in 2 weeks</figcaption>
                   </figure>
                 </div>
@@ -1285,11 +1285,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             <div className="phase-block__challenge-intro">
               <div className="content-block phase-block__pair-media">
                 <figure className="phase-block__pair-media-item">
-                  <img src="/img/Scarlet/phase2_challenge_1.jpg" alt="21% submission quality" className="timeline-image" />
+                  <img src="/img/Scarlet/phase2_challenge_1.webp" alt="21% submission quality" className="timeline-image" />
                   {/* <figcaption className="media-caption">Low quality submissions</figcaption> */}
                 </figure>
                 <figure className="phase-block__pair-media-item">
-                  <img src="/img/Scarlet/phase2_challenge_2.jpg" alt="AI disclaimer tooltip" className="timeline-image" />
+                  <img src="/img/Scarlet/phase2_challenge_2.webp" alt="AI disclaimer tooltip" className="timeline-image" />
                   {/* <figcaption className="media-caption">Strict impartiality rules with AI</figcaption> */}
                 </figure>
               </div>
@@ -1327,7 +1327,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                     <p>A key insight shaped our direction: customers spent little time on the platform and approached it with caution — returning only when they felt fully ready to submit, afraid of making mistakes. This meant <span style={{ color: '#ffffff' }}>they weren't looking for an AI guide, but for reassurance before committing to a submission.</span></p>
                   </div>
                   <div className="content-block__media">
-                    <img src="/img/Scarlet/phase2_approach.jpg" alt="Phase 2 approach" className="timeline-image" />
+                    <img src="/img/Scarlet/phase2_approach.webp" alt="Phase 2 approach" className="timeline-image" />
                   </div>
                 </section>
 
@@ -1371,7 +1371,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             >
               <section id="phase-3-challenge" className="content-block__segment">
                 <div className="content-block__media">
-                  <img src="/img/Scarlet/phase3_challenge_0.jpg" alt="Phase 3 challenge" className="timeline-image" />
+                  <img src="/img/Scarlet/phase3_challenge_0.webp" alt="Phase 3 challenge" className="timeline-image" />
                 </div>
                 <h2 ref={phase3ChallengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-3-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                     <span className="content-block__heading-label">Phase 03</span>
@@ -1438,7 +1438,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
             >
               <section id="phase-4-challenge" className="content-block__segment">
                 <div className="content-block__media">
-                  <img src="/img/Scarlet/phase4_challenge.jpg" alt="Phase 4 challenge" className="timeline-image" />
+                  <img src="/img/Scarlet/phase4_challenge.webp" alt="Phase 4 challenge" className="timeline-image" />
                 </div>
                 <h2 ref={phase4ChallengeHeadingRef} className={`content-block__heading content-block__heading--stack-1${isSubtitleActive('phase-4-challenge') ? ' content-block__heading--subtitle-active' : ''}`}>
                   <span className="content-block__heading-label">Phase 04</span>
@@ -1465,7 +1465,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ className }) => {
                   <p>Given the complexity, <span style={{ color: '#ffffff' }}>we prioritised early and continuous collaboration between designers, engineers, product, and the technical operations team.</span> Rather than working in silos, the four came together regularly to align on regulatory needs, engineering constraints, product roadmap, and usability — finding solutions that satisfied all at once.</p>
                 </div>
                 <div className="content-block__media">
-                  <img src="/img/Scarlet/phase4_approach.jpg" alt="Phase 4 approach" className="timeline-image" />
+                  <img src="/img/Scarlet/phase4_approach.webp" alt="Phase 4 approach" className="timeline-image" />
                 </div>
               </section>
 

@@ -1,0 +1,100 @@
+.contact-bullet {
+  align-items: center;
+}
+
+.contact-bullet.projects-bullet--linked:hover .projects-bullet__title,
+.contact-bullet.projects-bullet--active .projects-bullet__title {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.contact-checkbox {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: 1.5px solid #555555;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.contact-checkbox:hover,
+.contact-bullet:hover .contact-checkbox {
+  border-color: #767676;
+}
+
+.contact-checkbox--checked {
+  background-color: #555555;
+  border-color: #555555;
+}
+
+.contact-checkbox--checked::after {
+  content: '';
+  width: 0.38em;
+  height: 0.7em;
+  border: solid #ffffff;
+  border-width: 0 1px 1px 0;
+  transform: rotate(45deg) translate(-0.08em, -0.06em);
+}
+
+.contact-bullet__link {
+  cursor: pointer;
+}
+
+.contact-swap-title {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.contact-swap-title__sizer {
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.contact-swap-title__layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  white-space: nowrap;
+}
+
+.contact-swap-title__char {
+  display: inline-block;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+  /* Stagger letters so the full collapse finishes within ~0.5s */
+  transition-delay: calc(
+    (var(--char-index, 0) / max(var(--char-count, 1), 1)) * 0.2s
+  );
+}
+
+.contact-swap-title__layer--default .contact-swap-title__char {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.contact-swap-title__layer--hover .contact-swap-title__char {
+  opacity: 0;
+  transform: translateY(0.35em);
+}
+
+.contact-swap-title--active .contact-swap-title__layer--default .contact-swap-title__char {
+  opacity: 0;
+  transform: translateY(0.35em);
+}
+
+.contact-swap-title--active .contact-swap-title__layer--hover .contact-swap-title__char {
+  opacity: 1;
+  transform: translateY(0);
+}

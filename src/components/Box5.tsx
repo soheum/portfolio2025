@@ -3,14 +3,14 @@ import PhotoCloud3D from './PhotoCloud3D';
 import './Box5.css';
 
 const slideImages = [
-  '/img/vinyl/slide-01.jpg',
-  '/img/vinyl/slide-02.jpg',
-  '/img/vinyl/slide-03.jpg',
-  '/img/vinyl/slide-04.jpg',
-  '/img/vinyl/slide-05.jpg',
-  '/img/vinyl/slide-06.jpg',
-  '/img/vinyl/slide-07.jpg',
-  '/img/vinyl/slide-08.jpg',
+  '/img/vinyl/slide-01.webp',
+  '/img/vinyl/slide-02.webp',
+  '/img/vinyl/slide-03.webp',
+  '/img/vinyl/slide-04.webp',
+  '/img/vinyl/slide-05.webp',
+  '/img/vinyl/slide-06.webp',
+  '/img/vinyl/slide-07.webp',
+  '/img/vinyl/slide-08.webp',
 ];
 
 interface Box5Props {

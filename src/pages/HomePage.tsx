@@ -26,32 +26,31 @@ const BULLET_POINTS: {
 }[] = [
   {
     index: 1,
-    text: <>Senior product designer based in London, accelerating medical devices to market at <span style={{ color: '#ffffff', fontWeight: 400 }}>Scarlet</span></>,
-    images: ['/img/Grid/Landing_scarlet_2.jpg', '/img/Grid/Landing_0.mp4', '/img/Grid/Landing_scarlet_1.jpg'],
-    path: '/project',
+    text: <>Senior product designer at <span style={{ color: '#ffffff', fontWeight: 400 }}>Heidi Health</span>, designing an AI care partner that works alongside clinicians</>,
+    images: ['', '', ''],
   },
   {
     index: 2,
-    text: <>Previously a digital product designer at <span style={{ color: '#ffffff', fontWeight: 400 }}>McKinsey & Company</span>, helping clients build digital businesses</>,
-    images: ['/img/Grid/Box9_8.jpg', 'box9', '/img/Grid/Box9_10_1.jpg'],
-    externalHref: BOX9_PROJECT_URL,
+    text: <>Previously a founding product designer at <span style={{ color: '#ffffff', fontWeight: 400 }}>Scarlet</span>, building a 0→1 certification platform for AI medical devices</>,
+    images: ['/img/Grid/Landing_scarlet_2.webp', '/img/Grid/Landing_0.mp4', '/img/Grid/Landing_scarlet_1.webp'],
+    path: '/project',
   },
   {
     index: 3,
-    text: <>Previously a public sector product designer at the <span style={{ color: '#ffffff', fontWeight: 400 }}>Bank of England</span>, transforming regulatory data collection processes</>,
-    images: ['/img/Grid/3_Landing_2.jpg', '/img/Grid/3_Landing_2.mp4', '/img/Grid/3_Landing_3.jpg'],
-    path: '/project/boe',
+    text: <>Previously a digital product designer at <span style={{ color: '#ffffff', fontWeight: 400 }}>McKinsey & Company</span>, helping clients build digital businesses</>,
+    images: ['/img/Grid/Box9_8.webp', 'box9', '/img/Grid/Box9_10_1.webp'],
+    externalHref: BOX9_PROJECT_URL,
   },
   {
     index: 4,
-    text: 'A strong believer that creativity thrives at the intersection of contrasting values',
-    images: ['', '', ''],
+    text: <>Previously a public sector product designer at the <span style={{ color: '#ffffff', fontWeight: 400 }}>Bank of England</span>, transforming regulatory data collection processes</>,
+    images: ['/img/Grid/3_Landing_2.webp', '/img/Grid/3_Landing_2.mp4', '/img/Grid/3_Landing_3.webp'],
+    path: '/project/boe',
   },
   {
     index: 5,
-    text: 'A visual storyteller, curating thoughtfully designed spaces through photography and text',
+    text: 'A strong believer that creativity thrives at the intersection of contrasting values',
     images: ['', '', ''],
-    externalHref: 'https://www.instagram.com/iso_heum/',
   },
 ];
 
@@ -87,7 +86,7 @@ const HomePage: React.FC = () => {
 
   const handleBulletClick = (path?: string, externalHref?: string, index?: number) => {
     if (path) {
-      if (path === '/project' && index === 1 && scarletIndexRef.current) {
+      if (path === '/project' && index === 2 && scarletIndexRef.current) {
         const rect = scarletIndexRef.current.getBoundingClientRect();
         const state: ProjectIndexNavState = {
           indexRect: { top: rect.top, left: rect.left },
@@ -95,7 +94,7 @@ const HomePage: React.FC = () => {
         navigate(path, { state });
         return;
       }
-      if (path === '/project/boe' && index === 3 && boeIndexRef.current) {
+      if (path === '/project/boe' && index === 4 && boeIndexRef.current) {
         const rect = boeIndexRef.current.getBoundingClientRect();
         const state: ProjectIndexNavState = {
           indexRect: { top: rect.top, left: rect.left },
@@ -151,11 +150,11 @@ const HomePage: React.FC = () => {
             >
               <span
                 ref={
-                  index === 1 ? scarletIndexRef : index === 3 ? boeIndexRef : undefined
+                  index === 2 ? scarletIndexRef : index === 4 ? boeIndexRef : undefined
                 }
-                className={`home-bullet__index${(index === 1 || index === 3) && path ? ' home-bullet__index--link' : ''}`}
+                className={`home-bullet__index${(index === 2 || index === 4) && path ? ' home-bullet__index--link' : ''}`}
                 onClick={
-                  canInteract && (index === 1 || index === 3) && path
+                  canInteract && (index === 2 || index === 4) && path
                     ? (event) => {
                         event.stopPropagation();
                         handleBulletClick(path, externalHref, index);

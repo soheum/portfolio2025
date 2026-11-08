@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProjectDetails.css';
 
-const ROTATING_IMAGES = ['01-1.jpg', '01-2.jpg', '01-3.jpg', '01-4.jpg'];
-const ROTATING_IMAGES_2 = ['02-4.jpg', '02-5.jpg', '02-6.jpg'];
-const ROTATING_IMAGES_3 = ['03-1.jpg', '03-2.jpg', '03-3.jpg'];
+const ROTATING_IMAGES = ['01-1.webp', '01-2.webp', '01-3.webp', '01-4.webp'];
+const ROTATING_IMAGES_2 = ['02-4.webp', '02-5.webp', '02-6.webp'];
+const ROTATING_IMAGES_3 = ['03-1.webp', '03-2.webp', '03-3.webp'];
 
 const Kan: React.FC = () => {
   const navigate = useNavigate();
@@ -169,7 +169,7 @@ const Kan: React.FC = () => {
           <section id="about" className="about-hero">
             <div className="hero-header">
               {/* <p className="subtitle_dates">2025 February - ongoing / in London / Series A startup</p> */}
-              <img src="/logo/mck_logo.png" alt="McKinsey & Company" className="hero-logo" />
+              <img src="/logo/mck_logo.webp" alt="McKinsey & Company" className="hero-logo" />
               <div className="subtitle-container">
               <p className="subtitle">Transforming debt support into </p>
                 <p className="subtitle subtitle-highlight">
@@ -204,7 +204,7 @@ const Kan: React.FC = () => {
             >
               <div className="video-hover-zoom">
                 <img
-                  src="/img/Kan/Cover.jpg"
+                  src="/img/Kan/Cover.webp"
                   alt="Kan project overview"
                   className="about-hero-image"
                 />
@@ -358,7 +358,7 @@ const Kan: React.FC = () => {
 
                 <div id="pain-disposable-income" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/PP_2.jpg" alt="Kan project - Lack of clarity around disposable income" className="about-hero-image" />
+                    <img src="/img/Scarlet/PP_2.webp" alt="Kan project - Lack of clarity around disposable income" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Lack of clarity around disposable income</h3>
                   <p className="pain-point-description">
@@ -406,7 +406,7 @@ const Kan: React.FC = () => {
               <div className="key-design-grid">
                 <div id="key-actionable-insights" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_1.jpg" alt="Kan project - Actionable, personalised financial insights" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_1.webp" alt="Kan project - Actionable, personalised financial insights" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Actionable, personalised financial insights</h3>
                   <p className="pain-point-description">
@@ -415,7 +415,7 @@ const Kan: React.FC = () => {
                 </div>
                 <div id="key-trusted-integrations" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_2.jpg" alt="Kan project - Accurate guidance through trusted integrations" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_2.webp" alt="Kan project - Accurate guidance through trusted integrations" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Accurate guidance through trusted integrations</h3>
                   <p className="pain-point-description">
@@ -424,7 +424,7 @@ const Kan: React.FC = () => {
                 </div>
                 <div id="key-high-craft-design" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_3.jpg" alt="Kan project - High-craft design for data-heavy experiences" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_3.webp" alt="Kan project - High-craft design for data-heavy experiences" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">High-craft design for data-heavy experiences</h3>
                   <p className="pain-point-description">
@@ -434,7 +434,7 @@ const Kan: React.FC = () => {
 
                 <div id="key-user-control" className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/DD_4.jpg" alt="Kan project - User control and transparency in spending data" className="about-hero-image" />
+                    <img src="/img/Scarlet/DD_4.webp" alt="Kan project - User control and transparency in spending data" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">User control and transparency in spending data</h3>
                   <p className="pain-point-description">
@@ -451,7 +451,7 @@ const Kan: React.FC = () => {
               <div className="design-process-grid">
                 <div className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/P_1.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/P_1.webp" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Rapid iteration through design PRs</h3>
                   <p className="pain-point-description">
@@ -469,7 +469,7 @@ const Kan: React.FC = () => {
                 </div>
                 <div className="pain-point-card">
                   <div className="grid-image image-full about-mobile-image">
-                    <img src="/img/Scarlet/P_3.jpg" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
+                    <img src="/img/Scarlet/P_3.webp" alt="Scarlet project overview - Pre-submission stage" className="about-hero-image" />
                   </div>
                   <h3 className="pain-point-title">Grounding concrete decisions in real customer feedback</h3>
                   <p className="pain-point-description">
